@@ -18,29 +18,47 @@ ioServer.on('connection', function(socket) {
 	//clients.push(socket);
     // When socket disconnects, remove it from the list:
 	socket.on('chat message', function(msg){
-		socket.emit('chat message', msg.name + ' you said: ' + msg.content);
-		console.log(msg.name + ' send message');
-		if(msg.name != 'none'){
-			var user_info = {name:msg.name, socket:socket};
-			console.log('add a new user');
+		console.info(msg);
+		msg = JSON.parse(msg);
+		console.info(msg['sender']);
+		console.info(msg['receiver']);
+		console.info(msg['message']);
+		sender = msg['sender'].trim();
+		receiver = msg['receiver'].trim();
+		content = msg['message'];
+		
+
+		socket.emit('chat message', {'message':'send success'});
+		console.log(sender + ' send message' + 'and he said ' + content);
+		if(sender != 'none'){
+			var user_info = {name:sender, socket:socket};
+			// append each user to list. 
+			// This need to be a 'set', means, every user just save once.
+			console.log('***********add a new user');
 			clients.push(user_info);
-			ioServer.emit('add user', msg.name);
+
+			addUserMessage = {'newUser':sender};
+			ioServer.emit('add user', addUserMessage);
 		}
 
-		if(msg.to != 'none'){
-			if(msg.to == 'all'){
+		if(receiver != 'none'){
+			console.log('receiver is not null');
+			if(receiver == 'all'){
 				//ioServer.emit('chat message', msg.content); // will send to self.
-				socket.broadcast.emit('chat message', msg.content);// don's send to self
+				socket.broadcast.emit('chat message', msg);// don's send to self
 			}
-			var receiver = get_person(msg.to);
+			var receiver = get_person(receiver);
+			
 			if(receiver!=null){
-				receiver.emit('chat message', msg.content);
-				socket.emit('chat message', 'send success');
+				console.log('find a receiver in list');
+				var send_message = {'message':content, 'mark':'new message'};
+				receiver.emit('chat message',send_message);
+				socket.emit('chat message', {'message':'send success'});
 			}
 		}
 
-		socket.emit('received', 'reveiced');
-		console.info('reveive message from ' + msg.name);
+		socket.emit('information been received', {'message':'reveiced'});
+		console.info('reveive message from ' + sender);
 	});
 
     socket.on('disconnect', function() {
@@ -54,9 +72,14 @@ ioServer.on('connection', function(socket) {
 
 function get_person(user_name){
 	var socket = null;
-	for(var i = 0; i < clients.length; i++){
+	console.info("point 1" + user_name);
+	for(var i = clients.length - 1; i >= 0; i--){
+		console.log('clinet name is ' + clients[i].name);
+		console.info('clinet.i name == ' + clients[i].name + ' ' + ' receiver name is ' + user_name);
 		if(clients[i].name == user_name){
 			socket = clients[i].socket;
+			console.info("find a reveiver: " + socket.id);
+			break;
 		}
 	}
 	return socket;

@@ -20,39 +20,12 @@
     <ul id="users"></ul>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="receiver" autocomplete="off" /><button>Receiver</button>
+      <input id="sender" autocomplete="off" /><button>Sender</button>
+	  <input id="message" autocomplete="off" /><button>Message</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
-	<script>
-	  var socket = io('http://localhost:3000');
-	  var message = {name:null, content:null, to:null};
-		socket.emit('chat message', 'begin');
-      $('form').submit(function(){
-		var input = $('#m').val();
-		var name = 'none';
-		var to = 'none';
-		if(input.indexOf('name:') == 0){
-			name = input.slice(5);
-		}
-		if(input.indexOf('to:') == 0){
-			to = input.slice(3, input.indexOf(','));
-			input = input.slice(input.indexOf(',')+1);
-		}
-		message.name = name;
-		message.content = input;
-		message.to = to;
-
-        socket.emit('chat message', message);
-        $('#m').val('');
-        return false;
-      });
-      socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
-      });
-		socket.on('add user', function(msg){
-			$('#users').append($('<li>').text('exised user : ' + msg));
-		});
-</script>
+	<script src="/static/send_message.js"></script>
   </body>
 </html>
