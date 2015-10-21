@@ -1,23 +1,18 @@
-var
-    io = require('socket.io'),
-    ioServer = io.listen(3000),
-    sequence = 1;
-    clients = [];
-	//message_info = {'username':null, 'socket_id':null},
-	test_information = {sender:'Tom', message:'Test Connection'};
+var io = require('socket.io'),
+	ioServer = io.listen(3000),
+	sequence = 1,
+	clients = [];
 
-function get_name(msg){
-	// get name from msg
-	var name = msg.slice(5);
-	return name;
-}
-// Event fired every time a new client connects:
-ioServer.on('connection', function(socket) {
-    console.info('New client connected (id=' + socket.id + ').');
-	//
-	//clients.push(socket);
-    // When socket disconnects, remove it from the list:
-	socket.on('chat message', function(msg){
+var CONNECTION = 'connection',
+	DISCONNECT = 'disconnect',
+	CHAT_MESSAGE = 'chat message',
+	ADD_USER = 'add user',
+	INFORMATION_RECEIVED = 'information received',
+	ERROR = 'error';
+
+ioServer.on(CONNECTION, function(socket) {
+	console.info('New client connected (id=' + socket.id + ').');
+	socket.on(CHAT_MESSAGE, function(msg){
 		console.info(msg);
 		msg = JSON.parse(msg);
 		console.info(msg['sender']);
@@ -26,19 +21,18 @@ ioServer.on('connection', function(socket) {
 		sender = msg['sender'].trim();
 		receiver = msg['receiver'].trim();
 		content = msg['message'];
-		
 
-		socket.emit('chat message', {'message':'send success'});
+		socket.emit(CHAT_MESSAGE, "send success");
+		console.log('send message to sender');
 		console.log(sender + ' send message' + 'and he said ' + content);
+
 		if(sender != 'none'){
-			var user_info = {name:sender, socket:socket};
-			// append each user to list. 
-			// This need to be a 'set', means, every user just save once.
+			var user_info = {name:sender, socket:socket, socket_id: socket.id};
 			console.log('***********add a new user');
 			clients.push(user_info);
 
 			addUserMessage = {'newUser':sender};
-			ioServer.emit('add user', addUserMessage);
+			ioServer.emit(ADD_USER, addUserMessage);
 		}
 
 		if(receiver != 'none'){
@@ -46,28 +40,26 @@ ioServer.on('connection', function(socket) {
 			if(receiver == 'all'){
 				//ioServer.emit('chat message', msg.content); // will send to self.
 				socket.broadcast.emit('chat message', msg);// don's send to self
+			}else{
+				var receiver = get_person(receiver);
+				if(receiver){
+					console.log('find a receiver in list');
+					receiver.emit('chat message',msg);
+					socket.emit('chat message', {'message':'send success'});
+				}
 			}
-			var receiver = get_person(receiver);
-			
-			if(receiver!=null){
-				console.log('find a receiver in list');
-				var send_message = {'message':content, 'mark':'new message'};
-				receiver.emit('chat message',send_message);
-				socket.emit('chat message', {'message':'send success'});
-			}
-		}
 
-		socket.emit('information been received', {'message':'reveiced'});
-		console.info('reveive message from ' + sender);
+			socket.emit('information been received', {'message':'reveiced'});
+			console.info('reveive message from ' + sender);
+		}
 	});
 
-    socket.on('disconnect', function() {
-        var index = clients.indexOf(socket);
-        if (index != -1) {
-            clients.splice(index, 1);
-            console.info('Client gone (id=' + socket.id + ').');
-        }
-    });
+	socket.on(DISCONNECT, function() {
+		var user_index = get_user_by_socket(socket);
+		clients.splice(user_index, 1);
+		console.info('Client gone (id=' + socket.id + ').');
+	});
+
 });
 
 function get_person(user_name){
@@ -75,7 +67,7 @@ function get_person(user_name){
 	console.info("point 1" + user_name);
 	for(var i = clients.length - 1; i >= 0; i--){
 		console.log('clinet name is ' + clients[i].name);
-		console.info('clinet.i name == ' + clients[i].name + ' ' + ' receiver name is ' + user_name);
+		console.info('clinet. ' + i + ' name == ' + clients[i].name + '  receiver name is ' + user_name);
 		if(clients[i].name == user_name){
 			socket = clients[i].socket;
 			console.info("find a reveiver: " + socket.id);
@@ -85,15 +77,16 @@ function get_person(user_name){
 	return socket;
 }
 
-// Every 1 second, sends a message to a random client:
-/*
-setInterval(function() {
-    var randomClient;
-    if (clients.length > 0) {
-        randomClient = Math.floor(Math.random() * clients.length);
-		var length = clients.length;
-        clients[randomClient].socket.emit('chat message', 'there is ' + length + 'users now');
-    }
 
-}, 1000);
-*/
+function get_user_by_socket(socket){
+	// based on the socket, and give the index of use in clients list.
+	var user_index = null;
+	for(var i = 0; i < clients.length; i++){
+		if(clients[i].socket_id = socket.id){
+			user_index = i;
+			console.log('find the user in list');
+			break;
+		}
+	}
+	return user_index;
+}
