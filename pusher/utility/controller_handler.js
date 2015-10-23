@@ -2,6 +2,9 @@
  * To build connection of controller, which could be a Django server or other server.
  * 1. Check if this user is exist.
  * 2. Send message to a user.
+ *
+ * Author: Minchiuan Gao <minchiuan.gao@gmail.com>
+ * Date: 2015-Oct-23
  */
 
 function check_is_exist(account_name){
