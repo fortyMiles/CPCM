@@ -14,7 +14,9 @@ ioServer.on(e.CONNECTION, function(socket) {
 	console.info('New client connected (id=' + socket.id + ').');
 
 	socket.on(LOGIN, function(msg){
-		// msg = {'name':varchar}
+		/*
+		 * args: msg = {'name':varchar}
+		 */
 		console.info('a new user login');
 		msg = JSON.parse(msg);
 		user_name = msg.name.trim();
@@ -101,4 +103,3 @@ function get_user_by_socket(socket){
 	}
 	return user_index;
 }
-*/
