@@ -7,7 +7,7 @@
  *
  */
 
-function Messsage(){
+function Message(){
 	this.SEND_TO_RECEIVER = 'send_to_receiver';
 }
 

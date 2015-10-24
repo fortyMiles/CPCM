@@ -39,26 +39,26 @@ User.add_one_unread_message = function(user_name, events,  message){
 	User.unread_messages[user_name].push(message);
 };
 
-User.is_registerred(user_name){
+User.is_registerred = function(user_name){
 	// send get requiey to Django to ask if this person be registerred.
 	return true;
 };
 
-User.send_invitation_phone_text(user_name){
+User.send_invitation_phone_text = function(user_name){
 	// let django server send a phone text to let person know someone has invited him.
 	console.log('send a message to his phone');
 };
 
-User.update_relation(sender, receiver, relation){
+User.update_relation = function(sender, receiver, relation){
 	User. update_friend_list(sender, receiver, relation);
 	User. update_relation_database(sender, receiver, relation);
 };
 
-User.update_friend_list(sender, receiver, relation){
+User.update_friend_list = function(sender, receiver, relation){
 	// update send's and receiver's friend list;
 }
 
-User.update_relation_database(sender, receiver, relation){
+User.update_relation_database = function(sender, receiver, relation){
 
 }
 
@@ -105,10 +105,9 @@ function User(user_name, socket, socket_id){
 		var user_info = {socket: this.socket, socket_id: this.socket_id};
 		
 		User.login_users[this.user_name] = user_info;
-		console.log(User.login_users);
 		User.socket_user[this.user_socket] = this.user_name;
-		console.log('read test');
-		console.log(User.socket_user[this.user_socket]);
+
+		console.log('log a user ');
 	};
 
 	this.have_unread_message = function(){
@@ -149,9 +148,9 @@ function User(user_name, socket, socket_id){
 		 */
 		return User.login_users.user_name.socket;
 	};
+}
 
-	}
-
+/*
 
 var user = new User('minchiuan', 'sokcet', 111);
 user.login();
@@ -168,3 +167,4 @@ var new_user = new User('mike', 'socket 2', 122);
 new_user.test();
 
 console.info(User.get_socket_by_name('minchiuan'));
+*/
