@@ -93,6 +93,7 @@ function MainServer(port){
 		 * To maniputlate socket's differect events.
 		 */
 		console.info('a new client connects you, ( id == ' + socket.id + ' )');
+                socke.emit(e.CHAT_MESSAGE, 'you are connected!');
 
 		this.socket = socket;
 
