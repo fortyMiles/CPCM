@@ -28,8 +28,10 @@ function MainServer(port){
             var type = msg.type.trim();
             switch(type){
                 case e.LOGIN:
-                    login(msg, socket);
-                                      break;
+                    login(msg.name.trim(), socket);
+                    send_unread_message(user);
+                    send_ensure_message(msg.name.trim(), socket);
+                    break;
 
                 case e. INVITATION:
                     var sender = msg.from.trim();
@@ -51,7 +53,7 @@ function MainServer(port){
                 case e. CHAT:
                     var sender = msg.from.trim();
                     var receiver = msg.to.trim();
-                    send_message(sender, receiver, msg);
+                    send_message(sener, receiver, msg);
                     break;
             }
         });
@@ -64,20 +66,21 @@ function MainServer(port){
             for(var index = 0; index < unread_messages.length; index++){
                 this.socket.emit(unread_messages[index].events, unread_messages[index].message);
             }
-
             /* !!! notice, need to add a receive confire from client, it's just test code */
             user.delete_unread_message();
         }
     };
 
-    var login = function(message, socket){
-        var name = message.name.trim();
-        user = new User(name, socket, socket.id);
-        user.login();
-
+    var send_ensure_message = function(name, socket){
+        // sends to name an ensure message
         var send_message = {type: e.LOGIN, message: 'hello ' + name};
         socket.emit(e.CHAT_MESSAGE, send_message); 
-        send_unread_message(user);
+    };
+
+    var login = function(name, socket){
+        user = new User(name, socket, socket.id);
+        user.login();
+        return user;
     };
 
     var send_message = function(sender, receiver, msg){
