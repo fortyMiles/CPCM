@@ -51,6 +51,12 @@ function MainServer(port){
                         }
                     } 
                     break;
+
+                case e. CHAT_MESSAGE:
+                    var sender = msg.from.trim();
+                    var receiver = msg.to.trim();
+                    send_message(sener, receiver, msg);
+                    break;
             }
         });
     };
@@ -72,6 +78,34 @@ function MainServer(port){
         user = new User(username, socket, socket.id);
         user.login();
         return user;
+    };
+
+    var send_message = function(sender, receiver, msg){
+        /* sends a message from sender to receiver.
+         * 
+         * args:
+         *	sender: sender's account name
+         *	receiver: receiver's account name
+         *	message: message content
+         *	send_event: which events neeed send to receiver, such as 'chat message', 'invitation', etc
+         *	feedback_events: which events when send success give back to sender.
+         *
+         */
+        if(User.is_login(sender) && User.is_login(receiver)){
+	    var destination_socket = User.get_socket_by_name(receiver);
+	    destination_socket.emit(e. CHAT_MESSAGE, msg); // router the message to the receiver;
+	    var sender_socket = User.get_socket_by_name(sender);
+            var feedback = {type:'send_success'};
+	    sender_socket.emit(e. CHAT_MESSAGE, feedback);
+	}else{
+	    if(!User.is_login(sender)){
+		console.log('user not login');
+	     }
+	        // add message to a receiver's unread message.
+	    if(!User.is_login(receiver)){
+	        User.add_one_unread_message(receiver, e. CHAT_MESSAGE, msg);
+	    }
+	}
     };
 
     this.run = function(){
