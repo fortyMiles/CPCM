@@ -118,6 +118,7 @@ function MainServer(port){
                         var send_message = {message: 'hello ' + user_name};
                         socket.emit(e.CHAT_MESSAGE, send_message);
 
+
 			if(user.have_unread_message()){
 				var unread_messages = user.get_unread_message();
 
@@ -174,15 +175,17 @@ function MainServer(port){
 		});
 
 		this.socket.on(e.INVITATION, function(msg){
-			msg = JSON.parse(msg);
-			console.log(msg);
-			var sender = msg.sender.trim();
-			var receiver = msg.receiver.trim();
+			var sender = msg.from.trim();
+			var receiver = msg.to.trim();
+                        var nickname = msg.nickname.trim();
 
+                        var speak = 'hi, ' + nickname + ' ' + ' wo 是' + sender + ' 一起加入麦粒吧~ ';
+                        var message = {type: "invitation", from: sender, to: receiver, message: speak};
 			if(User.is_registerred(receiver)){
 				if(User.is_login(sender) && User.is_login(receiver)){
+                                        console.log(message);
 					var destination_socket = User.get_socket_by_name(receiver);
-					destination_socket.emit(e. INTIVATION, msg); // router the message to the receiver;
+					destination_socket.emit(e. CHAT_MESSAGE, message); // router the message to the receiver;
 					var sender_socket = User.get_socket_by_name(sender);
 					sender_socket.emit(e.SENT_TO_RECEIVER, m.SEND_TO_RECEIER);
 				}else{
@@ -191,7 +194,7 @@ function MainServer(port){
 					}
 				// add message to a receiver's unread message.
 					if(!User.is_login(receiver)){
-						User.add_one_unread_message(receiver, e.CHAT_MESSAGE, msg);
+						User.add_one_unread_message(receiver, e.CHAT_MESSAGE, message);
 					}
 				}
 			}else{
