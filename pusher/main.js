@@ -30,7 +30,7 @@ function MainServer(port){
                 case e.LOGIN:
                     var name = msg.name.trim();
                     var user = login(name, socket);
-                    var send_message = {message: 'hello ' + name};
+                    var send_message = {type: e.LOGIN, message: 'hello ' + name};
                     socket.emit(e.CHAT_MESSAGE, send_message); 
                     send_unread_message(user);
                     break;

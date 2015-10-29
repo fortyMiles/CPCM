@@ -16,6 +16,7 @@ function Events(){
 	this.DISCONNECT = 'disconnect';
 	// 不管，掉线
 	this.LOGOUT = 'logout';
+        this.LOGIN = 'login';
 	// log out page
 	this.CHAT_MESSAGE = 'chat message';
 	this.CHAT= 'chat';
