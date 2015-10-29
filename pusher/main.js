@@ -53,7 +53,7 @@ function MainServer(port){
                 case e. CHAT:
                     var sender = msg.from.trim();
                     var receiver = msg.to.trim();
-                    send_message(sener, receiver, msg);
+                    send_message(sender, receiver, msg);
                     break;
             }
         });
