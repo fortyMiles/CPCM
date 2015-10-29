@@ -18,6 +18,7 @@ function Events(){
 	this.LOGOUT = 'logout';
 	// log out page
 	this.CHAT_MESSAGE = 'chat message';
+	this.CHAT= 'chat';
 	// chat page
 	this.INVITATION = 'invitation';
 	// invitation page
