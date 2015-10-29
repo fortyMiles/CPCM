@@ -28,12 +28,8 @@ function MainServer(port){
             var type = msg.type.trim();
             switch(type){
                 case e.LOGIN:
-                    var name = msg.name.trim();
-                    var user = login(name, socket);
-                    var send_message = {type: e.LOGIN, message: 'hello ' + name};
-                    socket.emit(e.CHAT_MESSAGE, send_message); 
-                    send_unread_message(user);
-                    break;
+                    login(msg, socket);
+                                      break;
 
                 case e. INVITATION:
                     var sender = msg.from.trim();
@@ -55,7 +51,7 @@ function MainServer(port){
                 case e. CHAT:
                     var sender = msg.from.trim();
                     var receiver = msg.to.trim();
-                    send_message(sener, receiver, msg);
+                    send_message(sender, receiver, msg);
                     break;
             }
         });
@@ -74,10 +70,14 @@ function MainServer(port){
         }
     };
 
-    var login = function(username, socket){
-        user = new User(username, socket, socket.id);
+    var login = function(message, socket){
+        var name = message.name.trim();
+        user = new User(name, socket, socket.id);
         user.login();
-        return user;
+
+        var send_message = {type: e.LOGIN, message: 'hello ' + name};
+        socket.emit(e.CHAT_MESSAGE, send_message); 
+        send_unread_message(user);
     };
 
     var send_message = function(sender, receiver, msg){
