@@ -22,6 +22,7 @@ function Events(){
 	this.CHAT= 'chat';
 	// chat page
 	this.INVITATION = 'invitation';
+        this.ACCEPT_INVITATION = 'accept';
 	// invitation page
 	this.ADD_USER = 'add user';
 	this.INFORMATION_RECEIVED = 'information received';
