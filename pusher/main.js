@@ -94,6 +94,8 @@ function MainServer(port){
          *	feedback_events: which events when send success give back to sender.
          *
          */
+        msg.server_date = new Date().getTime();
+
         if(User.is_login(sender) && User.is_login(receiver)){
 	    var destination_socket = User.get_socket_by_name(receiver);
 	    destination_socket.emit(e. CHAT_MESSAGE, msg); // router the message to the receiver;
