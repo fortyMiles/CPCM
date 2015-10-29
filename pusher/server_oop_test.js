@@ -107,12 +107,15 @@ function MainServer(port){
 			 */
 			console.log('invitation message');
 			console.log(msg);
-			msg = JSON.parse(msg);
+			//msg = JSON.parse(msg);
 			var user_name = msg.name.trim();
 			console.info(msg);
 
 			user = new User(user_name, socket, socket.id);
 			user.login();
+
+                        var send_message = {message: 'hello ' + user_name};
+                        socket.emit(e.CHAT_MESSAGE, send_message);
 
 			if(user.have_unread_message()){
 				var unread_messages = user.get_unread_message();
