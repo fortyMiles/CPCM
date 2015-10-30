@@ -12,7 +12,7 @@ ioServer.on(e.CONNECTION, function(socket) {
     console.info('New client connected (id=' + socket.id + ').');
 
     socket.on(e.CHAT_MESSAGE, function(msg){
-        //msg = JSON.parse(msg);
+        msg = JSON.parse(msg);
         console.log(msg);
         var type = msg.type.trim();
         var sender = msg.data.from.trim();
@@ -51,14 +51,17 @@ ioServer.on(e.CONNECTION, function(socket) {
                 msg.data.date = get_date();
                 send_message(sender, receiver, msg);
                 
-                var relation = msg.data.relation;
-                var nickname = msg.data.nickname;
-                User.create_relation(sender, receier, relation, nickname);
                 break;
 
             case 'accept':
+
                 var relation = msg.data.relation;
-                User.ensure_relation(sender, receier, relation);
+                var relation = msg.data.relation;
+                var nickname = msg.data.nickname;
+                User.ensure_relation(sender, receier, relation, nickname);
+
+                send_message(sender, receiver, msg);
+
                 break;
         }
     });
@@ -77,7 +80,7 @@ ioServer.on(e.CONNECTION, function(socket) {
         console.log(sender + ' send message' + 'and he said ' + message);
 
         if(sender && receiver){
-            //msg = JSON.stringify(msg);
+            msg = JSON.stringify(msg);
             console.log(User.is_login(receiver));
             console.log(User.is_login(sender));
             if(receiver == 'all'){
