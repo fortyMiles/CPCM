@@ -28,9 +28,10 @@ function MainServer(port){
             var type = msg.type.trim();
             switch(type){
                 case e.LOGIN:
-                    login(msg.name.trim(), socket);
-                    send_unread_message(user);
+                    user = new User(msg.name.trim(), socket, socket.id);
+                    user.login();
                     send_ensure_message(msg.name.trim(), socket);
+                    send_unread_message(user);
                     break;
 
                 case e. INVITATION:
@@ -51,20 +52,29 @@ function MainServer(port){
                     break;
 
                 case e. CHAT:
+                    console.log('receiver a message');
+                    console.log(msg);
                     var sender = msg.from.trim();
                     var receiver = msg.to.trim();
                     send_message(sender, receiver, msg);
                     break;
             }
         });
+
+        socket.on(e.DISCONNECT, function(){
+            console.log('a user leave..');
+            User.disconnect(socket);
+        });
     };
 
-    var send_unread_message = function(user){
+    var send_unread_message = function(user, socket){
         if(user.have_unread_message()){
-            var unread_messages = user.get_unread_message();
+            console.log('has unread message');
+            var unread_messages = user.get_unread_messages();
+            var user_socket = User.get_user_socket(user.user_name);
 
             for(var index = 0; index < unread_messages.length; index++){
-                this.socket.emit(unread_messages[index].events, unread_messages[index].message);
+                user_socket.emit(unread_messages[index].events, unread_messages[index].message);
             }
             /* !!! notice, need to add a receive confire from client, it's just test code */
             user.delete_unread_message();
@@ -78,8 +88,8 @@ function MainServer(port){
     };
 
     var login = function(name, socket){
-        user = new User(name, socket, socket.id);
-        user.login();
+        console.info('namemadnwadkajw');
+        console.info(name);
         return user;
     };
 
@@ -97,6 +107,7 @@ function MainServer(port){
         msg.server_date = new Date().getTime();
 
         if(User.is_login(sender) && User.is_login(receiver)){
+            console.log('both are logined');
 	    var destination_socket = User.get_socket_by_name(receiver);
 	    destination_socket.emit(e. CHAT_MESSAGE, msg); // router the message to the receiver;
 	    var sender_socket = User.get_socket_by_name(sender);
@@ -108,6 +119,7 @@ function MainServer(port){
 	     }
 	        // add message to a receiver's unread message.
 	    if(!User.is_login(receiver)){
+                console.log('receier not log');
 	        User.add_one_unread_message(receiver, e. CHAT_MESSAGE, msg);
 	    }
 	}
