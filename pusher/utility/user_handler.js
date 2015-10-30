@@ -51,6 +51,12 @@ User.update_relation = function(sender, receiver, relation){
     User. update_relation_database(sender, receiver, relation);
 };
 
+User.create_relation = function(sender, receiver, relation, nickname){
+};
+
+User.ensure_relation = function(sender, receiver, relation){
+};
+
 User.update_friend_list = function(sender, receiver, relation){
     // update send's and receiver's friend list;
 };
