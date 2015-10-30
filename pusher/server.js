@@ -52,12 +52,13 @@ ioServer.on(e.CONNECTION, function(socket) {
                 send_message(sender, receiver, msg);
                 
                 var relation = msg.data.relation;
-
-                // create the two person relation.
-
-                
+                var nickname = msg.data.nickname;
+                User.create_relation(sender, receier, relation, nickname);
                 break;
+
             case 'accept':
+                var relation = msg.data.relation;
+                User.ensure_relation(sender, receier, relation);
                 break;
         }
     });
