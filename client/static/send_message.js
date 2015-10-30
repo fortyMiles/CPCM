@@ -1,7 +1,6 @@
 var CHAT = 'chat message';
 console.log('import send_message.js success');
 var socket = io('http://localhost:3000');
-socket.emit('chat message', 'begin');
 $('form').submit(function(){
 	var message = $('#message').val();
 
@@ -12,8 +11,7 @@ $('form').submit(function(){
 });
 
 socket.on(CHAT, function(msg){
-	msg = JSON.parse(msg);
-	$('#messages').append($('<li>').text(msg.message));
+	$('#messages').append($('<li>').text(msg));
 });
 socket.on('add user', function(msg){
 	$('#users').append($('<li>').text('exised user : ' + msg));

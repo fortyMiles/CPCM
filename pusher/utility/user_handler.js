@@ -1,4 +1,4 @@
-socket_user = {socket_id: null, user_name: null};
+User.socket_user = {socket_id: null, user_name: null};
 User.login_users = {}; // formate {name:varchar()}, to save all the logined user;
 User.user_info = {socket:null, socket_id:null};
 User.unread_messages = {};  //unread_messages = {'username':message_list};
@@ -19,17 +19,20 @@ User.is_login = function(user_name){
     return user_name in User.login_users;
 };
 
-User.add_one_unread_message = function(user_name, events,  message){
+User.add_one_unread_message = function(user_name,message){
     /*
      * add a message to one user's unread list.
      */
     if(!(user_name in User.unread_messages)){
         User.unread_messages[user_name] = [];
     }
-    var temp_message = {'events':events, 'message':message};
     User.unread_messages[user_name].push(message);
 
-    console.info('un read list');
+    console.info('unread list');
+    console.info('******************************');
+    console.log( user_name + ' has an unread message');
+    console.log(message);
+    console.info('******************************');
     console.info(User.unread_messages);
 };
 
@@ -99,11 +102,13 @@ User.get_user_socket = function(user_name){
 
 /* define User static method end.*/
 
-function User(user_name, socket, socket_id){
+function User(){
 
-    this.user_name = user_name;
-    this.socket = socket;
-    this.socket_id = socket_id;
+    this.set_information = function(user_name, socket, socket_id){
+        this.user_name = user_name;
+        this.socket = socket;
+        this.socket_id = socket_id;
+    };
 
     this.test = function(){
         console.log('hello ~');
@@ -126,7 +131,7 @@ function User(user_name, socket, socket_id){
         console.log('log a user ');
     };
 
-    this.have_unread_message = function(){
+    this.has_unread_message = function(){
         /*
          * to check this user whether have unread_message.
          */
