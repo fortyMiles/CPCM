@@ -1,9 +1,19 @@
+/*
+ *
+ *
+ * 
+ *
+ *
+ *
+ *
+ */
+
+
+var request = require('request');
 User.socket_user = {socket_id: null, user_name: null};
 User.login_users = {}; // formate {name:varchar()}, to save all the logined user;
 User.user_info = {socket:null, socket_id:null};
 User.unread_messages = {};  //unread_messages = {'username':message_list};
-
-
 /* define User static variable end */
 
 /* define User static method.*/
@@ -51,19 +61,29 @@ User.update_relation = function(sender, receiver, relation){
     User. update_relation_database(sender, receiver, relation);
 };
 
-User.create_relation = function(sender, receiver, relation, nickname){
+
+User.ensure_relation = function(sender, receiver, relation, nickname){
+    var host = 'http://127.0.0.1:8000';
+    var url = host + '/account/relation/';
+
+    var form_data  = {
+        user1: sender,
+        user2: receiver,
+        relation: relation,
+        nickname: nickname
+    }
+
+
+
+    request.post({url:'http://127.0.0.1:8000/account/relation/', form: form_data}, function(err,httpResponse,body){
+        if (err) {
+            return console.error('upload failed:', err);
+        }
+            console.log('send successful!  Server responded with:', body);
+    });
+
 };
 
-User.ensure_relation = function(sender, receiver, relation){
-};
-
-User.update_friend_list = function(sender, receiver, relation){
-    // update send's and receiver's friend list;
-};
-
-User.update_relation_database = function(sender, receiver, relation){
-
-};
 
 User.logout = function(user_name){
     return delete User.login_users[user_name];
@@ -169,6 +189,7 @@ function User(){
 }
 
 
+User. ensure_relation('18868108012', '18868108013', '亲戚', '8=777777777777七舅老爷');
 /*
    user.login();
    user.test();
