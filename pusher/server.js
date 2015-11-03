@@ -56,7 +56,6 @@ ioServer.on(e.CONNECTION, function(socket) {
             case 'accept':
 
                 var relation = msg.data.relation;
-                var relation = msg.data.relation;
                 var nickname = msg.data.nickname;
                 User.ensure_relation(sender, receier, relation, nickname);
 

@@ -48,6 +48,11 @@ function UserService(){
         // send to one a invitation text.
     };
 
+    this.get_one_user_unread_message = function(user_name, callback){
+        // get one person's all unread messages;
+    };
+
+
     this.logout = function(username){
         /*
          * changes one user's status to 'off'
@@ -63,6 +68,7 @@ function UserService(){
         db_handler.set_user_break_line(socket_id);
     };
 }
+
 
 function test(){
     var user_service = new UserService();

@@ -15,8 +15,9 @@ function Events(){
 	// login page
 	this.DISCONNECT = 'disconnect';
 	// 不管，掉线
-	this.LOGOUT = 'logout';
-        this.LOGIN = 'login';
+	this.LOGOUT = 'off';
+        this.LOGIN = 'on';
+        this.BREAK_LINE = 'break';
 	// log out page
 	this.CHAT_MESSAGE = 'chat message';
 	this.CHAT= 'chat';
@@ -46,6 +47,6 @@ function Events(){
 	};
 }
 
-module.exports = Events
+module.exports = Events;
 
 

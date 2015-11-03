@@ -94,21 +94,43 @@ function Mysql(){
 
 
 
-    this.get_earliest = function(callback){
+    this.get_earliest = function(callback, username){
         /*
          * get the earliset record from db.
+         * 
+         * parameters:
+         *
+         * -name: callback
+         *  type: function
+         *  description: callback function o result;
+         *  
+         * -name: username
+         *  description: the unread message of user's name, if is 'all', means, get all the unread message.
+         *  defalut: 'all'
+         *  type: varchar();
+         *  
          */
-        var query = connection.query(mapper.get_eariliest, function(err, results){
-            if(err) throw err;
+
+        var ALL = 'ALL';
+        var execute_sql = mapper.get_earliest;
+        var args= [];
+
+        username = username || ALL;
+
+        if(username != ALL){
+            execute_sql = mapper.get_one_user_unread_messages;
+            args.push(username);
+        }
+
+        var query = connection.query(execute_sql, args, function(err, results){
+            console.log(query.sql);
+            if(err){
+                throw err;
+            }
             else{
-                var result = results[0];
-                callback(result);
+                callback(results);
             }
         });
-    };
-
-    var parse_query_record  = function(err, result){
-
     };
 
 
