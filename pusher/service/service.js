@@ -33,15 +33,21 @@ function Service(){
 function test(){
     var service = new Service();
 
-    var data = {from:'18857453091',
-            to: '13993300082',
+    var data = {
+            type: 'invitation',
             message: '你在的吗',
     };
 
-    //service.save_a_new_message(data);
+    var message = {
+        from: '刘德华',
+        to: '王小丫',
+        data: data,
+    };
+
+    //service.save_a_new_message(message);
 
     service.get_a_unread_message();
     
 }
 
-//test();
+test();
