@@ -26,16 +26,20 @@ function SocketHandler(){
     var sockets = {};
 
     this.get_socket_by_name = function(username){
+        console.log(username);
+        console.log(username in sockets);
         if(username in sockets){
-            return sockets.username.socket;
+            return sockets[username].socket;
         }else{
             return null;
         }
     };
 
     this.add_a_socket = function(username, socket){
-        sockets.username = {};
-        sockets.username.socket = socket;
+        sockets[username] = {};
+        sockets[username].socket = socket;
+        console.log(username);
+        console.log(username in sockets);
     };
 
     this.delete_a_socket = function(username){

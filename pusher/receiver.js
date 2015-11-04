@@ -12,14 +12,17 @@
 var io = require('socket.io'),
     io_server = io.listen(3000);
 
-var events = new require('./configration/events.js');
-var e = new events();
+var events = new require('./configration/events.js'),
+    e = new events();
 
 var UserService = require('./service/user_service.js'),
     user_service = new UserService();
 
 var MessageService = require('./service/message_service.js'),
     message_service = new MessageService();
+
+var SocketService = require('./service/socket_service.js'),
+    socket_service = new SocketService();
 
 io_server.on(e.CONNECTION, function(socket) {
     console.info('New client connected (id=' + socket.id + ').');
@@ -29,16 +32,11 @@ io_server.on(e.CONNECTION, function(socket) {
         console.log(type);
 
         if(type == e. LOGIN){
-            var sender = msg.data.from.trim();
-            user_service.login_one_user(msg.data.from.trim(), socket.id, socket);
-            console.log('point 1');
-            socket.emit(e. CHAT_MESSAGE, "{you are:"+ sender+" }");
-            message_service.get_user_unread_message(sender, function(results){
-                var messages = message_service.parse_message(results);
-                console.log(messages);
-                for(var i = 0; i < messages.length; i++){
-                    socket.emit(e.CHAT_MESSAGE, messages[i]);
-                }
+            var username = msg.data.from.trim();
+            user_service.login_one_user(username, socket.id, socket, function(){
+                socket_service.registe_socket(username, socket, function(){
+                    socket_service.send_syn(socket, username);
+                });
             });
         }
 
@@ -51,14 +49,11 @@ io_server.on(e.CONNECTION, function(socket) {
     socket.on(e.FEED, function(msg){});
 
     socket.on(e.DISCONNECT, function(){
-        console.info('Client gone (id=' + socket.id + ').');
         user_service.disconnect(socket);
     });
 
-    console.log('I am checking unread messages');
-    //message_service.get_unread_message(); // this sectence will execute all the time ~, it's interestring :)
-
-    // check if login, then, send this message.
-
+    socket_service.send_unread_messages();
+    //console.log('i get unread messages');
+    // this sectence will execute all the time ~, it's interestring :)
 });
 

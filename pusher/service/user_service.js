@@ -13,16 +13,8 @@ function UserService(){
     var data_handler = require('../dao/data_handler.js'),
         db_handler = new data_handler();
 
-    var SocketHandler = require('../dao/socket_handler.js'),
-        socket_handler = new SocketHandler();
-
     var HttpService = require('./http_servie.js'),
         http_handler = new HttpService();
-
-
-    this.get_socket_by_name = function(username){
-        var socket = socket_handler.get_socket_by_name(username);
-    };
 
     this.check_user_login = function(username){
         db_handler.get_user_status(username, function(status){
@@ -30,9 +22,9 @@ function UserService(){
         });
     };
 
-    this.login_one_user = function(username, socket_id, socket){
-        socket_handler.add_a_socket(username, socket);
+    this.login_one_user = function(username, socket_id, socket, callback){
         db_handler.user_login(username, socket_id);
+        callback();
     };
 
     this.user_is_registerred = function(username){
@@ -55,13 +47,13 @@ function UserService(){
          * and delete this user's socket information from sockets dao.
          */
         db_handler.set_user_off_line(username);
-        socket_handler.delete_a_socket(username);
     };
 
     this.disconnect = function(socket){
         /*
          * change user's status to 'break'
          */
+        console.info('Client gone (id=' + socket.id + ').');
         var socket_id = socket.id;
         db_handler.set_user_break_line(socket_id);
         // and delete user form socket.
