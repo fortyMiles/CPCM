@@ -28,8 +28,10 @@ function MessageService(){
         db_handler.insert(sender, receiver, message);
     };
 
-    var parse_message = function(results){
-        message = {};
+    this.parse_message = function(results){
+        console.log(results);
+        var messages = [];
+        var message = {};
         if(results.length === 0){
             console.log('no message');
         }
@@ -42,19 +44,35 @@ function MessageService(){
                 message.date = results[i].create_date;
                 message.id = results[i].id;
                 console.log(message);
+                messages.push(message);
         }
+
+        console.log('point 1');
+        console.log(messages);
+        return messages;
     };
 
-    this.get_unread_message = function(person_name){
-        /*
-         * retrive from message data, get a unread message.
-         * 
+    this.get_user_unread_message = function(person_name, callback){
+
+        /* 
+         * Get a user's unread message.
+         *
          * parameter:
          *  - name: person_name
          *    descirption: if person_name is null, get all the message by time sort, if not null, get this one's messages.
          */
-        db_handler.get_earliest(parse_message, person_name);
+        db_handler.get_earliest(callback, person_name);
     };
+
+
+    this.get_all_unread_message = function(callback){
+        /*
+         * retrive from message data, get a unread message.
+         * 
+         */
+        db_handler.get_earliest(callback, null);
+    };
+
 
     this.set_a_unread_message_to_read = function(record_id){
         db_handler.set_message_to_read(recod_id);

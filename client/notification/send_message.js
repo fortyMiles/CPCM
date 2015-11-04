@@ -12,7 +12,8 @@ $('form').submit(function(){
 });
 
 socket.on(CHAT, function(msg){
-	$('#messages').append($('<li>').text(msg));
+        var message = JSON.stringify(msg);
+	$('#messages').append($('<li>').text(message));
 });
 socket.on('add user', function(msg){
 	$('#users').append($('<li>').text('exised user : ' + msg));

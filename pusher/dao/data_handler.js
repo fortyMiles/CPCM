@@ -143,6 +143,8 @@ function Mysql(){
                 throw err;
             }
             else{
+                console.log('results...');
+                console.log(results);
                 callback(results);
             }
         });
@@ -228,6 +230,7 @@ function Mysql(){
     this.set_user_break_line = function(socket_id){
         var post = {
             status: s.BREAK_LINE,
+            leave_time: new Date()
         };
 
         var restriction = {
