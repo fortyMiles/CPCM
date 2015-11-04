@@ -63,7 +63,7 @@ function MessageService(){
 }
 
 
-function test(){
+function main(){
     var message_service = new MessageService();
 
     var data = {
@@ -83,4 +83,6 @@ function test(){
     message_service.get_unread_message(name);
 }
 
-test();
+if(require.main == module){
+    main();
+}

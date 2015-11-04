@@ -13,26 +13,26 @@ function UserService(){
     var data_handler = require('../dao/data_handler.js'),
         db_handler = new data_handler();
 
+    var SocketHandler = require('../dao/socket_handler.js'),
+        socket_handler = new SocketHandler();
+
     var HttpService = require('./http_servie.js'),
         http_handler = new HttpService();
 
 
     this.get_socket_by_name = function(username){
-        db_handler.get_user_socket(username, function(socket){
-            console.log(socket);
-        });
+        var socket = socket_handler.get_socket_by_name(username);
     };
 
     this.check_user_login = function(username){
         db_handler.get_user_status(username, function(status){
             console.log(status);
         });
-        
     };
 
     this.login_one_user = function(username, socket_id, socket){
-        socket = JSON.stringify(socket);
-        db_handler.user_login(username, socket_id, socket);
+        socket_handler.add_a_socket(username, socket);
+        db_handler.user_login(username, socket_id);
     };
 
     this.user_is_registerred = function(username){
@@ -48,16 +48,14 @@ function UserService(){
         // send to one a invitation text.
     };
 
-    this.get_one_user_unread_message = function(user_name, callback){
-        // get one person's all unread messages;
-    };
-
 
     this.logout = function(username){
         /*
          * changes one user's status to 'off'
+         * and delete this user's socket information from sockets dao.
          */
         db_handler.set_user_off_line(username);
+        socket_handler.delete_a_socket(username);
     };
 
     this.disconnect = function(socket){
@@ -66,11 +64,12 @@ function UserService(){
          */
         var socket_id = socket.id;
         db_handler.set_user_break_line(socket_id);
+        // and delete user form socket.
     };
 }
 
 
-function test(){
+function main(){
     var user_service = new UserService();
 
     var socket = {name: 'socket', id:'12313uoi53hafdc', message: 'lwdhlakhdkashdklahsd'};
@@ -82,4 +81,7 @@ function test(){
    user_service.disconnect(socket);
 }
 
-test();
+
+if (require.main == module){
+    main();
+}

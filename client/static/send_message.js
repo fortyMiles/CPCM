@@ -5,7 +5,8 @@ $('form').submit(function(){
 	var message = $('#message').val();
 
 	console.log('message == ' + message);
-	socket.emit(CHAT, message);
+        var json_data = JSON.parse(message);
+	socket.emit(CHAT, json_data);
 	$('#message').val('');
 	return false;
 });
