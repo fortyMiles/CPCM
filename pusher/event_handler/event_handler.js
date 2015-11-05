@@ -1,4 +1,0 @@
-/*
- * To manipulate different evetns.
- *
- */
