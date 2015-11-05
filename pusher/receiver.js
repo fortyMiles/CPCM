@@ -46,13 +46,21 @@ io_server.on(e.CONNECTION, function(socket) {
 
     });
 
-    socket.on(e.FEED, function(msg){});
+    socket.on(e.FEED, function(msg){
+    });
 
-    socket.on(e.DISCONNECT, function(){
+    socket.on(e.NEW_MESSAGE, function(msg){
+        socket_service.emit_message(c. CHAT_MESSAGE, msg, function(id){
+            message_service.set_an_unread_message_to_read(id);
+        });
+        console.log('have new message');
+    });
+
+    socket.on(e.DISCONNECT, function(socket){
         user_service.disconnect(socket);
     });
 
-    socket_service.send_unread_messages();
+    //socket_service.send_unread_messages();
     //console.log('i get unread messages');
     // this sectence will execute all the time ~, it's interestring :)
 });

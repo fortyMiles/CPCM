@@ -108,7 +108,7 @@ function Mysql(){
 
 
 
-    this.get_earliest = function(callback){
+    this.get_earliest = function(number, callback){
         /*
          * get the earliset record from db.
          * 
@@ -118,7 +118,7 @@ function Mysql(){
          *  type: function
          *  description: callback function o result;
          */
-        var query = connection.query(mapper.get_earliest, function(err, results){
+        var query = connection.query(mapper.get_earliest, number, function(err, results){
             console.log(query.sql);
             if(err){
                 throw err;
@@ -139,6 +139,7 @@ function Mysql(){
 
         var post = {
             status: s.READ,
+            read_date: new Date()
         };
 
         var restriction = {
@@ -240,8 +241,11 @@ function main(){
     //mysql.user_login(username, socket_id);
     
     //mysql.set_user_off_line(username);
-    var test_socket_id = 'socket';
-    mysql.set_user_break_line(test_socket_id);
+    //var test_socket_id = 'socket';
+    //mysql.set_user_break_line(test_socket_id);
+    mysql.get_earliest(10, function(results){
+        console.log(results);
+    });
 }
 
 

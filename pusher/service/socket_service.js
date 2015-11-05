@@ -21,7 +21,7 @@ function SocketService(){
     var Events = new require('../configration/events.js'),
         e = new Events();
 
-    var emit_message = function(event, message, callback){
+    this.emit_message = function(event, message, callback){
         /*
          * emits one message by a given socket.
          * 
@@ -64,18 +64,4 @@ function SocketService(){
         socket.emit(e. CHAT_MESSAGE, {hello:username});
     };
 
-    this.send_unread_messages = function(){
-        /*
-         * checks all the message, given with message's receiver is login and send it out.
-         *
-         */
-        message_service.get_unread_messages(function(results){
-            var messages = message_service.parse_message(results);
-            console.log(messages);
-            for(var i = 0; i < messages.length; i++){
-                debugger;
-                emit_message(e.CHAT_MESSAGE, messages[i], message_service.set_a_unread_message_to_read);
-            }
-        });
-    };
 }

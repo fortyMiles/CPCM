@@ -41,6 +41,8 @@ function Events(){
 	this.SENT_TO_SERVER = 'send to server';
         this.ACCEPT_INVITATION = 'accept';
 
+        this.NEW_MESSAGE = 'new message';
+
 	this.test = function(){
 		console.log('test');
 	};

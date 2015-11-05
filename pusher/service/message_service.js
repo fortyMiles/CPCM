@@ -52,16 +52,16 @@ function MessageService(){
     };
 
 
-    this.get_unread_messages = function(callback){
+    this.get_unread_messages = function(number, callback){
         /*
          * retrive from message data, get a unread message.
          * 
          */
-        db_handler.get_earliest(callback);
+        db_handler.get_earliest(number, callback);
     };
 
 
-    this.set_a_unread_message_to_read = function(record_id){
+    this.set_an_unread_message_to_read = function(record_id){
         db_handler.set_message_to_read(record_id);
     };
 

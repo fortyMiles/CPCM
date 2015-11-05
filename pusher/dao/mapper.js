@@ -16,7 +16,7 @@ function Mapper(){
 
     //this.get_eariliest = "select * from message.message where status = 'U' ORDER BY create_date LIMIT 1";
 
-    this.get_earliest = "select message.id, message.sender, message.receiver, message.message, message.create_date from message JOIN login_users on message.receiver = login_users.name and message.status = '" + s.UNREAD +"' and login_users.status = '" + s.LOGIN + "' LIMIT 2";
+    this.get_earliest = "select message.id, message.sender, message.receiver, message.message, message.create_date from message JOIN login_users on message.receiver = login_users.name and message.status = '" + s.UNREAD +"' and login_users.status = '" + s.LOGIN + "' LIMIT ?";
 
     this.set_to_read = "update message set ? where ?";
 
