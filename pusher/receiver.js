@@ -49,12 +49,20 @@ io_server.on(e.CONNECTION, function(socket) {
     socket.on(e.FEED, function(msg){
     });
 
+    /** check new message **/
+    socket.on('checker ready', function(){
+        socket.emit('check');
+    });
+
     socket.on(e.NEW_MESSAGE, function(msg){
-        socket_service.emit_message(c. CHAT_MESSAGE, msg, function(id){
-            message_service.set_an_unread_message_to_read(id);
+        socket_service.emit_message(e. CHAT_MESSAGE, msg, function(id){
+            message_service.set_an_unread_message_to_read(id, function(){
+                socket.emit('check');
+            });
         });
         console.log('have new message');
     });
+    /** check new message end **/
 
     socket.on(e.DISCONNECT, function(socket){
         user_service.disconnect(socket);
