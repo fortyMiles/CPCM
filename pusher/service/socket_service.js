@@ -20,7 +20,7 @@ function SocketService(){
 
     var Events = new require('../configration/events.js'),
         e = new Events();
-
+        
     this.emit_message = function(event, message, callback){
         /*
          * emits one message by a given socket.

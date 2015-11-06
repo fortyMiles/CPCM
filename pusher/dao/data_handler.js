@@ -132,7 +132,7 @@ function Mysql(){
     };
 
 
-    this.set_message_to_read = function(record_id){
+    this.set_message_to_read = function(record_id, callback){
         /*
          *  sets the status to 'read' record which id equals id.
          */
@@ -148,6 +148,7 @@ function Mysql(){
 
         connection.query(mapper.set_to_read, [post, restriction], function(err, results){
         if(err) throw err;
+        callback();
         });
     };
 

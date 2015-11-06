@@ -27,6 +27,9 @@ var SocketService = require('./service/socket_service.js'),
 var Cleanup = require('./cleanup.js'),
     clean_up = new Cleanup(user_service.break_donw);
 
+
+var unread_set = new Set();
+
 io_server.on(e.CONNECTION, function(socket) {
     console.info('New client connecte (id=' + socket.id + ').');
 
@@ -61,6 +64,9 @@ io_server.on(e.CONNECTION, function(socket) {
     });
 
     socket.on(e.NEW_MESSAGE, function(msg){
+        add_message_to_queue(msg, function(){
+        });
+        unread_set.add(msg);
         socket_service.emit_message(e. CHAT_MESSAGE, msg, function(id){
             message_service.set_an_unread_message_to_read(id, function(){
                 socket.emit('check');
@@ -80,3 +86,7 @@ io_server.on(e.CONNECTION, function(socket) {
 });
 
 
+function add_message_to_queue(msg, callback){
+    unread_set.add(msg);
+    callback();
+}

@@ -63,8 +63,7 @@ function MessageService(){
 
     this.set_an_unread_message_to_read = function(record_id, callback){
         console.log('set ' + record_id + 'to read');
-        db_handler.set_message_to_read(record_id);
-        callback();
+        db_handler.set_message_to_read(record_id, callback);
     };
 
 }
