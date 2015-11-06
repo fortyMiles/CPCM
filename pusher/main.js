@@ -25,7 +25,7 @@ var SocketService = require('./service/socket_service.js'),
     socket_service = new SocketService();
 
 io_server.on(e.CONNECTION, function(socket) {
-    console.info('New client connected (id=' + socket.id + ').');
+    console.info('New client connecte (id=' + socket.id + ').');
 
     socket.on(e.CHAT_MESSAGE, function(msg){
         var type = msg.type.trim();
@@ -64,7 +64,7 @@ io_server.on(e.CONNECTION, function(socket) {
     });
     /** check new message end **/
 
-    socket.on(e.DISCONNECT, function(socket){
+    socket.on(e.DISCONNECT, function(){
         user_service.disconnect(socket);
     });
 

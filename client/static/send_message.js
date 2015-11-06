@@ -1,6 +1,6 @@
 var CHAT = 'chat message';
 console.log('import send_message.js success');
-var socket = io('http://localhost:3000');
+var socket = io('http://localhost:2333');
 $('form').submit(function(){
 	var message = $('#message').val();
 
