@@ -11,7 +11,7 @@ module.exports = Checker;
 
 function Checker(){
     
-    var host = 'http://localhost:3000';
+    var host = 'http://localhost:2333';
     var socket = require('socket.io-client')(host);
     var Events = require('../configration/events.js'),
         e = new Events();

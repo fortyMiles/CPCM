@@ -10,7 +10,7 @@
 
 
 var io = require('socket.io'),
-    io_server = io.listen(3000);
+    io_server = io.listen(2333);
 
 var events = new require('./configration/events.js'),
     e = new events();
@@ -27,12 +27,15 @@ var SocketService = require('./service/socket_service.js'),
 io_server.on(e.CONNECTION, function(socket) {
     console.info('New client connecte (id=' + socket.id + ').');
 
+    
     socket.on(e.CHAT_MESSAGE, function(msg){
         var type = msg.type.trim();
+        debugger;
         console.log(type);
 
         if(type == e. LOGIN){
             var username = msg.data.from.trim();
+
             user_service.login_one_user(username, socket.id, socket, function(){
                 socket_service.registe_socket(username, socket, function(){
                     socket_service.send_syn(socket, username);
