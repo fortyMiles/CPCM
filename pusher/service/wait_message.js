@@ -12,11 +12,34 @@ function WaitMessages(){
     var Set = require('collection').Set,
         messages = new Set();
 
+    var close = false;
+
+    var set_close = function(){
+        close = true;
+    };
+
+    var could_write = function(){
+        return !close;
+    };
+
+    this.close_list = function(callback){
+        set_close();
+        callback();
+    };
+
+    this.open = function(){
+        close = false;
+    };
+
     this.add = function(msg){
-        messages.add(msg);
+        if(could_write()){
+            messages.add(msg);
+        }
     };
 
     this.get = function(){
+        
+        set_close();
         if(messages.isEmpty()){
             console.log('empty');
             return null;
