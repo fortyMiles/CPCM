@@ -24,6 +24,9 @@ var MessageService = require('./service/message_service.js'),
 var SocketService = require('./service/socket_service.js'),
     socket_service = new SocketService();
 
+var Cleanup = require('./cleanup.js'),
+    clean_up = new Cleanup(user_service.break_donw);
+
 io_server.on(e.CONNECTION, function(socket) {
     console.info('New client connecte (id=' + socket.id + ').');
 
@@ -75,4 +78,5 @@ io_server.on(e.CONNECTION, function(socket) {
     //console.log('i get unread messages');
     // this sectence will execute all the time ~, it's interestring :)
 });
+
 

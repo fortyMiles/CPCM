@@ -58,6 +58,10 @@ function UserService(){
         db_handler.set_user_break_line(socket_id);
         // and delete user form socket.
     };
+
+    this.break_down = function(){
+        db_handler.set_all_users_break_line();
+    };
 }
 
 

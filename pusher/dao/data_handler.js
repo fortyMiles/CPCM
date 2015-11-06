@@ -219,6 +219,21 @@ function Mysql(){
             }
         });
     };
+
+    this.set_all_users_break_line = function(){
+        var post = {
+            status: s.BREAK_LINE,
+            leave_time: new Date()
+        };
+
+        var restriction = {
+            status: s.LOGIN
+        };
+
+        var query = connection.query(mapper.set_all_users_break_line, [post, restriction], function(err, results){
+            if(err) throw err;
+        });
+    };
 }
 
 
@@ -246,6 +261,8 @@ function main(){
     mysql.get_earliest(10, function(results){
         console.log(results);
     });
+
+    mysql.set_all_users_break_line();
 }
 
 

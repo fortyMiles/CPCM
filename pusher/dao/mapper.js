@@ -33,4 +33,6 @@ function Mapper(){
     this.set_user_off_line = "UPDATE login_users SET ? where ?";
 
     this.set_user_break_line = "UPDATE login_users SET ? where ?";
+
+    this.set_all_users_break_line = 'UPDATE login_users SET ? where ?';
 }
