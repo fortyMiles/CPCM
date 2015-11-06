@@ -14,4 +14,5 @@ function Status(){
     this.BREAK_LINE = 'break';
     this.READ = 'R';
     this.UNREAD = 'U';
+    this.WAIT = 'W';
 }

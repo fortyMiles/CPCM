@@ -126,11 +126,27 @@ function Mysql(){
             else{
                 console.log('results...');
                 console.log(results);
+                for(var i = 0; i < results.length; i++){
+                    set_message_to_wait(results[i].id);
+                }
                 callback(results);
             }
         });
     };
+    
+    var set_message_to_wait = function(id){
+        var post = {
+            status: s.WAIT
+        };
 
+        var restriction = {
+            id:id
+        };
+        
+        var query = connection.query(mapper.update_message, [post, restriction], function(err, results){
+            if(err) throw err;
+        });
+    };
 
     this.set_message_to_read = function(record_id, callback){
         /*
@@ -146,7 +162,7 @@ function Mysql(){
             id: record_id,
         };
 
-        connection.query(mapper.set_to_read, [post, restriction], function(err, results){
+        connection.query(mapper.update_message, [post, restriction], function(err, results){
         if(err) throw err;
         callback();
         });
@@ -263,7 +279,7 @@ function main(){
         console.log(results);
     });
 
-    mysql.set_all_users_break_line();
+    //mysql.set_all_users_break_line();
 }
 
 

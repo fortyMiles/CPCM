@@ -25,10 +25,11 @@ var SocketService = require('./service/socket_service.js'),
     socket_service = new SocketService();
 
 var Cleanup = require('./cleanup.js'),
-    clean_up = new Cleanup(user_service.break_donw);
+    clean_up = new Cleanup(user_service.break_down);
 
 
-var unread_set = new Set();
+var WaitMessage = require('./service/wait_message.js'),
+    wait_message = new WaitMessage();
 
 io_server.on(e.CONNECTION, function(socket) {
     console.info('New client connecte (id=' + socket.id + ').');
@@ -64,14 +65,12 @@ io_server.on(e.CONNECTION, function(socket) {
     });
 
     socket.on(e.NEW_MESSAGE, function(msg){
-        add_message_to_queue(msg, function(){
-        });
-        unread_set.add(msg);
-        socket_service.emit_message(e. CHAT_MESSAGE, msg, function(id){
+        socket_service.send_a_message(msg, e. CHAT_MESSAGE, function(id){
             message_service.set_an_unread_message_to_read(id, function(){
                 socket.emit('check');
             });
         });
+
         console.log('have new message');
     });
     /** check new message end **/

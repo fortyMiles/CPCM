@@ -18,7 +18,7 @@ function Mapper(){
 
     this.get_earliest = "select message.id, message.sender, message.receiver, message.message, message.create_date from message JOIN login_users on message.receiver = login_users.name and message.status = '" + s.UNREAD +"' and login_users.status = '" + s.LOGIN + "' LIMIT ?";
 
-    this.set_to_read = "update message set ? where ?";
+    this.update_message = "update message set ? where ?";
 
     this.add_a_login_user = "INSERT INTO login_users SET ?";
 
