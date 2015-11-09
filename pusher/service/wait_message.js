@@ -9,56 +9,49 @@
 module.exports = WaitMessages;
 
 function WaitMessages(){
-    var Set = require('collection').Set,
-        messages = new Set();
+    var wait_messages = [];
 
-    var close = false;
+    var could_write = true;
 
-    var set_close = function(){
-        close = true;
-    };
-
-    var could_write = function(){
-        return !close;
-    };
-
-    this.close_list = function(callback){
-        set_close();
-        callback();
-    };
+    var close = function(callback){
+		could_write = false;
+		callback();
+	};
 
     this.open = function(){
-        close = false;
+        could_write = true;
     };
 
     this.add = function(msg){
-        if(could_write()){
-            messages.add(msg);
-        }
+		if(could_write){
+			wait_messages.push(push);
+		}else{
+			console.log('sorry the getting is working..');
+		}
     };
 
-    this.get = function(){
-        
-        set_close();
-        if(messages.isEmpty()){
-            console.log('empty');
-            return null;
-        }else{
-            var msg = messages.get(0);
-            messages.removeAt(0);
-            return msg;
-        }
-    };
+	this.get = function(callback){
+		close(function(){
+			if(wait_messages.length == 0){
+				console.log('empty..');
+				msg = null;
+				callbakc(msg); 
+			}else{
+				msg = wait_messages.pop();
+				callback(msg);
+			}
+		});
+	};
 
-    var empty = function(){
-        return Object.keys(wait_messages).length === 0;
-    };
+	var empty = function(){
+		return Object.keys(wait_messages).length === 0;
+	};
 }
 
 if(require.main == module){
-    var wait_message = new WaitMessages();
-    wait_message.add('msg1');
-    wait_message.add('msg2');
-    console.log(wait_message.get());
-    console.log(wait_message.get());
+	var wait_message = new WaitMessages();
+	wait_message.add('msg1');
+	wait_message.add('msg2');
+	console.log(wait_message.get());
+	console.log(wait_message.get());
 }
