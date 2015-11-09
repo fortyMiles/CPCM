@@ -37,7 +37,6 @@ io_server.on(e.CONNECTION, function(socket) {
     
     socket.on(e.CHAT_MESSAGE, function(msg){
         var type = msg.type.trim();
-        debugger;
         console.log(type);
 
         if(type == e. LOGIN){
@@ -65,6 +64,11 @@ io_server.on(e.CONNECTION, function(socket) {
     });
 
     socket.on(e.NEW_MESSAGE, function(msg){
+        debugger;
+        wait_message.add(msg);
+        check_wait_message();
+        /*
+
         socket_service.send_a_message(msg, e. CHAT_MESSAGE, function(id){
             message_service.set_an_unread_message_to_read(id, function(){
                 socket.emit('check');
@@ -72,8 +76,11 @@ io_server.on(e.CONNECTION, function(socket) {
         });
 
         console.log('have new message');
+       */
     });
+
     /** check new message end **/
+
 
     socket.on(e.DISCONNECT, function(){
         user_service.disconnect(socket);
@@ -85,7 +92,17 @@ io_server.on(e.CONNECTION, function(socket) {
 });
 
 
-function add_message_to_queue(msg, callback){
-    unread_set.add(msg);
-    callback();
+function check_wait_message(){
+    debugger;
+    var msg = wait_message.get();
+    if(msg){
+        wait_message.close_list(function(){
+            socket_service.send_a_message(msg, e. CHAT_MESSAGE, function(id){
+                message_service.set_an_unread_message_to_read(id, function(){
+                    wait_message.open();
+                });
+            });
+        });
+    }
 }
+
