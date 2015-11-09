@@ -1,0 +1,7 @@
+{
+  "name": "pusher",
+  "dependencies": {
+    "mysql": "^2.9.0",
+    "socket.io": "^1.3.7"
+  }
+}
