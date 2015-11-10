@@ -21,9 +21,9 @@
 
 module.exports = SocketHandler;
 
-function SocketHandler(){
+var sockets = {};
 
-    var sockets = {};
+function SocketHandler(){
 
     this.get_socket_by_name = function(username){
         console.log(username);
@@ -36,6 +36,7 @@ function SocketHandler(){
     };
 
     this.add_a_socket = function(username, socket){
+		debugger;
         sockets[username] = {};
         sockets[username].socket = socket;
         console.log(username);
@@ -51,7 +52,6 @@ function main(){
     var socket_handler = new SocketHandler();
     var name = '18857453090';
     socket_handler.add_a_socket(name, 'socket');
-    socket_handler.delete_a_socket(name);
     console.log(socket_handler.get_socket_by_name(name));
 }
 

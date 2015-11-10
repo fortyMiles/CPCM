@@ -42,9 +42,12 @@ function MessageService(){
 		delete msg.event;
 		var socket = null;
 		Q.fcall(function(){
+			debugger;
 			socket = socket_service.get_socket_by_name(receiver);
+			console.log(socket);
 		})
 		.then(function(){
+            debugger;
 			socket.emit(event, msg);
 		})
 		.then(function(){
