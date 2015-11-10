@@ -7,7 +7,7 @@ io_server.on('connection', function(socket){
     console.info('New client connecte (id=' + socket.id + ').');
 
 	socket.on('login', function(msg){
-		if(clients[msg.data.from]){
+		if(!clients[msg.data.from]){
 			clients[msg.data.from] = socket;
 		}
 		see_dic(clients);
@@ -24,7 +24,7 @@ io_server.on('connection', function(socket){
 	});
 });
 
-function see_dic(dic){
+function see_dic(dict){
 	for(var e in dict){
 		console.log(e);
 	}
