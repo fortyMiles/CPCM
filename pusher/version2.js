@@ -1,6 +1,9 @@
 var io = require('socket.io'),
     io_server = io.listen(2333);
 
+var MessageService = require('./service/message_service.js'),
+	message_service = new MessageService();
+
 var clients = {};
 
 io_server.on('connection', function(socket){
@@ -19,6 +22,8 @@ io_server.on('connection', function(socket){
 		}else{
 			if((msg.data.to in clients) && (clients[msg.data.to].connected)){
 				clients[msg.data.to].emit('chat message', msg);
+			}else{
+				message_service.save_a_new_message(msg);
 			}
 		}
 	});

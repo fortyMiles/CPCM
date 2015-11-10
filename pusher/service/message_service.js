@@ -16,7 +16,7 @@ function MessageService(){
 
 	var Q = require('q');
 
-    this.save_a_new_message = function(msg, event){
+    this.save_a_new_message = function(msg){
         /*
          * save this data to message database;
          * 
@@ -30,6 +30,7 @@ function MessageService(){
         var message = JSON.stringify(msg.data);
         var sender = msg.data.from.trim();
         var receiver = msg.data.to.trim();
+		var event = msg.event;
 
         db_handler.insert(sender, receiver, message, event);
     };
