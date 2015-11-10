@@ -10,7 +10,6 @@ io_server.on('connection', function(socket){
 		if(!clients[msg.data.from]){
 			clients[msg.data.from] = socket;
 		}
-		see_dic(clients);
 		io_server.emit('chat message', msg.data.from + ' on line now');
 	});
 
@@ -18,8 +17,9 @@ io_server.on('connection', function(socket){
 		if(msg.data.to == 'all'){
 			io_server.emit('chat message', msg);
 		}else{
-			see_dic(clients);
-			clients[msg.data.to].emit('chat message', msg);
+			if((msg.data.to in clients) && (clients[msg.data.to].connected)){
+				clients[msg.data.to].emit('chat message', msg);
+			}
 		}
 	});
 });
