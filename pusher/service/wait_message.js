@@ -68,7 +68,7 @@ function WaitMessages(){
 		/*
 		 * test if the message if empty.
 		 */
-		return wait_message.length == 0;
+		return wait_messages.length == 0;
 	};
 }
 
