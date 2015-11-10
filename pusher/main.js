@@ -50,7 +50,7 @@ io_server.on(e.CONNECTION, function(socket) {
         }
 
         if(type == e.CHAT){
-            message_service.save_a_new_message(msg);
+            message_service.save_a_new_message(msg, e. CHAT_MESSAGE);
         }
 
     });
@@ -66,17 +66,8 @@ io_server.on(e.CONNECTION, function(socket) {
     socket.on(e.NEW_MESSAGE, function(msg){
         debugger;
         wait_message.add(msg);
-        check_wait_message();
-        /*
-
-        socket_service.send_a_message(msg, e. CHAT_MESSAGE, function(id){
-            message_service.set_an_unread_message_to_read(id, function(){
-                socket.emit('check');
-            });
-        });
-
+        wait_message.get_new(message_service.send_an_unread_message);
         console.log('have new message');
-       */
     });
 
     /** check new message end **/
@@ -92,17 +83,4 @@ io_server.on(e.CONNECTION, function(socket) {
 });
 
 
-function check_wait_message(){
-    debugger;
-    var msg = wait_message.get();
-    if(msg){
-        wait_message.close_list(function(){
-            socket_service.send_a_message(msg, e. CHAT_MESSAGE, function(id){
-                message_service.set_an_unread_message_to_read(id, function(){
-                    wait_message.open();
-                });
-            });
-        });
-    }
-}
 

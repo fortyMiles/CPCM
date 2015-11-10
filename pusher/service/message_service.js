@@ -8,10 +8,15 @@
 
 module.exports = MessageService;
 function MessageService(){
-    var data_handler = require('../dao/data_handler.js'),
-        db_handler = new data_handler();
+    var DataHandler = require('../dao/data_handler.js'),
+        db_handler = new DataHandler();
 
-    this.save_a_new_message = function(msg){
+	var SocketService = require('./socket_service.js'),
+		socket_service = new SocketService();
+
+	var Q = require('q');
+
+    this.save_a_new_message = function(msg, event){
         /*
          * save this data to message database;
          * 
@@ -25,8 +30,27 @@ function MessageService(){
         var message = JSON.stringify(msg.data);
         var sender = msg.data.from.trim();
         var receiver = msg.data.to.trim();
-        db_handler.insert(sender, receiver, message);
+
+        db_handler.insert(sender, receiver, message, event);
     };
+
+	this.send_an_unread_message = function(msg){
+		var message_id = msg.id;
+		var event = msg.event;
+		var receiver = msg.to;
+		delete msg.id;
+		delete msg.event;
+		var socket = null;
+		Q.fcall(function(){
+			socket = socket_service.get_socket_by_name(receiver);
+		})
+		.then(function(){
+			socket.emit(event, msg);
+		})
+		.then(function(){
+			set_an_unread_message_to_read(message_id);
+		}).done();
+	};
 
     this.parse_message = function(results){
         console.log(results);
@@ -43,6 +67,7 @@ function MessageService(){
                 message.to = results[i].receiver;
                 message.date = results[i].create_date;
                 message.id = results[i].id;
+				message.event = results[i].event;
                 console.log(message);
                 messages.push(message);
         }
@@ -61,9 +86,9 @@ function MessageService(){
     };
 
 
-    this.set_an_unread_message_to_read = function(record_id, callback){
+    var set_an_unread_message_to_read = function(record_id){
         console.log('set ' + record_id + 'to read');
-        db_handler.set_message_to_read(record_id, callback);
+        db_handler.set_message_to_read(record_id);
     };
 
 }
@@ -83,10 +108,10 @@ function main(){
         data: data,
     };
 
-    //message_service.save_a_new_message(message);
+    message_service.save_a_new_message(message, 'chat');
 
     var name = '18857453090';
-    message_service.get_unread_message(name);
+    //message_service.get_unread_message(name);
 }
 
 if(require.main == module){

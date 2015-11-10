@@ -1,0 +1,17 @@
+{
+  "name": "chat-server",
+  "version": "0.0.1",
+  "descirption": "test of sending or reveiving messages from server",
+  "dependencies": {
+    "cookies": "^0.5.1",
+    "express": "^4.10.2",
+    "mysql": "^2.9.0",
+    "promise": "^7.0.4",
+    "q": "^1.4.1",
+    "socket.io": "^1.3.7",
+    "socket.io-client": "^1.3.7"
+  },
+  "devDependencies": {
+    "jshint": "^2.8.0"
+  }
+}

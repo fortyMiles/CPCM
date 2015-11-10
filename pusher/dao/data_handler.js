@@ -86,7 +86,7 @@ function Mysql(){
     };
 
 
-    this.insert = function(sender, receiver, message){
+    this.insert = function(sender, receiver, message, event){
         /*
          * insert data into db, and set 
          * record status to 'Unread';
@@ -96,6 +96,7 @@ function Mysql(){
             status : s.UNREAD,
             sender : sender,
             receiver : receiver,
+			event: event,
             create_date: new Date()
         };
 
@@ -148,7 +149,7 @@ function Mysql(){
         });
     };
 
-    this.set_message_to_read = function(record_id, callback){
+    this.set_message_to_read = function(record_id){
         /*
          *  sets the status to 'read' record which id equals id.
          */
@@ -164,7 +165,6 @@ function Mysql(){
 
         connection.query(mapper.update_message, [post, restriction], function(err, results){
         if(err) throw err;
-        callback();
         });
     };
 
@@ -260,7 +260,7 @@ function print(message){
 
 
 function main(){
-    var mysql = new Mysql();
+    var mySql = new Mysql();
     var message = {message: "message",
         from: 'new_from',
         to: 'to',
@@ -269,17 +269,17 @@ function main(){
     var username = '18857453090',
         socket_id = 'socket123923klsfkl';
 
-    //mysql.get_ealiest(print);
-    //mysql.user_login(username, socket_id);
+    //mySql.get_ealiest(print);
+    //mySql.user_login(username, socket_id);
     
-    //mysql.set_user_off_line(username);
+    //mySql.set_user_off_line(username);
     //var test_socket_id = 'socket';
-    //mysql.set_user_break_line(test_socket_id);
-    mysql.get_earliest(10, function(results){
+    //mySql.set_user_break_line(test_socket_id);
+    mySql.get_earliest(10, function(results){
         console.log(results);
     });
 
-    //mysql.set_all_users_break_line();
+    //mySql.set_all_users_break_line();
 }
 
 
