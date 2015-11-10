@@ -11,7 +11,8 @@ try{
         }catch(e){
             console.error(e);
         }
-        socket.emit(CHAT,json_data);
+
+        socket.emit(json_data.event, json_data);
         $('#m').val('');
         return false;
     });
