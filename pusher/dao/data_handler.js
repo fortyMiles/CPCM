@@ -86,7 +86,7 @@ function Mysql(){
     };
 
 
-    this.insert = function(sender, receiver, message, event, create_time){
+    this.insert = function(sender, receiver, message, event, unique_code){
         /*
          * insert data into db, and set 
          * record status to 'Unread';
@@ -97,7 +97,8 @@ function Mysql(){
             sender : sender,
             receiver : receiver,
 			event: event,
-            create_date: create_time
+            create_date: new Date(),
+			unique_code: unique_code
         };
 
         var query = connection.query(mapper.insert, post, function(err, result){
@@ -149,140 +150,158 @@ function Mysql(){
         });
     };
 
-    this.set_message_to_read = function(record_id){
-        /*
-         *  sets the status to 'read' record which id equals id.
-         */
+	/*
+	 * Changes the js Date() to mysql timedata type;
+	 *
+	 * @param {Date} need to convert
+	 * @return {string} mysql formatted time data
+	 */
+	var convert_date = function(date){
+		var result = date().toISOString().slice(0, 19).replace('T', ' ');
 
-        var post = {
-            status: s.READ,
-            read_date: new Date()
-        };
+	};
+	this.set_message_to_read = function(unique_code){
+		/*
+		 *  sets the status to 'read' record which id equals id.
+		 */
 
-        var restriction = {
-            id: record_id,
-        };
+		var post = {
+			status: s.READ,
+			read_date: new Date()
+		};
 
-        connection.query(mapper.update_message, [post, restriction], function(err, results){
-        if(err) throw err;
-        });
-    };
+		var restriction = {
+			unique_code: unique_code
+	};
 
-    this.get_user_socket = function(username, callback){
-        var restriction = {
-            name: username,
-        };
+		var query = connection.query(mapper.update_message, [post, restriction], function(err, results){
+			if(err){
+				console.log(query.sql);
+				throw err;
+			}else{
+				console.log(query.sql);
+			}
+		});
+	};
 
-        var query = connection.query(mapper.get_user_socket, restriction, function(err, results){
-            if(err) throw err;
-            if(results){
-                var socket = results[0];
-                callback(socket);
-            }
-        });
-    };
+	this.get_user_socket = function(username, callback){
+		var restriction = {
+			name: username,
+		};
 
-    this.get_user_status = function(username, callback){
+		var query = connection.query(mapper.get_user_socket, restriction, function(err, results){
+			if(err) throw err;
+			if(results){
+				var socket = results[0];
+				callback(socket);
+			}
+		});
+	};
 
-        var restriction = {
-            name: username
-        };
+	this.get_user_status = function(username, callback){
 
-        var query = connection.query(mapper.get_user_status, restriction, function(err, results){
-            if(err) throw err;
-            if(results){
-                var status = results[0];
-                callback(status);
-            }
-        });
-    };
+		var restriction = {
+			name: username
+		};
+
+		var query = connection.query(mapper.get_user_status, restriction, function(err, results){
+			if(err) throw err;
+			if(results){
+				var status = results[0];
+				callback(status);
+			}
+		});
+	};
 
 
-    this.set_user_off_line = function(username){
-        var post = {
-            status: s.LOGOUT,
-            leave_time: new Date(),
-        };
+	this.set_user_off_line = function(username){
+		var post = {
+			status: s.LOGOUT,
+			leave_time: new Date(),
+		};
 
-        var restriction = {
-            name: username
-        };
+		var restriction = {
+			name: username
+		};
 
-        var query = connection.query(mapper.set_user_off_line, [post, restriction], function(err, results){
-            if(err){
-                console.log(query.sql);
-                throw err;
-            }else{
-                console.log('logout');
-            }
-        });
-    };
+		var query = connection.query(mapper.set_user_off_line, [post, restriction], function(err, results){
+			if(err){
+				console.log(query.sql);
+				throw err;
+			}else{
+				console.log('logout');
+			}
+		});
+	};
 
-    this.set_user_break_line = function(socket_id){
-        var post = {
-            status: s.BREAK_LINE,
-            leave_time: new Date()
-        };
+	this.set_user_break_line = function(socket_id){
+		var post = {
+			status: s.BREAK_LINE,
+			leave_time: new Date()
+		};
 
-        var restriction = {
-            socket_id: socket_id,
-        };
+		var restriction = {
+			socket_id: socket_id,
+		};
 
-        var query = connection.query(mapper.set_user_break_line, [post, restriction], function(err, results){
-            if(err){
-                throw err;
-            }else{
-    //            console.log(results);
-            }
-        });
-    };
+		var query = connection.query(mapper.set_user_break_line, [post, restriction], function(err, results){
+			if(err){
+				throw err;
+			}else{
+				//            console.log(results);
+			}
+		});
+	};
 
-    this.set_all_users_break_line = function(){
-        var post = {
-            status: s.BREAK_LINE,
-            leave_time: new Date()
-        };
+	this.set_all_users_break_line = function(){
+		var post = {
+			status: s.BREAK_LINE,
+			leave_time: new Date()
+		};
 
-        var restriction = {
-            status: s.LOGIN
-        };
+		var restriction = {
+			status: s.LOGIN
+		};
 
-        var query = connection.query(mapper.set_all_users_break_line, [post, restriction], function(err, results){
-            if(err) throw err;
-        });
-    };
+		var query = connection.query(mapper.set_all_users_break_line, [post, restriction], function(err, results){
+			if(err){
+				console.log(query.sql);
+				throw err;
+			}
+		});
+	};
 }
 
 
 function print(message){
-    console.log(message);
+	console.log(message);
 }
 
 
 function main(){
-    var mySql = new Mysql();
-    var message = {message: "message",
-        from: 'new_from',
-        to: 'to',
-    };
-    
-    var username = '18857453090',
-        socket_id = 'socket123923klsfkl';
+	var mySql = new Mysql();
+	var message = {message: "message",
+		from: 'new_from',
+		to: 'to',
+	};
 
-    //mySql.get_ealiest(print);
-    //mySql.user_login(username, socket_id);
-    
-    //mySql.set_user_off_line(username);
-    //var test_socket_id = 'socket';
-    //mySql.set_user_break_line(test_socket_id);
-    mySql.get_earliest(10, function(results){
-        console.log(results);
-    });
+	var username = '18857453090',
+		socket_id = 'socket123923klsfkl';
 
-    //mySql.set_all_users_break_line();
+		//mySql.get_ealiest(print);
+		//mySql.user_login(username, socket_id);
+
+		//mySql.set_user_off_line(username);
+		//var test_socket_id = 'socket';
+		//mySql.set_user_break_line(test_socket_id);
+		mySql.get_earliest(10, function(results){
+			console.log(results);
+		});
+
+		//mySql.set_all_users_break_line();
 }
 
 
 if( require.main == module){
-    main();
+	main();
 }

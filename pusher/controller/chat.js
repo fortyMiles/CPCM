@@ -16,6 +16,8 @@ module.exports = Chat;
 var MessageService = require('../service/message_service.js'),
 	message_service = new MessageService();
 
+var time_convert = require('./time_convert.js');
+
 var Q = require('q');
 /*
  * Chat Controller source
@@ -153,11 +155,12 @@ Chat.prototype.send_message = function(msg, socket){
 	}else{
 		debugger;
 		if((msg.to in Chat.clients) && (Chat.clients[msg.to].connected)){
-			msg.create_time = new Date();
+			msg.unique_code = time_convert(new Date(), msg.data.toString().length);
 			message_service.save_a_new_message(msg);
-			Chat.clients[msg.to].emit('chat message', msg, function(info){
-				console.log('send success');
-				console.log(info);
+			Chat.clients[msg.to].emit('chat message', msg, function(code){
+				console.log('you are righ');
+				console.log(code);
+				message_service.set_an_unread_message_to_read(code);
 				console.log(new Date());
 			});
 		}else{

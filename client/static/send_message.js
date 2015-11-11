@@ -27,9 +27,9 @@ socket.on('you are reconnection', function(msg){
 });
 
 socket.on(CHAT, function(msg, func){
-	var last_data = msg.create_time;
     var message = JSON.stringify(msg);
-	func(last_data);
+	var code = msg.unique_code
+	func(code);
     $('#messages').append($('<li>').text(message));
 });
 socket.on('add user', function(msg){
