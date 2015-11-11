@@ -28,8 +28,8 @@ function MessageService(){
          *  
          */
         var message = JSON.stringify(msg.data);
-        var sender = msg.data.from.trim();
-        var receiver = msg.data.to.trim();
+        var sender = msg.from.trim();
+        var receiver = msg.to.trim();
 		var event = msg.event;
 
         db_handler.insert(sender, receiver, message, event);

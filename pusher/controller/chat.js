@@ -13,6 +13,10 @@
 
 module.exports = Chat;
 
+var MessageService = require('../service/message_service.js'),
+	message_service = new MessageService();
+
+var Q = require('q');
 /*
  * Chat Controller source
  */
@@ -128,8 +132,10 @@ Chat.prototype.update_client_socket = function(username, socket){
  */
 
 Chat.prototype.boardcast_login = function(msg, socket){
-	socket.emit('chat message', msg.from + ' is online');
-	socket.broadcast.emit('chat message', msg.from + ' is online');
+	socket.emit('chat message', msg.from + ' is online', function(info){
+		console.log(info);
+	});
+	//socket.broadcast.emit('chat message', msg.from + ' is online');
 }
 
 /*
@@ -147,9 +153,10 @@ Chat.prototype.send_message = function(msg, socket){
 	}else{
 		debugger;
 		if((msg.to in Chat.clients) && (Chat.clients[msg.to].connected)){
-			console.log(new Date());
-			Chat.clients[msg.to].emit('chat message', msg, function(){
+			message_service.save_a_new_message(msg);
+			Chat.clients[msg.to].emit('chat message', msg, function(info){
 				console.log('send success');
+				console.log(info);
 				console.log(new Date());
 			});
 		}else{
