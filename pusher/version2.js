@@ -20,7 +20,7 @@ io_server.on('connection', function(socket){
 	});
 
 	socket.on('chat message', function(msg){
-		chat.send(msg, msg);
+		chat.send(msg, socket);
 	});
 
 });
