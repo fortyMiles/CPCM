@@ -22,6 +22,7 @@ module.exports = Chat;
  * chat controller constructor
  */
 function Chat(){
+
 }
 
 /*
@@ -38,7 +39,7 @@ Chat.clients = {};
  */
 
 Chat.prototype.login = function(msg, socket){
-	this._msg_handler(msg, socket, this._broadcast_login);
+	this.msg_handler(msg, socket, this.boardcast_login);
 };
 
 /*
@@ -50,7 +51,7 @@ Chat.prototype.login = function(msg, socket){
  */
 
 Chat.prototype.send = function(msg, socket){
-	this._msg_handler(msg, socket, this._send_message);
+	this.msg_handler(msg, socket, this.send_message);
 };
 
 /*
@@ -63,9 +64,9 @@ Chat.prototype.send = function(msg, socket){
  *
  */
 
-Chat.prototype._msg_handler = function(msg, socket, func){
-	if(this.__check_format(msg)){
-		this.__update_clients_socket(msg.from, socket);
+Chat.prototype.msg_handler = function(msg, socket, func){
+	if(this.check_format(msg)){
+		this.update_client_socket(msg.from, socket);
 		func(msg, socket);
 	}else{
 		socket.emit('chat message', {'error':'unformatted'});
@@ -82,7 +83,7 @@ Chat.prototype._msg_handler = function(msg, socket, func){
  * @api private
  */
 
-Chat.prototype.__check_format = function(msg){
+Chat.prototype.check_format = function(msg){
 	//debugger;
 	var json_constructor = {}.constructor;
 	var keys = ['event', 'from'];
@@ -111,7 +112,7 @@ Chat.prototype.__check_format = function(msg){
  * @api private
  */
 
-Chat.prototype.__update_clients_socket = function(username, socket){
+Chat.prototype.update_client_socket = function(username, socket){
 	debugger;
 	if( !Chat.clients[username] || !Chat.clients[username].connected ){
 		Chat.clients[username] = socket;
@@ -119,15 +120,16 @@ Chat.prototype.__update_clients_socket = function(username, socket){
 }
 
 /*
- * broad this msg to every socket.
+ * Broadcasts this msg to every socket.
  *
  * @param {json} message
  * @param {socket.io.socket} clients socket connected to server.
  * @api private
  */
 
-Chat.prototype._broadcast_login = function(msg, socket){
+Chat.prototype.boardcast_login = function(msg, socket){
 	socket.emit('chat message', msg.from + ' is online');
+	socket.broadcast.emit('chat message', msg.from + ' is online');
 }
 
 /*
@@ -139,7 +141,7 @@ Chat.prototype._broadcast_login = function(msg, socket){
  * @api private
  */
 
-Chat.prototype._send_message = function(msg, socket){
+Chat.prototype.send_message = function(msg, socket){
 	if(msg.to == 'all'){
 		io_server.emit('chat message', msg);
 	}else{
@@ -151,5 +153,3 @@ Chat.prototype._send_message = function(msg, socket){
 		}
 	}
 }
-
-
