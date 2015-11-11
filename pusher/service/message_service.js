@@ -28,11 +28,12 @@ function MessageService(){
          *  
          */
         var message = JSON.stringify(msg.data);
-        var sender = msg.data.from.trim();
-        var receiver = msg.data.to.trim();
+        var sender = msg.from.trim();
+        var receiver = msg.to.trim();
 		var event = msg.event;
+		var unique_code = msg.unique_code;
 
-        db_handler.insert(sender, receiver, message, event);
+        db_handler.insert(sender, receiver, message, event, unique_code);
     };
 
 	this.send_an_unread_message = function(msg){
@@ -90,9 +91,9 @@ function MessageService(){
     };
 
 
-    var set_an_unread_message_to_read = function(record_id){
-        console.log('set ' + record_id + 'to read');
-        db_handler.set_message_to_read(record_id);
+    this.set_an_unread_message_to_read = function(date, username){
+        console.log('set ' + username + ' time ' + date + 'to read');
+        db_handler.set_message_to_read(date, username);
     };
 
 }

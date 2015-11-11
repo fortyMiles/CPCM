@@ -12,7 +12,9 @@ try{
             console.error(e);
         }
 
-        socket.emit(json_data.event, json_data);
+        socket.emit(json_data.event, json_data, function(data){
+			console.log(data);
+		});
         $('#m').val('');
         return false;
     });
@@ -20,8 +22,14 @@ try{
     socket.emit(CHAT, null);
 }
 
-socket.on(CHAT, function(msg){
+socket.on('you are reconnection', function(msg){
+		
+});
+
+socket.on(CHAT, function(msg, func){
     var message = JSON.stringify(msg);
+	var code = msg.unique_code
+	func(code);
     $('#messages').append($('<li>').text(message));
 });
 socket.on('add user', function(msg){
