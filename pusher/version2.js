@@ -14,8 +14,9 @@ var Chat = require('./controller/chat.js'),
 io_server.on('connection', function(socket){
 	console.info('New client connecte (id=' + socket.id + ').');
 
-	socket.on('login', function(msg){
+	socket.on('login', function(msg, fn){
 		io_server.emit('chat messge', msg.from + ' online');
+		fn('reception');
 		chat.login(msg, socket);
 	});
 

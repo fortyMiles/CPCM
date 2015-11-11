@@ -147,7 +147,11 @@ Chat.prototype.send_message = function(msg, socket){
 	}else{
 		debugger;
 		if((msg.to in Chat.clients) && (Chat.clients[msg.to].connected)){
-			Chat.clients[msg.to].emit('chat message', msg);
+			console.log(new Date());
+			Chat.clients[msg.to].emit('chat message', msg, function(){
+				console.log('send success');
+				console.log(new Date());
+			});
 		}else{
 			socket.emit('chat message', {'warning':'person offline'});
 		}
