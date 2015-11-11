@@ -153,6 +153,7 @@ Chat.prototype.send_message = function(msg, socket){
 	}else{
 		debugger;
 		if((msg.to in Chat.clients) && (Chat.clients[msg.to].connected)){
+			msg.create_time = new Date();
 			message_service.save_a_new_message(msg);
 			Chat.clients[msg.to].emit('chat message', msg, function(info){
 				console.log('send success');

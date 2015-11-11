@@ -86,7 +86,7 @@ function Mysql(){
     };
 
 
-    this.insert = function(sender, receiver, message, event){
+    this.insert = function(sender, receiver, message, event, create_time){
         /*
          * insert data into db, and set 
          * record status to 'Unread';
@@ -97,7 +97,7 @@ function Mysql(){
             sender : sender,
             receiver : receiver,
 			event: event,
-            create_date: new Date()
+            create_date: create_time
         };
 
         var query = connection.query(mapper.insert, post, function(err, result){

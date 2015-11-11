@@ -31,8 +31,9 @@ function MessageService(){
         var sender = msg.from.trim();
         var receiver = msg.to.trim();
 		var event = msg.event;
+		var create_time = msg.create_time;
 
-        db_handler.insert(sender, receiver, message, event);
+        db_handler.insert(sender, receiver, message, event, create_time);
     };
 
 	this.send_an_unread_message = function(msg){
