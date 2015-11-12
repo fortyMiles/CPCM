@@ -26,14 +26,14 @@ socket.on('you are reconnection', function(msg){
 		
 });
 
-socket.on(CHAT, function(msg, func){
-    var message = JSON.stringify(msg);
+socket.on(CHAT, function(msg){
 	if(msg.unique_code){
-		var code = msg.unique_code;
-		func(code);
+		socket.emit('message ensure', msg.unique_code);
 	}
+    var message = JSON.stringify(msg);
     $('#messages').append($('<li>').text(message));
 });
+
 socket.on('add user', function(msg){
     $('#users').append($('<li>').text('exised user : ' + msg));
 });

@@ -161,7 +161,43 @@ function Mysql(){
 		var result = date().toISOString().slice(0, 19).replace('T', ' ');
 
 	};
+
+
 	this.set_message_to_read = function(unique_code){
+		this.check_code_message_exist(unique_code, function(unique_code){
+			var post = {
+				status: s.READ,
+				read_date: new Date()
+			};
+
+			var restriction = {
+				unique_code: unique_code
+			};
+
+			var query = connection.query(mapper.update_message, [post, restriction], function(err, results){});
+		});
+	};
+
+	this.check_code_message_exist = function(unique_code, callback){
+		var check_exist = "select * from message where unique_code = '"+ unique_code +"'";
+		var check = connection.query(check_exist, function(err, results){
+			debugger;
+			if(err){
+				console.log(check.sql);
+				throw err;
+			}else{
+				if(!results){
+					this.check_code_message_exist(unique_code, callback);
+				}else{
+					console.log('check success');
+					console.log(results);
+					callback(unique_code);
+				}
+			}
+		});
+	};
+
+	this.old_set_message_to_read = function(unique_code){
 		/*
 		 *  sets the status to 'read' record which id equals id.
 		 */
@@ -173,13 +209,15 @@ function Mysql(){
 
 		var restriction = {
 			unique_code: unique_code
-	};
+		};
 
 		var query = connection.query(mapper.update_message, [post, restriction], function(err, results){
+			debugger;
 			if(err){
 				console.log(query.sql);
 				throw err;
 			}else{
+				console.log('update success');
 				console.log(query.sql);
 			}
 		});
@@ -281,6 +319,7 @@ function Mysql(){
 	 * @return {list} results list
 	 *
 	 */
+
 	this.get_offline_messages = function(username, callback){
 		var restriction = {
 			receiver: username
@@ -296,7 +335,7 @@ function Mysql(){
 			}
 		});
 	};
-}
+};
 
 
 function print(message){
@@ -321,15 +360,18 @@ function main(){
 		//var test_socket_id = 'socket';
 		//mySql.set_user_break_line(test_socket_id);
 		//mySql.get_earliest(10, function(results){
-			//console.log(results);
+		//console.log(results);
 		//});
 
 		//mySql.set_all_users_break_line();
 
 		var message = null;
+		/*
 		mySql.get_offline_messages('right', function(results){
 			console.log(results);
 		});
+		*/
+	   mySql.set_message_to_read('1447322076203.1594');
 }
 
 
