@@ -190,7 +190,7 @@ Chat.prototype.boardcast_login = function(msg){
  */
 
 /*
- * Sends offline messages to a socket.
+ * Sends offline messages to a socket one by one.
  *
  * @param {string} client usernname
  * @api private
@@ -221,6 +221,14 @@ Chat.send_message = function(msg, send_offline){
 		Chat.clients[msg.from].emit('chat message', {'warning':'person offline'});
 	}
 };
+
+/*
+ * Sends offline message by block.
+ * 
+ * @param {string} username 
+ * @api private
+ *
+ */
 
 Chat.prototype.send_offline_messages = function(username){
 	var offline_messages = [];
