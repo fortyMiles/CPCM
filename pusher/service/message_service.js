@@ -57,24 +57,24 @@ function MessageService(){
 		}).done();
 	};
 
-    this.parse_message = function(results){
+     var parse_message = function(results, callback){
         console.log(results);
         var messages = [];
-        var message = {};
         if(results.length === 0){
             console.log('no message');
         }
 
         for(var i in results){
+				var m = {};
                 console.log('result is not null');
-                message.data = JSON.parse(results[i].message);
-                message.from = results[i].sender;
-                message.to = results[i].receiver;
-                message.date = results[i].create_date;
-                message.id = results[i].id;
-				message.event = results[i].event;
-                console.log(message);
-                messages.push(message);
+                m.data = JSON.parse(results[i].message);
+                m.from = results[i].sender;
+                m.to = results[i].receiver;
+                m.date = results[i].create_date;
+                m.unique_code = results[i].unique_code;
+				m.event = results[i].event;
+                console.log(m);
+                messages.push(m);
         }
 
         console.log('point 1');
@@ -97,7 +97,13 @@ function MessageService(){
 	 * @return {list} messages list
 	 *
 	 */
-	this.get_offline_messages = function(username){
+	this.get_offline_messages = function(username, callback){
+		db_handler.get_offline_messages(username, function(results){
+			debugger;
+			var messages = parse_message(results);
+			//console.log(messages);
+			callback(messages);
+		});
 	};
 
 
@@ -123,12 +129,18 @@ function main(){
         data: data,
     };
 
-    message_service.save_a_new_message(message, 'chat');
+    //message_service.save_a_new_message(message, 'chat');
 
     var name = '18857453090';
     //message_service.get_unread_message(name);
+	
+	message_service.get_offline_messages('right', function(messages){
+		for(i in messages){
+			console.log(messages[i].from);
+		}
+	});
 }
 
 if(require.main == module){
-    main();
+	main();
 }

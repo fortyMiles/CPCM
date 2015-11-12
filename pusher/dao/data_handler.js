@@ -7,6 +7,7 @@
 
 module.exports = Mysql;
 
+var Q = require('q');
 
 function Mysql(){
     var mysql = require('mysql');
@@ -270,6 +271,31 @@ function Mysql(){
 			}
 		});
 	};
+
+	/*
+	 * Gets one user's offline messages from db
+	 * 
+	 * In the beginning, we get all the message once a time, but if a person has too many messages, we could catch a patch and a patch. to reduce boardwidth and decrease waiting time.
+	 *
+	 * @param {string} username
+	 * @return {list} results list
+	 *
+	 */
+	this.get_offline_messages = function(username, callback){
+		var restriction = {
+			receiver: username
+		}
+
+		var query = connection.query(mapper.get_off_line_messages, restriction, function(err, results){
+			if(err){
+				console.log(query.sql);
+				throw err;
+			}else{
+				console.log(query.sql);
+				callback(results);
+			}
+		});
+	};
 }
 
 
@@ -294,11 +320,16 @@ function main(){
 		//mySql.set_user_off_line(username);
 		//var test_socket_id = 'socket';
 		//mySql.set_user_break_line(test_socket_id);
-		mySql.get_earliest(10, function(results){
-			console.log(results);
-		});
+		//mySql.get_earliest(10, function(results){
+			//console.log(results);
+		//});
 
 		//mySql.set_all_users_break_line();
+
+		var message = null;
+		mySql.get_offline_messages('right', function(results){
+			console.log(results);
+		});
 }
 
 
