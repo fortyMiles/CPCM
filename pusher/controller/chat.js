@@ -149,7 +149,7 @@ Chat.prototype.boardcast_login = function(msg, socket){
  * @api private
  */
 
-Chat.prototype.send_message = function(msg, socket){
+Chat.prototype.send_message = function(msg){
 	if(msg.to == 'all'){
 		io_server.emit('chat message', msg);
 	}else{
@@ -164,7 +164,22 @@ Chat.prototype.send_message = function(msg, socket){
 				console.log(new Date());
 			});
 		}else{
-			socket.emit('chat message', {'warning':'person offline'});
+			Chat.clients[msg.from].emit('chat message', {'warning':'person offline'});
 		}
 	}
 }
+
+/*
+ * Sends offline messages to a socket.
+ *
+ * @param {string} client usernname
+ * @param {socekt} client socket
+ */
+
+Chat.prototype.send_offline_message = function(username, socket){
+	var offline_messages = [];
+
+	Q.fcall(function(){
+		offline_messages = message_service.get_offline_messages(username);
+	})
+};
