@@ -164,6 +164,8 @@ Chat.prototype.send_message = function(msg){
 				console.log(new Date());
 			});
 		}else{
+			debugger;
+			console.log('receiver is offline');
 			Chat.clients[msg.from].emit('chat message', {'warning':'person offline'});
 		}
 	}

@@ -28,8 +28,10 @@ socket.on('you are reconnection', function(msg){
 
 socket.on(CHAT, function(msg, func){
     var message = JSON.stringify(msg);
-	var code = msg.unique_code
-	func(code);
+	if(msg.unique_code){
+		var code = msg.unique_code;
+		func(code);
+	}
     $('#messages').append($('<li>').text(message));
 });
 socket.on('add user', function(msg){
