@@ -18,6 +18,8 @@ function Mapper(){
 
     this.get_earliest = "select message.id, message.sender, message.receiver, message.message, message.create_date, message.event from message JOIN login_users on message.receiver = login_users.name and message.status = '" + s.UNREAD +"' and login_users.status = '" + s.LOGIN + "' LIMIT ?";
 
+	this.get_off_line_messages = "SELECT message, sender, receiver, create_date, event, unique_code FROM message.message WHERE ? AND status = 'U' AND unique_code IS NOT NULL ORDER BY unique_code";
+
     this.update_message = "update message set ? where ?";
 
     this.add_a_login_user = "INSERT INTO login_users SET ?";
