@@ -33,50 +33,67 @@ function Chat(){
 /*
  * save all usernames and client sockets.
  */
+
 Chat.clients = {};
 
+
+/*
+ * io server that to send message to different clients, assigned by socket server.
+ */
+Chat.io_server = null;
+
+var LOGIN = 'login';
+var CHAT = 'chat';
+
+Chat.prototype.router = function(io_server, socket_id, msg, action){
+	Chat.io_server = io_server;
+	switch(action){
+		case LOGIN: this.login(msg, socket_id); break;
+		case CHAT:  this.send(msg, socket_id); break;
+	};
+};
 /*
  * Logins a socket in clients list.
  *
  * @param {object} the data send from socket sent, excepted this to be a json.
- * @param {socket.io.socket} clients socket connected to server.
+ * @param {string} id of clients socket connected to server.
  * @api public
  */
 
-Chat.prototype.login = function(msg, socket){
-	this.msg_handler(msg, socket, this.boardcast_login);
+Chat.prototype.login = function(msg, socket_id){
+	this.msg_handler(msg, socket_id, this.boardcast_login);
 };
 
 /*
  * Sends message to a person.
  *
  * @param {object} the data send from socket sent, excepted this to be a json.
- * @param {socket.io.socket} clients socket connected to server.
+ * @param {string} id of clients socket connected to server.
  * @api public
  */
 
-Chat.prototype.send = function(msg, socket){
-	this.msg_handler(msg, socket, Chat.send_message);
+Chat.prototype.send = function(msg, socket_id){
+	this.msg_handler(msg, socket_id, Chat.send_message);
 };
 
 /*
  * the base function to handle msg and socket.
  *
  * @param {object} the data send from socket sent, excepted this to be a json.
- * @param {socket.io.socket} clients socket connected to server.
+ * @param {string} id of clients socket connected to server.
  * @param {Function} the process function of this msg.
  * @api protect
  *
  */
 
-Chat.prototype.msg_handler = function(msg, socket, func){
+Chat.prototype.msg_handler = function(msg, socket_id, func){
 	if(this.check_format(msg)){
 		debugger;
 		var new_user = this.is_new_client(msg.from);
-		var reconnection = this.is_connection(msg.from);
+		var reconnection = this.is_connection(socket_id);
 
 		if(new_user || reconnection){
-			this.update_client_socket(msg.from, socket);
+			this.update_client_socket(msg.from, socket_id);
 			this.send_offline_messages(msg.from);
 		}
 
@@ -130,11 +147,7 @@ Chat.prototype.check_format = function(msg){
  *
  */
 Chat.prototype.is_new_client = function(username){
-	var new_client = false;
-	if( !Chat.clients[username]){
-		new_client = true;
-	}
-	return new_client;
+	return !(username in Chat.clients);
 };
 
 /*
@@ -145,12 +158,8 @@ Chat.prototype.is_new_client = function(username){
  * @api private
  */
 
-Chat.prototype.is_connection = function(username){
-	var reconnection = false;
-	if( (username in Chat.clients) && !Chat.clients[username].connected){
-		reconnection = true;
-	}
-	return reconnection;
+Chat.prototype.is_connection = function(socket_id){
+	return Chat.io_server.sockets.connected[socket_id];
 };
 
 /*
@@ -161,8 +170,8 @@ Chat.prototype.is_connection = function(username){
  * @api private
  */
 
-Chat.prototype.update_client_socket = function(username, socket){
-	Chat.clients[username] = socket;
+Chat.prototype.update_client_socket = function(username, socket_id){
+	Chat.clients[username] = socket_id;
 }
 
 /*
@@ -174,9 +183,7 @@ Chat.prototype.update_client_socket = function(username, socket){
  */
 
 Chat.prototype.boardcast_login = function(msg){
-	Chat.clients[msg.from].emit('chat message', msg.from + ' is online', function(info){
-		console.log(info);
-	});
+	Chat.io_server.to(Chat.clients[msg.from]).emit('chat message', msg.from + ' is online');
 	//socket.broadcast.emit('chat message', msg.from + ' is online');
 }
 
@@ -190,7 +197,7 @@ Chat.prototype.boardcast_login = function(msg){
  */
 
 /*
- * Sends offline messages to a socket.
+ * Sends offline messages to a socket one by one.
  *
  * @param {string} client usernname
  * @api private
@@ -208,19 +215,24 @@ Chat.send_message = function(msg, send_offline){
 
 	console.log(msg.unique_code);
 
-	if((msg.to in Chat.clients) && (Chat.clients[msg.to].connected)){
-		Chat.clients[msg.to].emit('chat message', msg, function(code){
-			console.log('you are righ');
-			console.log(code);
-			message_service.set_an_unread_message_to_read(code);
-			console.log(new Date());
-		});
+	var target_id = Chat.clients[msg.to];
+
+	if((msg.to in Chat.clients) && Chat.io_server.sockets.connected[target_id]){
+		Chat.io_server.to(target_id).emit('chat message', msg)
 	}else{
 		debugger;
 		console.log('receiver is offline');
-		Chat.clients[msg.from].emit('chat message', {'warning':'person offline'});
+		Chat.io_server.to(Chat.clients[msg.from]).emit('chat message', {'warning':'person offline'});
 	}
 };
+
+/*
+ * Sends offline message by block.
+ * 
+ * @param {string} username 
+ * @api private
+ *
+ */
 
 Chat.prototype.send_offline_messages = function(username){
 	var offline_messages = [];
