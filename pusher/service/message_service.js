@@ -90,6 +90,16 @@ function MessageService(){
         db_handler.get_earliest(number, callback);
     };
 
+	/*
+	 * Gets one person's all offline messages.
+	 *
+	 * @param {string} username
+	 * @return {list} messages list
+	 *
+	 */
+	this.get_offline_messages = function(username){
+	};
+
 
     this.set_an_unread_message_to_read = function(date, username){
         console.log('set ' + username + ' time ' + date + 'to read');

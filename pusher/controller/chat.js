@@ -121,7 +121,15 @@ Chat.prototype.check_format = function(msg){
 Chat.prototype.update_client_socket = function(username, socket){
 	debugger;
 	if( !Chat.clients[username] || !Chat.clients[username].connected ){
-		Chat.clients[username] = socket;
+			Chat.clients[username] = socket;
+		/*
+		Q.fcall(function(){
+			Chat.clients[username] = socket;
+		})
+		.then(
+			this.send_offline_messages(username)
+		).done();
+		*/
 	}
 }
 
@@ -150,13 +158,14 @@ Chat.prototype.boardcast_login = function(msg, socket){
  */
 
 Chat.prototype.send_message = function(msg){
+	msg.unique_code = time_convert(new Date(), msg.data.toString().length);
+	message_service.save_a_new_message(msg);
+
 	if(msg.to == 'all'){
 		io_server.emit('chat message', msg);
 	}else{
 		debugger;
 		if((msg.to in Chat.clients) && (Chat.clients[msg.to].connected)){
-			msg.unique_code = time_convert(new Date(), msg.data.toString().length);
-			message_service.save_a_new_message(msg);
 			Chat.clients[msg.to].emit('chat message', msg, function(code){
 				console.log('you are righ');
 				console.log(code);
@@ -175,13 +184,16 @@ Chat.prototype.send_message = function(msg){
  * Sends offline messages to a socket.
  *
  * @param {string} client usernname
- * @param {socekt} client socket
  */
 
-Chat.prototype.send_offline_message = function(username, socket){
+Chat.prototype.send_offline_messages = function(username){
 	var offline_messages = [];
 
 	Q.fcall(function(){
-		offline_messages = message_service.get_offline_messages(username);
-	})
+		offline_messages = message_service.get_offline_messages(username);// get all offline message by username.
+	}).then(function(){
+		for(i in offline_messages){
+			this.send_message(offline_messages[i]); // send it one by one.
+		}
+	}).done();
 };
