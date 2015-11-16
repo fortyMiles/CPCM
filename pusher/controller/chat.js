@@ -183,7 +183,7 @@ Chat.prototype.update_client_socket = function(username, socket_id){
  */
 
 Chat.prototype.boardcast_login = function(msg){
-	Chat.io_server.to(Chat.clients[msg.from]).emit('chat message', msg.from + ' is online');
+	Chat.io_server.to(Chat.clients[msg.from]).emit(msg.event, msg.from + ' is online');
 	//socket.broadcast.emit('chat message', msg.from + ' is online');
 }
 
@@ -218,11 +218,11 @@ Chat.send_message = function(msg, send_offline){
 	var target_id = Chat.clients[msg.to];
 
 	if((msg.to in Chat.clients) && Chat.io_server.sockets.connected[target_id]){
-		Chat.io_server.to(target_id).emit('chat message', msg)
+		Chat.io_server.to(target_id).emit(msg.event, msg)
 	}else{
 		debugger;
 		console.log('receiver is offline');
-		Chat.io_server.to(Chat.clients[msg.from]).emit('chat message', {'warning':'person offline'});
+		Chat.io_server.to(Chat.clients[msg.from]).emit(msg.event, {'warning':'person offline'});
 	}
 };
 
