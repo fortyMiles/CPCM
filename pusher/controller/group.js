@@ -32,10 +32,27 @@ Group.prototype.initiate_group = function(username, socket, lgmc){
 	group_service.get_all_joined_groups(username, function(groups){
 		for(var i in groups){
 			Group.prototype.join_to_group(groups[i], socket);
+			Group.prototype.send_a_group_unread(group[i], lgmc, socket);
 		}
 	});
 };
 
+/*
+ * Sends one groups unread message to a clients.
+ *
+ * @param {string} groupname
+ * @param {lmgc} last message group code
+ * @param {Socket} client's socket
+ * @api private
+ */
+
+Group.prototype.send_a_group_unread = function(groupname, lgmc, socket){
+	group_service.get_offline_messages(groupname, lgmc, function(messages){
+		for(var i in messages){
+			socket.emit(messages[i].event, messages[i]);
+		}
+	});
+};
 
 /*
  * Joins one socket to a group.
@@ -46,29 +63,19 @@ Group.prototype.initiate_group = function(username, socket, lgmc){
  */
 
 Group.prototype.join_to_group = function(group, socket){
-	//socket.join(group);
+	socket.join(group);
 	console.log('join in ..' + group);
 };
 
 
 /*
- * Send one user's missed group messages.
- *
- * @param {string} group name
- * @param {string} lgmc last group message code
- * @param {socket} client's socket
- *
+ * run in self load
  */
-
-Group.prototype.send_offline_messages = function(group, socket, lgmc, callback){
-
-};
-
-var main = function(){
+function main(){
 	var group = new Group();
 	var username = '13777414593';
 	group.initiate_group(username, 'socket');
-};
+}
 
 if(require.main == module){
 	main();

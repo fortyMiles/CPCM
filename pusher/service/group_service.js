@@ -97,6 +97,7 @@ GroupService.prototype.parse_messages = function(results){
 		m.group            = results[i].group;
 		m.unique_code      = results[i].unique_code;
 		m.create_date      = results[i].create_date;
+		m.event            = 'group';
 		messages.push(m);
 	}
 
