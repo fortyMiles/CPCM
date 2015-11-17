@@ -11,9 +11,6 @@ var io        = require('socket.io'),
 var Chat = require('./controller/chat.js'),
 	chat = new Chat();
 	
-var Group = require('./controller/group.js'),
-	group = new Group();
-
 var MessageService = require('./service/message_service.js'),
 	message_service = new MessageService();
 
@@ -24,12 +21,13 @@ io_server.on('connection', function(socket){
 		io_server.emit('chat messge', msg.from + ' online');
 		fn('reception');
 		chat.router(io_server, socket.id, msg, 'login');
-		group.join_to_groups(msg.from, socket, function(socket){
-			socket.emit('chat message', {join:' group finished'});
-		});
 	});
 
 	socket.on('chat message', function(msg){
+		chat.router(io_server, socket.id, msg, 'chat');
+	});
+
+	socket.on('group', function(msg){
 		chat.router(io_server, socket.id, msg, 'chat');
 	});
 

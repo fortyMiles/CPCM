@@ -16,7 +16,13 @@ module.exports = Chat;
 var MessageService = require('../service/message_service.js'),
 	message_service = new MessageService();
 
+var GroupService = require('../service/message_service.js'),
+	group_service = new group_service();
+
 var time_convert = require('./time_convert.js');
+
+var Group = require('./group.js'),
+	group = new Group();
 
 /*
  * Chat Controller source
@@ -34,7 +40,7 @@ function Chat(){
  * save all usernames and client sockets.
  */
 
-Chat.clients = {};
+Chat.client_socketIDs = {};
 
 
 /*
@@ -44,11 +50,13 @@ Chat.io_server = null;
 
 var LOGIN = 'login';
 var CHAT = 'chat';
+var GROUP = 'group';
 
 Chat.prototype.router = function(io_server, socket_id, msg, action){
 	Chat.io_server = io_server;
 	switch(action){
 		case LOGIN: this.login(msg, socket_id); break;
+		case GROUP:
 		case CHAT:  this.send(msg, socket_id); break;
 	}
 };
@@ -62,6 +70,12 @@ Chat.prototype.router = function(io_server, socket_id, msg, action){
 
 Chat.prototype.login = function(msg, socket_id){
 	this.msg_handler(msg, socket_id, this.boardcast_login);
+
+	var client_socket = Chat.io_server.sockets.connected[socket_id];
+
+	group.join_to_groups(msg.from, client_socket, function(socket){
+		socket.emit('chat message', {join: ' groups finished'});
+	});
 };
 
 /*
@@ -89,7 +103,7 @@ Chat.prototype.send = function(msg, socket_id){
 Chat.prototype.msg_handler = function(msg, socket_id, func){
 	if(this.check_format(msg)){
 		var new_user = this.is_new_client(msg.from);
-		var reconnection = this.is_connection(socket_id);
+		var reconnection = this.is_reconnection(socket_id);
 
 		if(new_user || reconnection){
 			this.update_client_socket(msg.from, socket_id);
@@ -98,6 +112,7 @@ Chat.prototype.msg_handler = function(msg, socket_id, func){
 
 		if(reconnection){
 			//this.send_offline_messages(msg.from);
+			if(msg.lgmc){this.receive_offline_group_message(msg.from, msg.lgmc);}
 		}
 
 		func(msg);
@@ -146,7 +161,7 @@ Chat.prototype.check_format = function(msg){
  *
  */
 Chat.prototype.is_new_client = function(username){
-	return !(username in Chat.clients);
+	return !(username in Chat.client_socketIDs);
 };
 
 /*
@@ -157,7 +172,7 @@ Chat.prototype.is_new_client = function(username){
  * @api private
  */
 
-Chat.prototype.is_connection = function(socket_id){
+Chat.prototype.is_reconnection = function(socket_id){
 	return Chat.io_server.sockets.connected[socket_id];
 };
 
@@ -170,7 +185,7 @@ Chat.prototype.is_connection = function(socket_id){
  */
 
 Chat.prototype.update_client_socket = function(username, socket_id){
-	Chat.clients[username] = socket_id;
+	Chat.client_socketIDs[username] = socket_id;
 };
 
 /*
@@ -182,18 +197,9 @@ Chat.prototype.update_client_socket = function(username, socket_id){
  */
 
 Chat.prototype.boardcast_login = function(msg){
-	Chat.io_server.to(Chat.clients[msg.from]).emit('chat message', msg.from + ' is online');
+	Chat.io_server.to(Chat.client_socketIDs[msg.from]).emit('chat message', msg.from + ' is online');
 	//socket.broadcast.emit('chat message', msg.from + ' is online');
 };
-
-/*
- * send this msg to target clients, if the targe socket is offline, 
- * send a offline information back.
- *
- * @param {json} message
- * @param {socket.io.socket} clients socket connected to server.
- * @api private
- */
 
 /*
  * Sends offline messages to a socket one by one.
@@ -212,13 +218,41 @@ Chat.send_message = function(msg, send_offline){
 
 	console.log(msg.unique_code);
 
-	var target_id = Chat.clients[msg.to];
+	if(msg.event == 'group'){
+		var group_id = Chat.client_socketIDs[msg.to];
+		Chat.io_server.to(group_id).emit('group', msg);
+	}else{
+		this.person_to_person(msg, Chat.client_socketIDs[msg.to]);
+	}
+};
 
-	if((msg.to in Chat.clients) && Chat.io_server.sockets.connected[target_id]){
+/*
+ * Sends group unread messages.
+ *
+ * @param {json} msg
+ * @@api private
+ *
+ */
+
+Chat.receive_group = function(msg, receiver_name){
+	var client_socket_id = Chat.client_socketIDs[receiver_name];
+	Chat.io_server.to(client_socket_id).emit('group', msg);
+};
+
+/*
+ * Person to Person talk.
+ * 
+ * @param {json} msg
+ * @api private
+ *
+ */
+
+Chat.person_to_person = function(msg, target_id){
+	if((msg.to in Chat.client_socketIDs) && Chat.io_server.sockets.connected[target_id]){
 		Chat.io_server.to(target_id).emit('chat message', msg);
 	}else{
 		console.log('receiver is offline');
-		Chat.io_server.to(Chat.clients[msg.from]).emit('chat message', {'warning':'person offline'});
+		Chat.io_server.to(Chat.client_socketIDs[msg.from]).emit('chat message', {'warning':'person offline'});
 	}
 };
 
@@ -231,12 +265,26 @@ Chat.send_message = function(msg, send_offline){
  */
 
 Chat.prototype.send_offline_messages = function(username){
-	var offline_messages = [];
-
 	message_service.get_offline_messages(username, function(messages){
 		for(var i in messages){
 			var send_offline = true;
 			Chat.send_message(messages[i], send_offline);
+		}
+	});
+};
+
+/*
+ * Sends group offline messages
+ *
+ * @param {string} username
+ * @api private
+ *
+ */
+
+Chat.prototype.receive_offline_group_message = function(username, last_code){
+	message_service.get_group_offline_message(username, lastcode, function(messages){
+		for(var i in messages){
+			Chat.receive_group(messages[i], username);
 		}
 	});
 };
