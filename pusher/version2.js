@@ -15,7 +15,7 @@ var MessageService = require('./service/message_service.js'),
 	message_service = new MessageService();
 
 var Group = require('./controller/group.js'),
-	group = new group();
+	group = new Group();
 
 io_server.on('connection', function(socket){
 	console.info('New client connecte (id=' + socket.id + ').');
@@ -23,15 +23,15 @@ io_server.on('connection', function(socket){
 	socket.on('login', function(msg, fn){
 		io_server.emit('chat messge', msg.from + ' online');
 		fn('reception');
-		chat.router(io_server, socket.id, msg, 'login');
+		chat.router(io_server, socket.id, msg);
 	});
 
 	socket.on('chat message', function(msg){
-		chat.router(io_server, socket.id, msg, 'chat');
+		chat.router(io_server, socket.id, msg);
 	});
 
 	socket.on('group', function(msg){
-		chat.router(io_server, socket.id, msg, 'group');
+		chat.router(io_server, socket.id, msg);
 	});
 
 

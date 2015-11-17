@@ -46,12 +46,12 @@ Chat.client_socketIDs = {};
 Chat.io_server = null;
 
 var LOGIN = 'login';
-var CHAT = 'chat';
+var CHAT = 'chat message';
 var GROUP = 'group';
 
-Chat.prototype.router = function(io_server, socket_id, msg, action){
+Chat.prototype.router = function(io_server, socket_id, msg){
 	Chat.io_server = io_server;
-	switch(action){
+	switch(msg.event){
 		case LOGIN: this.login(msg, socket_id); break;
 		case GROUP:
 		case CHAT:  this.forwarding(msg, socket_id); break;
@@ -105,7 +105,6 @@ Chat.prototype.msg_handler = function(msg, socket_id, func){
 
 		if(reconnection){
 			//this.send_offline_messages(msg.from);
-			if(msg.lgmc){this.receive_offline_group_message(msg.from, msg.lgmc);}
 		}
 
 		func(msg);
@@ -205,6 +204,7 @@ Chat.prototype.boardcast_login = function(msg){
 
 Chat.prototype.forwarding_msg = function(msg, send_offline){
 
+	debugger;
 	if(!send_offline){ // if is real time commnication, means, is new messages, need add other information.
 		msg.date = new Date(); // append information.
 		msg.unique_code = time_convert(new Date(), msg.data.toString().length);
@@ -214,8 +214,8 @@ Chat.prototype.forwarding_msg = function(msg, send_offline){
 	console.log(msg.unique_code);
 
 	switch(msg.event){
-		case CHAT: this.person_to_group(msg); break;
-		case GROUP: this.person_to_person(msg, Chat.client_socketIDs[msg.to]);break;
+		case CHAT: this.person_to_person(msg, Chat.client_socketIDs[msg.to]);break;
+		case GROUP: this.person_to_group(msg); break;
 	}
 };
 
@@ -231,18 +231,6 @@ Chat.prototype.person_to_group = function(msg){
 	var group_id = Chat.client_socketIDs[msg.to];
 	Chat.io_server.to(group_id).emit('group', msg);
 };
-/*
- * Sends group unread messages.
- *
- * @param {json} msg
- * @@api private
- *
- */
-
-Chat.receive_group = function(msg, receiver_name){
-	var client_socket_id = Chat.client_socketIDs[receiver_name];
-	Chat.io_server.to(client_socket_id).emit('group', msg);
-};
 
 /*
  * Person to Person talk.
@@ -252,7 +240,7 @@ Chat.receive_group = function(msg, receiver_name){
  *
  */
 
-Chat.person_to_person = function(msg, target_id){
+Chat.prototype.person_to_person = function(msg, target_id){
 	if((msg.to in Chat.client_socketIDs) && Chat.io_server.sockets.connected[target_id]){
 		Chat.io_server.to(target_id).emit('chat message', msg);
 	}else{
@@ -278,18 +266,4 @@ Chat.prototype.send_offline_messages = function(username){
 	});
 };
 
-/*
- * Sends group offline messages
- *
- * @param {string} username
- * @api private
- *
- */
 
-Chat.prototype.receive_offline_group_message = function(username, last_code){
-	message_service.get_group_offline_message(username, lastcode, function(messages){
-		for(var i in messages){
-			Chat.receive_group(messages[i], username);
-		}
-	});
-};

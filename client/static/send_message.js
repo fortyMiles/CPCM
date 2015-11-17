@@ -12,7 +12,7 @@ try{
             console.error(e);
         }
 
-        socket.emit(son_data.event, json_data, function(data){
+        socket.emit(json_data.event, json_data, function(data){
 			console.log(data);
 		});
         $('#m').val('');
