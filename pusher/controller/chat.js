@@ -224,6 +224,7 @@ Chat.prototype.forwarding_msg = function(msg, send_offline){
  * differeniate with person to person. Used this in group chating.
  *
  * @param {json} msg, message need to be forwarding
+ * @api private
  *
  */
 
