@@ -53,7 +53,7 @@ GroupService.prototype.parse_groups = function(results){
  */
 
 GroupService.prototype.get_all_joined_groups = function(username, callback){
-	db_handler.get_groups(username, function(results){
+	group_handler.get_groups(username, function(results){
 		var groups = GroupService.prototype.parse_groups(results);
 		callback(groups);
 	});
@@ -105,16 +105,16 @@ GroupService.prototype.parse_messages = function(results){
 
 function main(){
 	var gs = new GroupService();
-	/*
 	gs.get_all_joined_groups('13777414593', function(groups){
 		console.log(groups);
 	});
-	*/
+	/*
    gs.get_offline_message('group', '123897936', function(messages){
 		for(var i in messages){
 			console.log(messages[i]);
 		}
    });
+   */
 }
 
 if(require.main == module){
