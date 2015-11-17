@@ -21,7 +21,7 @@ function Mapper(){
 
 	this.get_off_line_messages = "SELECT message, sender, receiver, create_date, event, unique_code FROM message.message WHERE ? AND status = 'U' AND unique_code IS NOT NULL ORDER BY unique_code";
 
-	this.get_group_offlines = "SELECT * FROM message.group_messages where unique_code > ? and 'group' = ? ORDER BY 'unique_code' ";
+	this.get_group_offlines = "SELECT * FROM message.group_messages where `group` = ? and `unique_code` > ? ORDER BY `unique_code` ";
 
     this.update_message = "update message set ? where ?";
 

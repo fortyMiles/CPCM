@@ -17,6 +17,6 @@ Socket.prototype.emit = function(event, msg){
 	console.log('emit msg: ' + msg);
 };
 
-socket.prototype.join = function(room){
+Socket.prototype.join = function(room){
 	console.log('join to room ' + room + 'success');
 };

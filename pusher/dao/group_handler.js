@@ -54,7 +54,9 @@ function main(){
 	var group = new Group();
 	var username = '13777414593';
 	group.get_groups(username, function(results){
-		console.log(results[0].group);
+		for(var i in results){
+			console.log(results[i].group);
+		}
 	});
 }
 

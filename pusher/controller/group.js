@@ -6,6 +6,8 @@
  *
  */
 
+module.exports = Group;
+
 var request = require('request');
 var time_convert = require('./time_convert.js');
 
@@ -32,7 +34,7 @@ Group.prototype.initiate_group = function(username, socket, lgmc){
 	group_service.get_all_joined_groups(username, function(groups){
 		for(var i in groups){
 			Group.prototype.join_to_group(groups[i], socket);
-			Group.prototype.send_a_group_unread(group[i], lgmc, socket);
+			if(lgmc){Group.prototype.send_a_group_unread(groups[i], lgmc, socket);}
 		}
 	});
 };
@@ -47,7 +49,7 @@ Group.prototype.initiate_group = function(username, socket, lgmc){
  */
 
 Group.prototype.send_a_group_unread = function(groupname, lgmc, socket){
-	group_service.get_offline_messages(groupname, lgmc, function(messages){
+	group_service.get_offline_message(groupname, lgmc, function(messages){
 		for(var i in messages){
 			socket.emit(messages[i].event, messages[i]);
 		}
@@ -71,10 +73,12 @@ Group.prototype.join_to_group = function(group, socket){
 /*
  * run in self load
  */
+
 function main(){
 	var group = new Group();
 	var username = '13777414593';
-	group.initiate_group(username, 'socket');
+	//group.initiate_group(username, 'socket');
+	group.send_a_group_unread('group', '123897936');
 }
 
 if(require.main == module){

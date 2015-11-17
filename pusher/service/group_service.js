@@ -36,7 +36,7 @@ GroupService.prototype.parse_groups = function(results){
 	var groups = [];
 	
 	for(var i in results){
-		var g = JSON.parse(results[i].group);
+		var g = results[i].group;
 		groups.push(g);
 	}
 

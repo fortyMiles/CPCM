@@ -376,7 +376,7 @@ function Mysql(){
 	this.get_group_offline_messages = function(group, lastcode, callback){
 		connection.query({
 			sql: mapper.get_group_offlines,
-			values:[lastcode, group]
+			values:[group, lastcode]
 		}, function(error, results){
 			if(error) throw error;
 			else{
