@@ -16,9 +16,6 @@ module.exports = Chat;
 var MessageService = require('../service/message_service.js'),
 	message_service = new MessageService();
 
-var GroupService = require('../service/message_service.js'),
-	group_service = new group_service();
-
 var time_convert = require('./time_convert.js');
 
 var Group = require('./group.js'),
@@ -57,7 +54,7 @@ Chat.prototype.router = function(io_server, socket_id, msg, action){
 	switch(action){
 		case LOGIN: this.login(msg, socket_id); break;
 		case GROUP:
-		case CHAT:  this.send(msg, socket_id); break;
+		case CHAT:  this.forwarding(msg, socket_id); break;
 	}
 };
 /*
@@ -72,22 +69,18 @@ Chat.prototype.login = function(msg, socket_id){
 	this.msg_handler(msg, socket_id, this.boardcast_login);
 
 	var client_socket = Chat.io_server.sockets.connected[socket_id];
-
-	group.join_to_groups(msg.from, client_socket, function(socket){
-		socket.emit('chat message', {join: ' groups finished'});
-	});
 };
 
 /*
- * Sends message to a person.
+ * Forwards a message to a person.
  *
  * @param {object} the data send from socket sent, excepted this to be a json.
  * @param {string} id of clients socket connected to server.
  * @api public
  */
 
-Chat.prototype.send = function(msg, socket_id){
-	this.msg_handler(msg, socket_id, Chat.send_message);
+Chat.prototype.forwarding = function(msg, socket_id){
+	this.msg_handler(msg, socket_id, this.forwarding_msg);
 };
 
 /*
@@ -202,13 +195,15 @@ Chat.prototype.boardcast_login = function(msg){
 };
 
 /*
- * Sends offline messages to a socket one by one.
+ * Forwards  messages to a client.
+ * If is realtime msg, then, saves to db and forwards it.
+ * Based on the msg.event, give different Chat preducedure.
  *
  * @param {string} client usernname
  * @api private
  */
 
-Chat.send_message = function(msg, send_offline){
+Chat.prototype.forwarding_msg = function(msg, send_offline){
 
 	if(!send_offline){ // if is real time commnication, means, is new messages, need add other information.
 		msg.date = new Date(); // append information.
@@ -218,14 +213,24 @@ Chat.send_message = function(msg, send_offline){
 
 	console.log(msg.unique_code);
 
-	if(msg.event == 'group'){
-		var group_id = Chat.client_socketIDs[msg.to];
-		Chat.io_server.to(group_id).emit('group', msg);
-	}else{
-		this.person_to_person(msg, Chat.client_socketIDs[msg.to]);
+	switch(msg.event){
+		case CHAT: this.person_to_group(msg); break;
+		case GROUP: this.person_to_person(msg, Chat.client_socketIDs[msg.to]);break;
 	}
 };
 
+/*
+ * Emits person <-> group information
+ * differeniate with person to person. Used this in group chating.
+ *
+ * @param {json} msg, message need to be forwarding
+ *
+ */
+
+Chat.prototype.person_to_group = function(msg){
+	var group_id = Chat.client_socketIDs[msg.to];
+	Chat.io_server.to(group_id).emit('group', msg);
+};
 /*
  * Sends group unread messages.
  *
@@ -268,7 +273,7 @@ Chat.prototype.send_offline_messages = function(username){
 	message_service.get_offline_messages(username, function(messages){
 		for(var i in messages){
 			var send_offline = true;
-			Chat.send_message(messages[i], send_offline);
+			Chat.prototype.forwarding_msg(messages[i], send_offline);
 		}
 	});
 };
