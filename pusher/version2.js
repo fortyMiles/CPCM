@@ -12,11 +12,24 @@ var Router = require('./router/router.js'),
 var Event = require('./event.js'),
 	event = new Event();
 
+/*
+ * Initial Socket Server by a port.
+ * 
+ * @param {Integrte} port
+ */
+
 function SocketServer(port){
 	var io = require('socket.io');
 	this.io_server = io.listen(port);
 	this.port = port;
 }
+
+/*
+ * Run the process.
+ *
+ * @api public
+ *
+ */
 
 SocketServer.prototype.run = function(){
 	console.log('server begining.. listening on ' + this.port);
