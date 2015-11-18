@@ -38,3 +38,8 @@ socket.on('add user', function(msg){
     $('#users').append($('<li>').text('exised user : ' + msg));
 });
 
+socket.on('group', function(msg){
+    var message = JSON.stringify(msg);
+    $('#group').append($('<li>').text(message));
+	console.log('last code:' + msg.unique_code);
+});

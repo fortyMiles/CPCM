@@ -11,10 +11,10 @@ var Q = require('q');
 
 function Mysql(){
     var mysql = require('mysql');
-    var mapper = require('./mapper.js');
+    var mapper = require('./mapper/messages.js');
     mapper = new mapper();
 
-    var configuration = require('./configuration.js'),
+    var configuration = require('./conf/message_conf.js'),
         c = new configuration();
 
     var Status = require('./status.js'),
@@ -87,69 +87,99 @@ function Mysql(){
     };
 
 
-    this.insert = function(sender, receiver, message, event, unique_code){
-        /*
-         * insert data into db, and set 
-         * record status to 'Unread';
-         */
-        var post = {
-            message : message,
-            status : s.UNREAD,
-            sender : sender,
-            receiver : receiver,
+	/*
+	 * Inserts data into db, and set 
+	 * record status to 'Unread';
+	 * @param {string} sender
+	 * @param {string} receiver
+	 * @param {string} message
+	 * @param {string} event
+	 * @param {string} unique_code
+	 * @api public
+	 */
+	this.insert = function(sender, receiver, message, event, unique_code){
+		var post = {
+			message : message,
+			status : s.UNREAD,
+			sender : sender,
+			receiver : receiver,
 			event: event,
-            create_date: new Date(),
+			create_date: new Date(),
 			unique_code: unique_code
-        };
+		};
 
-        var query = connection.query(mapper.insert, post, function(err, result){
-            if(err) throw err;
-        });
+		var query = connection.query(mapper.insert, post, function(err, result){
+			if(err) throw err;
+		});
 
-        console.log(query.sql);
-    };
+		console.log(query.sql);
+	};
+
+	/*
+	 * Saves group message.
+	 * @param {string} sender
+	 * @param {string} message: message data
+	 * @param {string} unique_code: message's unique code
+	 * @param {string} group: from with group name
+	 * @api public
+	 *
+	 */
+	this.save_group_message = function(sender, message, unique_code, group){
+		console.log(Number(unique_code));
+		var post = {
+			sender: sender,
+			message: message,
+			unique_code: unique_code,
+			group: group,
+			create_date: new Date(),
+		};
+
+		var query = connection.query(mapper.save_group_message, post, function(err, result){
+			if(err) throw err;
+		});
+	};
 
 
+	/*
+	 * Gets the earliset record from db.
+	 * 
+	 *
+	 * @param {int} get messages each time
+	 * @param {Function} callback function of query results
+	 * @api public
+	 * 
+	 */
 
-    this.get_earliest = function(number, callback){
-        /*
-         * get the earliset record from db.
-         * 
-         * parameters:
-         *
-         * -name: callback
-         *  type: function
-         *  description: callback function o result;
-         */
-        var query = connection.query(mapper.get_earliest, number, function(err, results){
-            console.log(query.sql);
-            if(err){
-                throw err;
-            }
-            else{
-                console.log('results...');
-                console.log(results);
-                for(var i = 0; i < results.length; i++){
-                    set_message_to_wait(results[i].id);
-                }
-                callback(results);
-            }
-        });
-    };
-    
-    var set_message_to_wait = function(id){
-        var post = {
-            status: s.WAIT
-        };
+	this.get_earliest = function(number, callback){
+		var query = connection.query(mapper.get_earliest, number, function(err, results){
+			console.log(query.sql);
+			if(err){
+				throw err;
+			}
+			else{
+				console.log('results...');
+				console.log(results);
+				for(var i = 0; i < results.length; i++){
+					set_message_to_wait(results[i].id);
+				}
+				callback(results);
+			}
+		});
+	};
 
-        var restriction = {
-            id:id
-        };
-        
-        var query = connection.query(mapper.update_message, [post, restriction], function(err, results){
-            if(err) throw err;
-        });
-    };
+	var set_message_to_wait = function(id){
+		var post = {
+			status: s.WAIT
+		};
+
+		var restriction = {
+			id:id
+		};
+
+		var query = connection.query(mapper.update_message, [post, restriction], function(err, results){
+			if(err) throw err;
+		});
+	};
 
 	/*
 	 * Changes the js Date() to mysql timedata type;
@@ -181,7 +211,6 @@ function Mysql(){
 	this.check_code_message_exist = function(unique_code, callback){
 		var check_exist = "select * from message where unique_code = '"+ unique_code +"'";
 		var check = connection.query(check_exist, function(err, results){
-			debugger;
 			if(err){
 				console.log(check.sql);
 				throw err;
@@ -212,7 +241,6 @@ function Mysql(){
 		};
 
 		var query = connection.query(mapper.update_message, [post, restriction], function(err, results){
-			debugger;
 			if(err){
 				console.log(query.sql);
 				throw err;
@@ -323,7 +351,7 @@ function Mysql(){
 	this.get_offline_messages = function(username, callback){
 		var restriction = {
 			receiver: username
-		}
+		};
 
 		var query = connection.query(mapper.get_off_line_messages, restriction, function(err, results){
 			if(err){
@@ -335,7 +363,31 @@ function Mysql(){
 			}
 		});
 	};
-};
+
+	/*
+	 * Gets one user's unread group messages from a group by his last read group message code.
+	 *
+	 * @param {string} username
+	 * @param {string} last group message code
+	 * @callback {callback} produce of result messages
+	 * @api public
+	 */
+
+	this.get_group_offline_messages = function(group, lastcode, callback){
+		connection.query({
+			sql: mapper.get_group_offlines,
+			values:[group, lastcode]
+		}, function(error, results){
+			if(error) throw error;
+			else{
+				console.log(this.sql);
+				console.log(results);
+				callback(results);
+			}
+		});
+	};
+
+}
 
 
 function print(message){
@@ -365,13 +417,17 @@ function main(){
 
 		//mySql.set_all_users_break_line();
 
-		var message = null;
 		/*
-		mySql.get_offline_messages('right', function(results){
-			console.log(results);
-		});
-		*/
-	   mySql.set_message_to_read('1447322076203.1594');
+		   mySql.get_offline_messages('right', function(results){
+		   console.log(results);
+		   });
+		   */
+		//	mySql.set_message_to_read('1447322076203.1594');
+
+		//this.save_group_message = function(sender, message, unique_code, group){
+
+		//mySql.save_group_message('sender003', 'message', '123897934123', 'group');
+		mySql.get_group_offlines('group', '123898000');
 }
 
 

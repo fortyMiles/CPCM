@@ -10,7 +10,7 @@ module.exports = UserService;
 function UserService(){
     var request = require('request');
 
-    var data_handler = require('../dao/data_handler.js'),
+    var data_handler = require('../dao/message_handler.js'),
         db_handler = new data_handler();
 
     var HttpService = require('./http_servie.js'),
