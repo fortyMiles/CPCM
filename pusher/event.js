@@ -15,4 +15,5 @@ function Events(){
 	this.ECHO  = 'echo';
 	this.FEED  = 'feed';
 	this.ERROR = 'error';
+	this.CONNECTION = 'connection';
 }
