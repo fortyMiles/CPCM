@@ -17,4 +17,9 @@
 
 module.exports = Login;
 
+function Login(msg, socket_id, io_server){
+	this.msg = msg;
+	this.socket_id = socket_id;
+	this.io_server = io_server;
+}
 

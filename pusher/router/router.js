@@ -79,20 +79,16 @@ Router.prototype.check = function(msg){
 Router.prototype.mandate = function(event, msg, socket_id, io_server){
 	switch(event){
 		case e.LOGIN: 
-			var login = new Login();
-			login(msg, socket_id, io_server);
+			var login = new Login(msg, socket_id, io_server);
 			break;
 		case e.P2P: 
-			var p2p = new P2P();
-			p2p(msg, socket_id, io_server);
+			var p2p = new P2P(msg, socket_id, io_server);
 			break;
 		case e.P2G:
-			var p2g = new P2G();
-			p2g(msg, socket_id, io_server);
+			var p2g = new P2G(msg, socket_id, io_server);
 			break;
 		case e.ECHO:
-			var echo = new ECHO();
-			echo(msg, socket_id, io_server);
+			var echo = new ECHO(msg, socket_id, io_server);
 			break;
 		default:
 			this.current_socket.emit(e.ERROR, error.NTE);
