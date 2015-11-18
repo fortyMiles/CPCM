@@ -13,7 +13,7 @@ var EVENT = new Event();
 var Errors = require('./error.js');
 var ERROR = new Errors();
 
-var Login = new require('../login/main.js');
+var Account = new require('../account/main.js');
 var P2P = new require('../p2p/main.js');
 var P2G = new require('../p2g/main.js');
 var Echo = new require('../echo/main.js');
@@ -55,6 +55,7 @@ Router.prototype.check = function(msg){
  * 
  * @param {string} events
  * @param {json} msg
+ * @throws {EvalError} if there is no fit event, throws EvalError
  * @api public
  *
  */
@@ -62,7 +63,7 @@ Router.prototype.check = function(msg){
 Router.prototype.mandate = function(event, msg, socket_id, io_server){
 	switch(event){
 		case EVENT.LOGIN: 
-			var login = new Login(msg, socket_id, io_server);
+			var login = new Account(msg, socket_id, io_server);
 			break;
 		case EVENT.P2P: 
 			var p2p = new P2P(msg, socket_id, io_server);
