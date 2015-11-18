@@ -12,9 +12,13 @@ module.exports = Socket;
 function Socket(){
 }
 
+Socket.prototype.id = Math.random();
+
 Socket.prototype.emit = function(event, msg){
+	console.log('************************ EVENT *********************');
 	console.log('emit event: ' + event);
-	console.log('emit msg: ' + msg);
+	console.log('************************ MSG *********************');
+	console.log('emit msg: ' + JSON.stringify(msg));
 };
 
 Socket.prototype.join = function(room){

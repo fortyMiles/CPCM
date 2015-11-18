@@ -7,8 +7,11 @@
  *
  */
 
-var event = require('../event.js');
-var error = require('./error.js');
+var Event = require('../event.js');
+var e = new Event();
+
+var Errors = require('./error.js'),
+	error = new Errors();
 
 var Login = new require('../login/main.js');
 var P2P = new require('../p2p/main.js');
@@ -16,7 +19,13 @@ var P2G = new require('../p2g/main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
 
-function Router(msg, socket,events){
+/*
+ * Module exports
+ *
+ */
+module.exports = Router;
+
+function Router(){
 
 }
 
@@ -39,13 +48,12 @@ Router.prototype.check = function(msg){
 	var checker = new MessageChecker(msg);
 	var okay = true;
 	if(!checker.is_json(msg)){
-		console.log('not a json');
-		//this.current_socket(event.ERROR, error.TYPE);
+		this.current_socket.emit(e.ERROR, error.TYPE);
 		okay = false;
 	}
 
 	if(okay && checker.have_key_missed(msg)){
-		//this.current_socket(event.ERROR, error.KEY);
+		this.current_socket.emit(e.ERROR, error.KEY);
 		okay = false;
 	}
 
@@ -62,33 +70,43 @@ Router.prototype.check = function(msg){
  */
 
 Router.prototype.mandate = function(event, msg, socket_id){
-	switch(events){
-		case events.LOGIN: 
+	switch(event){
+		case e.LOGIN: 
 			var login = new Login();
 			login(msg, socket_id);
 			break;
-		case events.P2P: 
+		case e.P2P: 
 			var p2p = new P2P();
 			p2p(msg, socket_id);
 			break;
-		case events.P2G:
+		case e.P2G:
 			var p2g = new P2G();
 			p2g(msg, socket_id);
 			break;
-		case events.ECHO:
+		case e.ECHO:
 			var echo = new ECHO();
 			echo(msg, socket_id);
 			break;
+		default:
+			this.current_socket.emit(e.ERROR, error.NTE);
 	}	
 };
 
-Router.prototype.route = function(msg, socket, events){
+/*
+ *
+ * Router's main function. Router different msg and socket to it's proper app.
+ *
+ * @param {Object} client's msg
+ * @param {Socket} Socket of client
+ * @param {String} socket's event
+ *
+ */
+Router.prototype.route = function(msg, socket, event){
 	this.current_socket = socket;
-	
 	var formatted = this.check(msg);
 
 	if(formatted){
-		this.mandate(event, msg, this.socket.id);
+		this.mandate(event, msg, this.current_socket.id);
 	}
 };
 
@@ -125,8 +143,6 @@ MessageChecker.prototype.is_json = function(msg){
  */
 
 MessageChecker.prototype.have_key_missed= function(msg){
-	var error = require('./error.js');
-
 	var needed_keys = {
 		event:null, 
 		from:null, 
@@ -142,17 +158,16 @@ MessageChecker.prototype.have_key_missed= function(msg){
 	}
 
 	for(var i in needed_keys){
-		if(needed_keys[i] === false){
+		if(!needed_keys[i]){
 			missed_key = true;
 			break;
 		}
 	}
 
-	console.log('nis ' + missed_key);
 	return missed_key;
 };
 
-function main(){
+function test(){
 	var router = new Router();
 
 	var msg = {
@@ -167,5 +182,5 @@ function main(){
 }
 
 if(require.main == module){
-	main();
+	test();
 }

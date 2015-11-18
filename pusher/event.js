@@ -8,11 +8,11 @@
 
 module.exports = Events;
 
-var Events = {
-	LOGIN:'login',
-	P2P: 'p2p',
-	P2G: 'p2g',
-	ECHO: 'echo',
-	FEED: 'feed',
-	ERROR: 'error'
-};
+function Events(){
+	this.LOGIN = 'login';
+	this.P2P   = 'p2p';
+	this.P2G   = 'p2g';
+	this.ECHO  = 'echo';
+	this.FEED  = 'feed';
+	this.ERROR = 'error';
+}
