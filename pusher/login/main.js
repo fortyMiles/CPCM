@@ -1,0 +1,20 @@
+/*
+ * Process a client's login event.
+ *
+ * 1. Saves user's information into database.
+ * 2. Gives user's unread P2P messages.
+ * 3. Gives user's unread P2G messages.
+ * 4. Gives user's unread Inviatoin Messages.
+ *
+ * @author Minchiuan Gao <minchiuan.gao@gmail.com>
+ * Build Date: 2015-Nov-18 Wed
+ *
+ */
+
+/*
+ * Module exports.
+ */
+
+module.exports = Login;
+
+
