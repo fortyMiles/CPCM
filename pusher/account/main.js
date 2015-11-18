@@ -12,10 +12,13 @@
  * Module exports.
  */
 
-module.exports = Login;
+var AccountService = require('./service.js'),
+	account_service = new AccountService();
+
+module.exports = Account;
 
 /*
- * Login Constructor.
+ * Account Constructor.
  *
  * @param {JSON} msg: client's message
  * @param {string} socket_id of client's socket.
@@ -23,44 +26,46 @@ module.exports = Login;
  *
  */
 
-function Login(msg, socket_id, io_server){
-	this.msg = msg;
+function Account(msg, socket_id, io_server){
+	this.client_name = msg.from;
 	this.socket_id = socket_id;
 	this.io_server = io_server;
 }
 
 /*
- * Check this msg if is new registed socket.
- * @param {string} username the client's name
- * @api private
  *
+ * Logins in a client.
+ *
+ * @api public
  */
 
-Login.prototype.is_new_client = function(username){
+Account.prototype.login = function(){
+	account_service.is_new_user(username, function(exist){
+		if(exist){
+			AccountService.prototype.set_client_online(username, socket_id);
+		}else{
+			AccountService.prototype.register_client(
+				AccountService.prototype.client_name,
+				AccountService.prototype.socket_id
+			);
+		}
+	});
+
 };
 
 /*
- * Check if this msg is reconnection socket.
- * @param {string} username the client's name
+ * Register a new cllient.
+ *
+ * @param {string} username
+ * @param {socket_id} socket_id
  * @api private
  *
  */
 
-Login.prototype.is_reconnnection = function(username){
+Account.prototype.register_client = function(){
+	account_service.register_user(this.client_name, this.socket_id);
 };
 
-/*
- * Registers new client info into db.
- *
- * @param {String} username
- * @param {String} socket_id
- * @api private
- *
- */
-
-Login.prototype.registe_client = function(username, socket_id){
-
-};
 
 /*
  * Sets User online.
@@ -70,6 +75,7 @@ Login.prototype.registe_client = function(username, socket_id){
  *
  */
 
-Login.prototype.set_client_online = function(username, socket_id){
-
+Account.prototype.set_client_online = function(username, socket_id){
+	account_service.set_user_online(username, socket_id);
 };
+

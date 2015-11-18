@@ -12,11 +12,28 @@
  * module exports
  *
  */
-module.exports = LoginService;
+module.exports = AccountService;
 
 var Handler = require('./model/handler.js'),
 	handler = new Handler();
 
-function LoginService(){
-	
+function AccountService(){
+	// void
 }
+
+
+AccountService.prototype.is_new_user = function(username, callback){
+	handler.user_exist(username, function(results){
+		var existed = results[0];
+		var target_user = Object.keys(existed)[0];
+		callback(existed[target_user]);
+	});
+};
+
+AccountService.prototype.register_user = function(username, socket_id){
+	handler.register_client(username, socket_id);
+};
+
+AccountService.prototype.set_user_online = function(username, socket_id){
+	handler.set_user_online(username, socket_id);
+};
