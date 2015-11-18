@@ -17,6 +17,15 @@
 
 module.exports = Login;
 
+/*
+ * Login Constructor.
+ *
+ * @param {JSON} msg: client's message
+ * @param {string} socket_id of client's socket.
+ * @param {socket} server socket.
+ *
+ */
+
 function Login(msg, socket_id, io_server){
 	this.msg = msg;
 	this.socket_id = socket_id;

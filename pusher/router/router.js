@@ -8,10 +8,10 @@
  */
 
 var Event = require('../event.js');
-var e = new Event();
+var EVENT = new Event();
 
-var Errors = require('./error.js'),
-	error = new Errors();
+var Errors = require('./error.js');
+var ERROR = new Errors();
 
 var Login = new require('../login/main.js');
 var P2P = new require('../p2p/main.js');
@@ -29,42 +29,25 @@ function Router(){
 
 }
 
-/*
- * Current socket. To be used as emitting reception message and giving afterworad apps socket_id.
- *
- */
-
-Router.prototype.current_socket = null;
-
-/*
- * Current io socket server.
- *
- */
-
-Router.prototype.io_server = null;
 
 /*
  * Check data if is well formatted.
  * If not, emit error event to client socket.
  *
  * @param {Object} message
- * @api private
+ * @throws {Error} if msg is not a json, throw a TypeError exception.
  */
 
 Router.prototype.check = function(msg){
 	var checker = new MessageChecker(msg);
 	var okay = true;
 	if(!checker.is_json(msg)){
-		this.current_socket.emit(e.ERROR, error.TYPE);
-		okay = false;
+		throw new TypeError();
 	}
 
 	if(okay && checker.have_key_missed(msg)){
-		this.current_socket.emit(e.ERROR, error.KEY);
-		okay = false;
+		throw new SyntaxError();
 	}
-
-	return okay;
 };
 
 /*
@@ -78,20 +61,20 @@ Router.prototype.check = function(msg){
 
 Router.prototype.mandate = function(event, msg, socket_id, io_server){
 	switch(event){
-		case e.LOGIN: 
+		case EVENT.LOGIN: 
 			var login = new Login(msg, socket_id, io_server);
 			break;
-		case e.P2P: 
+		case EVENT.P2P: 
 			var p2p = new P2P(msg, socket_id, io_server);
 			break;
-		case e.P2G:
+		case EVENT.P2G:
 			var p2g = new P2G(msg, socket_id, io_server);
 			break;
-		case e.ECHO:
+		case EVENT.ECHO:
 			var echo = new ECHO(msg, socket_id, io_server);
 			break;
 		default:
-			this.current_socket.emit(e.ERROR, error.NTE);
+			throw new EvalError('error event type');
 	}	
 };
 
@@ -104,13 +87,21 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server){
  * @param {String} socket's event
  *
  */
-Router.prototype.route = function(msg, socket, event, io_server){
-	this.current_socket = socket;
-	this.io_server = io_server;
-	var formatted = this.check(msg);
 
-	if(formatted){
-		this.mandate(event, msg, this.current_socket.id, this.io_server);
+Router.prototype.route = function(msg, socket, event, io_server){
+	try{
+		this.check(msg);
+		this.mandate(event, msg, socket.id, io_server);
+	}catch(err){
+		if(err instanceof TypeError){
+			socket.emit(EVENT.ERROR, ERROR.TYPE);
+		}else if(err instanceof SyntaxError){
+			socket.emit(EVENT.ERROR, ERROR.KEY);
+		}else if(err instanceof EvalError){
+			socket.emit(EVENT.ERROR, ERROR.NTE);
+		}else{
+			throw err;
+		}
 	}
 };
 
@@ -171,20 +162,4 @@ MessageChecker.prototype.have_key_missed= function(msg){
 	return missed_key;
 };
 
-function test(){
-	var router = new Router();
 
-	var msg = {
-		data  : {message : '你在的吗'},
-		from  : 'right',
-		to    : 'left',
-		event : 'chat message',
-		lgmc  : 'chat message'
-	};
-
-	console.log(router.check(msg));
-}
-
-if(require.main == module){
-	test();
-}
