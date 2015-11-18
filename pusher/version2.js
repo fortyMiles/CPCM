@@ -6,8 +6,7 @@
  * Date: 2015-Nov-11
  */
 
-var Router = require('./router/router.js'),
-	router = new Router();
+var Router = require('./router/router.js');
 
 var Event = require('./event.js'),
 	event = new Event();
@@ -37,19 +36,27 @@ SocketServer.prototype.run = function(){
 		console.info('New client connecte (id=' + socket.id + ').');
 
 		socket.on(event.LOGIN, function(msg){
+			var router = new Router();
 			router.route(msg, socket, event.LOGIN, io_server);
 		});
 
 		socket.on(event.P2P, function(msg){
+			var router = new Router();
 			router.route(msg, socket, event.P2P, io_server);
 		});
 
 		socket.on(event.P2G, function(msg){
+			var router = new Router();
 			router.route(msg, socket, event.P2G, io_server);
 		});
 
 		socket.on(event.ENSURE, function(code){
+			var router = new Router();
 			router.route(msg, socket, event.ENSURE, io_server);
+		});
+
+		socket.on(event.DISCONNECT, function(socket){
+			//pass
 		});
 	});
 };

@@ -16,4 +16,5 @@ function Events(){
 	this.FEED  = 'feed';
 	this.ERROR = 'error';
 	this.CONNECTION = 'connection';
+	this.DISCONNECT = 'disconnect';
 }
