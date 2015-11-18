@@ -37,6 +37,13 @@ function Router(){
 Router.prototype.current_socket = null;
 
 /*
+ * Current io socket server.
+ *
+ */
+
+Router.prototype.io_server = null;
+
+/*
  * Check data if is well formatted.
  * If not, emit error event to client socket.
  *
@@ -69,23 +76,23 @@ Router.prototype.check = function(msg){
  *
  */
 
-Router.prototype.mandate = function(event, msg, socket_id){
+Router.prototype.mandate = function(event, msg, socket_id, io_server){
 	switch(event){
 		case e.LOGIN: 
 			var login = new Login();
-			login(msg, socket_id);
+			login(msg, socket_id, io_server);
 			break;
 		case e.P2P: 
 			var p2p = new P2P();
-			p2p(msg, socket_id);
+			p2p(msg, socket_id, io_server);
 			break;
 		case e.P2G:
 			var p2g = new P2G();
-			p2g(msg, socket_id);
+			p2g(msg, socket_id, io_server);
 			break;
 		case e.ECHO:
 			var echo = new ECHO();
-			echo(msg, socket_id);
+			echo(msg, socket_id, io_server);
 			break;
 		default:
 			this.current_socket.emit(e.ERROR, error.NTE);
@@ -101,12 +108,13 @@ Router.prototype.mandate = function(event, msg, socket_id){
  * @param {String} socket's event
  *
  */
-Router.prototype.route = function(msg, socket, event){
+Router.prototype.route = function(msg, socket, event, io_server){
 	this.current_socket = socket;
+	this.io_server = io_server;
 	var formatted = this.check(msg);
 
 	if(formatted){
-		this.mandate(event, msg, this.current_socket.id);
+		this.mandate(event, msg, this.current_socket.id, this.io_server);
 	}
 };
 

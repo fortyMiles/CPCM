@@ -23,7 +23,7 @@ function test(){
 	};
 
 	var test_str = "string";
-	router.route(test_str, socket, 'p2p');
+	router.route(msg, socket, 'p2p', null);
 
 }
 
