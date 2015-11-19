@@ -1,6 +1,9 @@
 /*
  *  Configuration file of 'client' database connection.
  *
+ *  @author Minchiuan Gao <minchiuan@gmail.com>
+ *  Date: 2015-Nov-18 Wed
+ *
  */
 
 module.exports = Configuration;
