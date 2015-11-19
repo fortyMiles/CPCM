@@ -22,7 +22,7 @@ function AccountService(){
 }
 
 
-AccountService.prototype.is_new_user = function(username, callback){
+AccountService.prototype.check_exist = function(username, callback){
 	handler.user_exist(username, function(results){
 		var existed = results[0];
 		var target_user = Object.keys(existed)[0];

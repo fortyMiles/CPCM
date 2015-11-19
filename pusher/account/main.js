@@ -33,24 +33,36 @@ function Account(msg, socket_id, io_server){
 }
 
 /*
- *
  * Logins in a client.
  *
+ * @callback save user info into db
  * @api public
+ *
  */
 
-Account.prototype.login = function(){
-	account_service.is_new_user(username, function(exist){
-		if(exist){
-			AccountService.prototype.set_client_online(username, socket_id);
-		}else{
-			AccountService.prototype.register_client(
-				AccountService.prototype.client_name,
-				AccountService.prototype.socket_id
-			);
-		}
-	});
+Account.prototype.login = function(callback){
 
+	account_service.check_exist(
+		this.client_name,
+		this.save_into_db.bind(this)
+	);
+
+	callback();
+};
+
+/*
+ * Login a user. if it's not exited before, registet it, or set it online.
+ * @param {Boolean} existed If user existed in table before.
+ * @api private
+ *
+ */
+
+Account.prototype.save_into_db = function(exist){
+	if(exist){
+		this.change_to_online();
+	}else{
+		this.register();
+	}
 };
 
 /*
@@ -62,7 +74,7 @@ Account.prototype.login = function(){
  *
  */
 
-Account.prototype.register_client = function(){
+Account.prototype.register = function(){
 	account_service.register_user(this.client_name, this.socket_id);
 };
 
@@ -75,7 +87,7 @@ Account.prototype.register_client = function(){
  *
  */
 
-Account.prototype.set_client_online = function(username, socket_id){
-	account_service.set_user_online(username, socket_id);
+Account.prototype.change_to_online = function(){
+	account_service.set_user_online(this.client_name, this.socket_id);
 };
 

@@ -1,15 +1,16 @@
 /*
- * Tests Service
+ * Tests Service.js
  *
  * @author Minchiuan Gao <minchiuan.gao@gmail.com>
  * Build Date: 2015-Nov-18 Wed
  *
  */
 
-function test_service(){
-	var Service = require('../service.js'),
-		service = new Service();
+var Service = require('../service.js'),
+	service = new Service();
 
+
+function test_service(){
 	var username = 'new user';
 	var socket_id = 'socket_id';
 	//service.register_user(username, socket_id);
@@ -19,21 +20,16 @@ function test_service(){
 	});
 }
 
-function test_main(){
+function test_set_online(){
+	service.set_user_online('new user', 'socket001');
+}
 
-	var username = 'new user';
-	var socket_id = 'socket_id';
-
-	var Account = require('../main.js'),
-		main = new Account({from:username}, socket_id);
-	
-	//main.is_new_client('new no user');
-	
-
-	main.register_client(username, socket_id);
-
+function test_exist(){
+	service.check_exist('new user 1', function(exist){
+		console.log(exist);
+	});
 }
 
 if(require.main == module){
-	test_main();
+	test_exist();
 }

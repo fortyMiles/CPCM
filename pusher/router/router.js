@@ -61,17 +61,32 @@ Router.prototype.check = function(msg){
  */
 
 Router.prototype.mandate = function(event, msg, socket_id, io_server){
+	var Account = new Account();
+	var P2P = new P2P();
+	var P2G = new P2G();
+
 	switch(event){
 		case EVENT.LOGIN: 
-			var login = new Account(msg, socket_id, io_server);
+			var account = new Account();
+			account.login(msg, socket_id);
+
+			var p2p = new P2P();
+			p2p.send_off_line_message(socket_id, io_server);
+
+			var p2g = new P2G();
+			p2g.send_off_line_message(socket_id, io_server);
+
 			break;
 		case EVENT.P2P: 
-			var p2p = new P2P(msg, socket_id, io_server);
+			var p2p = new P2G();
+			p2p.send_message(msg, socket_id, io_server);
 			break;
 		case EVENT.P2G:
-			var p2g = new P2G(msg, socket_id, io_server);
+			var p2g = new P2G();
+			p2g.send_message(msg, socket_id, io_server);
 			break;
 		case EVENT.ECHO:
+
 			var echo = new ECHO(msg, socket_id, io_server);
 			break;
 		default:

@@ -95,7 +95,7 @@ AccountHandler.prototype.user_exist = function(username, callback){
  *
  */
 
-AccountHandler.prototype.set_client_online = function(username, socket_id){
+AccountHandler.prototype.set_user_online = function(username, socket_id){
 	var post = {
 		socket_id: socket_id,
 		join_time: new Date(),
@@ -108,5 +108,9 @@ AccountHandler.prototype.set_client_online = function(username, socket_id){
 
 	var query = AccountHandler.connection.query(mapper.set_user_on_line, [post,restriction], function(err, results){
 		if(err) throw err;
+		else{
+			console.log(query.sql);
+			console.log(results);
+		}
 	});
 };
