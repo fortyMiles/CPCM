@@ -6,9 +6,10 @@
  *
  */
 
+var Handler = require('../handler.js'),
+	handler = new Handler();
+
 function test(){
-	var Handler = require('../handler.js'),
-		handler = new Handler();
 
 	//handler.register_client('username', 'dwad123');
 
@@ -19,6 +20,10 @@ function test(){
 	});
 }
 
+function test_set_online(){
+	handler.set_client_online('username', 'new socket id');
+}
+
 if(require.main == module){
-	test();
+	test_set_online();
 }

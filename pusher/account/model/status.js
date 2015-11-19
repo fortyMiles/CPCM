@@ -6,7 +6,7 @@
  *
  */
 
-modules.exports = Status;
+module.exports = Status;
 
 function Status(){
 	this.ON_LINE = 'on';

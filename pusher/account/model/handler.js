@@ -18,6 +18,8 @@ var Mapper = require('./mapper.js'),
 var configuration = require('./conf.js'),
 	C = new configuration();
 
+var Status = require('./Status.js'),
+	STATUS = new Status();
 
 /*
  * Account handler constructor.
@@ -82,5 +84,29 @@ AccountHandler.prototype.user_exist = function(username, callback){
 		else{
 			callback(results);
 		}
+	});
+};
+
+/*
+ * Sets User Online
+ *
+ * @param {String} username
+ * @param {String} socket_id of client
+ *
+ */
+
+AccountHandler.prototype.set_client_online = function(username, socket_id){
+	var post = {
+		socket_id: socket_id,
+		join_time: new Date(),
+		status: STATUS.ON_LINE
+	};
+
+	var restriction = {
+		username: username
+	};
+
+	var query = AccountHandler.connection.query(mapper.set_user_on_line, [post,restriction], function(err, results){
+		if(err) throw err;
 	});
 };

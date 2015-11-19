@@ -11,4 +11,6 @@ function Mapper(){
 	this.register_client = "INSERT INTO client set ?";
 
 	this.user_exist = "select exists(SELECT * FROM client where ?)";
+
+	this.set_user_on_line = "UPDATE client SET ? where ?";
 }
