@@ -6,8 +6,10 @@ try{
         var message = $('#m').val();
 
         console.log('message == ' + message);
+		var json_data = null;
+
         try{
-            var json_data = JSON.parse(message);
+            json_data = JSON.parse(message);
         }catch(e){
             console.error(e);
         }
@@ -42,4 +44,13 @@ socket.on('group', function(msg){
     var message = JSON.stringify(msg);
     $('#group').append($('<li>').text(message));
 	console.log('last code:' + msg.unique_code);
+});
+
+socket.on('reception', function(){
+	console.log('reception...');
+    $('#reception').append($('<li>').text('message reception'));
+});
+
+socket.on('err', function(msg){
+    $('#error').append($('<li>').text(JSON.stringify(msg)));
 });

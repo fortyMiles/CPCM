@@ -12,7 +12,14 @@ module.exports = Errors;
  */
 
 function Errors(){
-	this.TYPE = {error: ' type, need to be a json data.'};
-	this.NET = {error: 'Not Event Type'};
-	this.KEY = {error: ' keys, the key set must contains<from, to, data, event, lgmc>, those could be null, but should have those key'};
+	this.TYPE = 'TYPE';
+	this.NSET = 'NSET'; // No Such Event Type
+	this.LKEY = 'LKEY';
+
+	this.MSG = {
+		TYPE:{error: ' type, need to be a json data.'},
+		NSET:{error: 'No Such Event Type'},
+		LKEY:{error: 'Lack Of Keys'}
+	};
+
 }

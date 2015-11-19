@@ -40,14 +40,11 @@ function Account(username, socket_id, io_server){
  *
  */
 
-Account.prototype.login = function(callback){
-
+Account.prototype.login = function(){
 	account_service.check_exist(
 		this.client_name,
 		this.save_into_db.bind(this)
 	);
-
-	callback();
 };
 
 /*

@@ -11,7 +11,7 @@ var Event = require('../event.js');
 var EVENT = new Event();
 
 var Errors = require('./error.js');
-var ERROR = new Errors();
+var ERR = new Errors();
 
 var Account = new require('../account/main.js');
 var P2P = new require('../p2p/main.js');
@@ -42,11 +42,11 @@ Router.prototype.check = function(msg){
 	var checker = new MessageChecker(msg);
 	var okay = true;
 	if(!checker.is_json(msg)){
-		throw new TypeError(ERROR.TYPE);
+		throw new TypeError(ERR.TYPE);
 	}
 
 	if(okay && checker.have_key_missed(msg)){
-		throw new SyntaxError(ERROR.KEY);
+		throw new SyntaxError(ERR.LKEY);
 	}
 };
 
@@ -58,9 +58,8 @@ Router.prototype.check = function(msg){
  *
  */
 
-Router.prototype.login = function(username, socket_id, callback){
-	var account = new Account(username, socket_id);
-	account.login(callback);
+Router.prototype.login = function(username, socket_id){
+	new Account(username, socket_id).login();
 };
 
 /*
@@ -72,8 +71,18 @@ Router.prototype.login = function(username, socket_id, callback){
  */
 
 Router.prototype.disconnect = function(socket_id){
-	var account = new Account(null, socket_id);
-	account.change_to_offline();
+	new Account(null, socket_id).change_to_offline();
+};
+
+/*
+ * The Clean Up opeartions when a socket existed unexcepted.
+ *
+ * @api public
+ *
+ */
+
+Router.prototype.clean_up = function(){
+	new Account(null, null).exist_unexcepted();
 };
 
 /*
@@ -82,16 +91,15 @@ Router.prototype.disconnect = function(socket_id){
  * @param {string} events
  * @param {json} msg
  * @throws {EvalError} if there is no fit event, throws EvalError
+ * @callback When receive the message and proceduced, send back to client an ensure msg.
  * @api public
  *
  */
 
-Router.prototype.mandate = function(event, msg, socket_id, io_server){
+Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
 	switch(event){
 		case EVENT.LOGIN: 
-			this.login(msg.from, socket_id, function(){
-				console.log('login succeed');
-			});
+			this.login(msg.from, socket_id);
 			break;
 
 		case EVENT.P2P: 
@@ -108,8 +116,10 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server){
 		case EVENT.DISCONNECT:
 			this.disconnect(socket_id);break;
 		default:
-			throw new EvalError(ERROR.NET);
+			throw new EvalError(ERR.NSET);
 	}	
+
+	callback();
 };
 
 /*
@@ -122,17 +132,19 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server){
  *
  */
 
-Router.prototype.route = function(msg, socket, event, io_server){
+Router.prototype.route = function(msg, SOCKET, event, io_server){
 	try{
 		this.check(msg);
-		this.mandate(event, msg, socket.id, io_server);
+		this.mandate(event, msg, SOCKET.id, io_server, function(){
+			SOCKET.emit(EVENT.RECEPTION);
+		});
 	}catch(err){
-		if(err.message == ERROR.TYPE){
-			socket.emit(EVENT.ERROR, ERR.TYPE);
-		}else if(err.message == ERROR.NET){
-			socket.emit(EVENT.ERROR, ERR.NET);
-		}else if(err.message == ERROR.KEY){
-			socket.emit(EVENT.ERROR, ERR.KEY);
+		if(err.message == ERR.TYPE){
+			SOCKET.emit(EVENT.ERROR, ERR.MSG.TYPE);
+		}else if(err.message == ERR.NSET){
+			SOCKET.emit(EVENT.ERROR, ERR.MSG.NSET);
+		}else if(err.message == ERR.LKEY){
+			SOCKET.emit(EVENT.ERROR, ERR.MSG.LKEY);
 		}else{
 			throw err;
 		}
