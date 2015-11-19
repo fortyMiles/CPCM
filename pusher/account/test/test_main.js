@@ -39,7 +39,15 @@ function test_save_into_db(){
 	});
 }
 
+function test_set_offline(){
+	var username = 'mama';
+	var socket_id = 'new socket id';
+
+	var account = new Account({from:username}, socket_id);
+
+	account.change_to_offline();
+}
 
 if(require.main == module){
-	test_save_into_db();
+	test_set_offline();
 }

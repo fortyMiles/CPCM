@@ -30,6 +30,10 @@ function test_exist(){
 	});
 }
 
+function test_offline(){
+	service.set_user_offline('minchiuan socket');
+}
+
 if(require.main == module){
-	test_exist();
+	test_set_online();
 }

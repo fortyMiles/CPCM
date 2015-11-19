@@ -91,3 +91,13 @@ Account.prototype.change_to_online = function(){
 	account_service.set_user_online(this.client_name, this.socket_id);
 };
 
+/*
+ * Sets User offline
+ * @param {socket_id} socket id of client
+ * @api public
+ *
+ */
+
+Account.prototype.change_to_offline = function(){
+	account_service.set_user_offline(this.socket_id);
+};
