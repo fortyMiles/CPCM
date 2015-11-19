@@ -28,6 +28,9 @@ function test_set_offline(){
 	handler.set_user_offline('new socket id');
 }
 
+function test_all_offline(){
+	handler.set_all_online_offline();
+}
 if(require.main == module){
-	test_set_offline();
+	test_all_offline();
 }

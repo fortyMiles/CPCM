@@ -6,30 +6,36 @@
  *
  */
 
+var Router = require('../router.js'),
+	router = new Router();
+
+var Socket = require('../../test/socket.js'),
+	socket = new Socket();
+
 function test(){
-	var Router = require('../router.js'),
-		router = new Router();
-	
-	var Socket = require('../../test/socket.js'),
-		socket = new Socket();
 
 	
+}
+
+function test_login(){
 	var msg = {
 		data  : {message : '你在的吗'},
 		from  : 'right',
 		to    : 'left',
-        lgmc  : 'chat message',
+		lgmc  : 'chat message',
 		event : 'chag message'
 	};
 
 	var test_str = "string";
-	router.route(msg, socket, 'p2p', null);
-
+	router.route(msg, socket, 'login', null);
 }
 
+function test_off_line(){
+	router.disconnect('0.51808936085086316');
+}
 
 if(require.main == module){
 	console.log('test... begin');
-	test();
+	test_off_line();
 	console.log('test... end');
 }

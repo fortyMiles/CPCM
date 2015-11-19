@@ -42,12 +42,38 @@ Router.prototype.check = function(msg){
 	var checker = new MessageChecker(msg);
 	var okay = true;
 	if(!checker.is_json(msg)){
-		throw new TypeError();
+		throw new TypeError(ERROR.TYPE);
 	}
 
 	if(okay && checker.have_key_missed(msg)){
-		throw new SyntaxError();
+		throw new SyntaxError(ERROR.KEY);
 	}
+};
+
+/*
+ * The login actions when a user login.
+ *
+ * @param {String} username
+ * @param {String} socket_id
+ *
+ */
+
+Router.prototype.login = function(username, socket_id, callback){
+	var account = new Account(username, socket_id);
+	account.login(callback);
+};
+
+/*
+ * The disconnect actions when a user disconnect from server.
+ *
+ * @param {String} socket_id
+ * @api public
+ *
+ */
+
+Router.prototype.disconnect = function(socket_id){
+	var account = new Account(null, socket_id);
+	account.change_to_offline();
 };
 
 /*
@@ -61,22 +87,13 @@ Router.prototype.check = function(msg){
  */
 
 Router.prototype.mandate = function(event, msg, socket_id, io_server){
-	var Account = new Account();
-	var P2P = new P2P();
-	var P2G = new P2G();
-
 	switch(event){
 		case EVENT.LOGIN: 
-			var account = new Account();
-			account.login(msg, socket_id);
-
-			var p2p = new P2P();
-			p2p.send_off_line_message(socket_id, io_server);
-
-			var p2g = new P2G();
-			p2g.send_off_line_message(socket_id, io_server);
-
+			this.login(msg.from, socket_id, function(){
+				console.log('login succeed');
+			});
 			break;
+
 		case EVENT.P2P: 
 			var p2p = new P2G();
 			p2p.send_message(msg, socket_id, io_server);
@@ -86,11 +103,12 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server){
 			p2g.send_message(msg, socket_id, io_server);
 			break;
 		case EVENT.ECHO:
-
 			var echo = new ECHO(msg, socket_id, io_server);
 			break;
+		case EVENT.DISCONNECT:
+			this.disconnect(socket_id);break;
 		default:
-			throw new EvalError('error event type');
+			throw new EvalError(ERROR.NET);
 	}	
 };
 
@@ -109,12 +127,12 @@ Router.prototype.route = function(msg, socket, event, io_server){
 		this.check(msg);
 		this.mandate(event, msg, socket.id, io_server);
 	}catch(err){
-		if(err instanceof TypeError){
-			socket.emit(EVENT.ERROR, ERROR.TYPE);
-		}else if(err instanceof SyntaxError){
-			socket.emit(EVENT.ERROR, ERROR.KEY);
-		}else if(err instanceof EvalError){
-			socket.emit(EVENT.ERROR, ERROR.NTE);
+		if(err.message == ERROR.TYPE){
+			socket.emit(EVENT.ERROR, ERR.TYPE);
+		}else if(err.message == ERROR.NET){
+			socket.emit(EVENT.ERROR, ERR.NET);
+		}else if(err.message == ERROR.KEY){
+			socket.emit(EVENT.ERROR, ERR.KEY);
 		}else{
 			throw err;
 		}
@@ -163,7 +181,7 @@ MessageChecker.prototype.have_key_missed= function(msg){
 	};
 
 	var missed_key = false;
-	
+
 	for(var k in msg){
 		needed_keys[k] = true;
 	}

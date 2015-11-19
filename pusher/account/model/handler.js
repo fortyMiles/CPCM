@@ -109,13 +109,7 @@ AccountHandler.prototype.set_user_online = function(username, socket_id){
 		username: username
 	};
 
-	var query = AccountHandler.connection.query(mapper.set_user_status, [post, restriction], function(err, results){
-		if(err) throw err;
-		else{
-			console.log(query.sql);
-			console.log(results);
-		}
-	});
+	this.update_user_status(post, restriction);
 };
 
 /*
@@ -137,6 +131,40 @@ AccountHandler.prototype.set_user_offline = function(socket_id){
 		socket_id: socket_id
 	};
 
+	this.update_user_status(post, restriction);
+};
+
+/*
+ * Sets all online to be offline.
+ *
+ * @api public
+ *
+ */
+
+AccountHandler.prototype.set_all_online_offline = function(){
+	var post = {
+		status: STATUS.BREAK_LINE,
+		leave_time: new Date()
+	};
+
+	var restriction = {
+		status: STATUS.ON_LINE
+	};
+
+	this.update_user_status(post, restriction);
+};
+
+
+/*
+ * Updates user status
+ *
+ * @param {Dictionary} post information
+ * @param {Dictionary} restriction
+ * @api private
+ *
+ */
+
+AccountHandler.prototype.update_user_status = function(post, restriction){
 	var query = AccountHandler.connection.query(mapper.set_user_status, [post, restriction], function(err, results){
 		if(err) throw err;
 		else{

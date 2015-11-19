@@ -17,12 +17,21 @@
       #group { list-style-type: none; margin: 0; padding: 0; }
       #group li { padding: 5px 10px; }
       #group li:nth-child(odd) { background: #fee; }
+      #error { list-style-type: none; margin: 0; padding: 0; }
+      #error li { padding: 5px 10px; }
+      #error li:nth-child(odd) { background: #f00; }
+      #reception { list-style-type: none; margin: 0; padding: 0; }
+      #reception li { padding: 5px 10px; }
+      #reception li:nth-child(odd) { background: #0f0; }
+    </style>
     </style>
   </head>
   <body>
+    <ul id="reception"></ul>
     <ul id="users"></ul>
     <ul id="messages"></ul>
     <ul id="group"></ul>
+    <ul id="error"></ul>
     <form action="">
 	  <input id="m" autocomplete="off" /><button>Message</button>
     </form>

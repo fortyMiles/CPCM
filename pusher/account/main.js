@@ -26,8 +26,8 @@ module.exports = Account;
  *
  */
 
-function Account(msg, socket_id, io_server){
-	this.client_name = msg.from;
+function Account(username, socket_id, io_server){
+	this.client_name = username;
 	this.socket_id = socket_id;
 	this.io_server = io_server;
 }
@@ -100,4 +100,14 @@ Account.prototype.change_to_online = function(){
 
 Account.prototype.change_to_offline = function(){
 	account_service.set_user_offline(this.socket_id);
+};
+
+/*
+ * Procedure of a user existd unexcepted.
+ *
+ * @api public
+ */
+
+Account.prototype.exist_unexcepted = function(){
+	account_service.set_all_online_offline();
 };

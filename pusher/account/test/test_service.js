@@ -34,6 +34,10 @@ function test_offline(){
 	service.set_user_offline('minchiuan socket');
 }
 
+function test_set_all_online_breakline(){
+	service.set_all_online_offline();
+}
+
 if(require.main == module){
-	test_set_online();
+	test_set_all_online_breakline();
 }
