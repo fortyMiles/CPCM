@@ -10,6 +10,6 @@ module.exports = Status;
 
 function Status(){
 	this.ON_LINE = 'on';
-	this.OOF_LINE = 'off';
+	this.OFF_LINE = 'off';
 	this.BREAK_LINE = 'break';
 }

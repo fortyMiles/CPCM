@@ -21,9 +21,13 @@ function test(){
 }
 
 function test_set_online(){
-	handler.set_client_online('username', 'new socket id');
+	handler.set_user_online('username', 'new socket id');
+}
+
+function test_set_offline(){
+	handler.set_user_offline('new socket id');
 }
 
 if(require.main == module){
-	test_set_online();
+	test_set_offline();
 }

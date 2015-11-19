@@ -12,5 +12,6 @@ function Mapper(){
 
 	this.user_exist = "select exists(SELECT * FROM client where ?)";
 
-	this.set_user_on_line = "UPDATE client SET ? where ?";
+	this.set_user_status = "UPDATE client SET ? where ?";
+
 }

@@ -72,6 +72,8 @@ AccountHandler.prototype.register_client = function(username, socket_id){
  *
  * @param {String} username
  * @callback parser of query result.
+ * @api public
+ *
  */
 
 AccountHandler.prototype.user_exist = function(username, callback){
@@ -92,6 +94,7 @@ AccountHandler.prototype.user_exist = function(username, callback){
  *
  * @param {String} username
  * @param {String} socket_id of client
+ * @api public
  *
  */
 
@@ -106,7 +109,35 @@ AccountHandler.prototype.set_user_online = function(username, socket_id){
 		username: username
 	};
 
-	var query = AccountHandler.connection.query(mapper.set_user_on_line, [post,restriction], function(err, results){
+	var query = AccountHandler.connection.query(mapper.set_user_status, [post, restriction], function(err, results){
+		if(err) throw err;
+		else{
+			console.log(query.sql);
+			console.log(results);
+		}
+	});
+};
+
+/*
+ * Sets user offline
+ *
+ * @param {String} socket_id
+ * @api public
+ *
+ */
+
+AccountHandler.prototype.set_user_offline = function(socket_id){
+	var post = {
+		socket_id: socket_id,
+		leave_time: new Date(),
+		status: STATUS.OFF_LINE
+	};
+
+	var restriction = {
+		socket_id: socket_id
+	};
+
+	var query = AccountHandler.connection.query(mapper.set_user_status, [post, restriction], function(err, results){
 		if(err) throw err;
 		else{
 			console.log(query.sql);
