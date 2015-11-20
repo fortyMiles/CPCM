@@ -10,4 +10,5 @@ module.exports = Status;
 
 function Status(){
 	this.UNREAD = 'U';
+	this.READ = 'R';
 }

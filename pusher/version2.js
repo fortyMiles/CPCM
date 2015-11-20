@@ -13,6 +13,8 @@ var Event = require('./event.js'),
 
 var Cleanup = require('./cleanup.js');
 
+var Echo = require('./echo/main.js');
+
 var io = require('socket.io');
 var cleanup_up = new Cleanup(new Router().clean_up);
 
@@ -46,8 +48,7 @@ SocketServer.prototype.run = function(){
 		});
 
 		SOCKET.on(EVENT.P2P, function(msg){
-			var router = new Router();
-			router.route(msg, SOCKET, EVENT.P2P, IO_SERVER);
+			new Router().route(msg, SOCKET, EVENT.P2P, IO_SERVER);
 		});
 
 		SOCKET.on(EVENT.P2G, function(msg){
@@ -55,9 +56,8 @@ SocketServer.prototype.run = function(){
 			router.route(msg, SOCKET, EVENT.P2G, IO_SERVER);
 		});
 
-		SOCKET.on(EVENT.ENSURE, function(code){
-			var router = new Router();
-			router.route(msg, SOCKET, EVENT.ENSURE, IO_SERVER);
+		SOCKET.on(EVENT.P2P_ECHO, function(msg){
+			new Echo().person_to_person_echo(msg);
 		});
 
 		SOCKET.on(EVENT.DISCONNECT, function(){

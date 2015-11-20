@@ -19,6 +19,15 @@ function test_save_new_message(){
 	handler.save_a_new_message(send, receiver, message, event, unique_code);
 }
 
+function test_set_to_read(){
+	// if no message?
+	// if message already is Read?
+
+	var handler = new Handler();
+	var unique_code = 'a14479902866911584';
+	handler.set_message_to_read(unique_code);
+}
+
 if(require.main == module){
-	test_save_new_message();
+	test_set_to_read();
 }

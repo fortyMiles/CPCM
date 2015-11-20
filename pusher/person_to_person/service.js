@@ -77,3 +77,14 @@ P2PService.prototype.save_a_new_message = function(msg, receiver, event){
 	this.db_handler.save_a_new_message(sender, receiver, message, event, unique_code);
 };
 
+/*
+ * Sets a message to read.
+ *
+ * @param {string} unique_code
+ * @api public
+ *
+ */
+
+P2PService.prototype.set_message_to_read = function(unique_code){
+	this.db_handler.set_message_to_read(unique_code); 
+};

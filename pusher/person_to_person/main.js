@@ -67,7 +67,7 @@ P2P.prototype.add_online_socket = function(username, socket_id){
  * @api public
  */
 
-P2P.prototype.delete_a_online_socket = function(username){
+P2P.prototype.delete_online_socket = function(username){
 	delete P2P.online_client_socket[username];
 };
 
@@ -107,6 +107,19 @@ P2P._send_reamtime_message = function(msg, receiver, event){
 
 	var target_socket_id = P2P.online_client_socket[receiver];
 	P2P.IO_SERVER.to(target_socket_id).emit(event, msg);
+};
+
+/*
+ * Sets a p2p message to read.
+ *
+ * @param {String} unique_code of a message
+ * @api public
+ *
+ */
+
+P2P.set_p2p_message_read = function(unique_code){
+	var service = new Service();
+	service.set_message_to_read(unique_code);
 };
 
 /*

@@ -12,7 +12,7 @@ function Events(){
 	this.LOGIN = 'login';
 	this.P2P   = 'p2p';
 	this.P2G   = 'p2g';
-	this.ECHO  = 'echo';
+	this.P2P_ECHO  = 'p2p echo';
 	this.FEED  = 'feed';
 	this.ERROR = 'err';
 	this.CONNECTION = 'connection';

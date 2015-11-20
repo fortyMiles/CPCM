@@ -30,7 +30,9 @@ socket.on('you are reconnection', function(msg){
 
 socket.on(P2P, function(msg){
 	if(msg.unique_code){
-		socket.emit('message ensure', msg.unique_code);
+		console.log(msg.unique_code);
+		console.log('emit p2p echo');
+		socket.emit('p2p echo', {unique_code: msg.unique_code});
 	}
     var message = JSON.stringify(msg);
     $('#messages').append($('<li>').text(message));

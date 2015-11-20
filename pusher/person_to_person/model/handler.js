@@ -72,3 +72,41 @@ P2PHandler.prototype.save_a_new_message = function(sender, receiver, message, ev
 
 	console.log(query.sql);
 };
+
+/*
+ * Sets a message to read.
+ *
+ * @param {String} unique_code
+ * @api public
+ *
+ */
+
+P2PHandler.prototype.set_message_to_read = function(unique_code, query_time){
+	query_time = query_time || 1;
+
+	var MAX_TRY_TIME = 50;
+	if(MAX_TRY_TIME > 50){
+		throw Error('no this message!');
+	}
+
+	var post = {
+		status: STATUS.READ,
+		read_date: new Date()
+	};
+
+	var restriction = {
+		unique_code: unique_code
+	};
+
+	var query = P2PHandler.connection.query(mapper.set_message_to_read, [post, restriction], function(err, results, fields){
+		if(err) throw err;
+		var affected = Number(results.affectedRows);
+		if(affected){
+			console.log(affected);
+		}else{
+			P2PHandler.prototype.set_message_to_read(unique_code, query_time + 1);
+		}
+
+		console.log(fields);
+	});
+};

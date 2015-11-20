@@ -115,10 +115,6 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
 			p2g.send_message(msg, socket_id, io_server);
 			break;
 
-		case EVENT.ECHO:
-			var echo = new ECHO(msg, socket_id, io_server);
-			break;
-
 		case EVENT.DISCONNECT:
 			this.disconnect(socket_id);break;
 
