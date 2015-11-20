@@ -14,7 +14,7 @@ var Errors = require('./error.js');
 var ERR = new Errors();
 
 var Account = new require('../account/main.js');
-var P2P = new require('../p2p/main.js');
+var PersonToPerson = new require('../person_to_person/main.js');
 var P2G = new require('../p2g/main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
@@ -60,6 +60,9 @@ Router.prototype.check = function(msg){
 
 Router.prototype.login = function(username, socket_id){
 	new Account(username, socket_id).login();
+	new PersonToPerson().add_online_socket(username, socket_id);
+	// send offline p2p messages.
+	// send offline p2g messages
 };
 
 /*
@@ -96,6 +99,7 @@ Router.prototype.clean_up = function(){
  *
  */
 
+
 Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
 	switch(event){
 		case EVENT.LOGIN: 
@@ -103,18 +107,21 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
 			break;
 
 		case EVENT.P2P: 
-			var p2p = new P2G();
-			p2p.send_message(msg, socket_id, io_server);
+			new PersonToPerson(io_server).forward_message(msg, msg.to, EVENT.P2P);
 			break;
+
 		case EVENT.P2G:
 			var p2g = new P2G();
 			p2g.send_message(msg, socket_id, io_server);
 			break;
+
 		case EVENT.ECHO:
 			var echo = new ECHO(msg, socket_id, io_server);
 			break;
+
 		case EVENT.DISCONNECT:
 			this.disconnect(socket_id);break;
+
 		default:
 			throw new EvalError(ERR.NSET);
 	}	
@@ -156,6 +163,7 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
  * Message format checker.
  *
  */
+
 function MessageChecker(){
 }
 

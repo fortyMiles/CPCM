@@ -1,4 +1,4 @@
-var CHAT = 'chat message';
+var P2P = 'p2p';
 console.log('import send_message.js success');
 try{
     var socket = io('http://localhost:2333');
@@ -21,14 +21,14 @@ try{
         return false;
     });
 }catch(err){
-    socket.emit(CHAT, null);
+    socket.emit(P2P, null);
 }
 
 socket.on('you are reconnection', function(msg){
 		
 });
 
-socket.on(CHAT, function(msg){
+socket.on(P2P, function(msg){
 	if(msg.unique_code){
 		socket.emit('message ensure', msg.unique_code);
 	}
