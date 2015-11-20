@@ -104,6 +104,7 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
 	switch(event){
 		case EVENT.LOGIN: 
 			this.login(msg.from, socket_id);
+			new PersonToPerson(io_server).send_offline_message(msg.from, EVENT.P2P);
 			break;
 
 		case EVENT.P2P: 

@@ -110,3 +110,30 @@ P2PHandler.prototype.set_message_to_read = function(unique_code, query_time){
 		console.log(fields);
 	});
 };
+
+/*
+ * Gets one user's offline messages from db
+ * 
+ * In the beginning, we get all the message once a time, but if a person has too many messages, we could catch a patch and a patch. to reduce boardwidth and decrease waiting time.
+ *
+ * @param {string} username
+ * @return {list} results list
+ *
+ */
+
+P2PHandler.prototype.get_offline_message = function(username, callback){
+	var restriction = {
+		receiver: username
+	};
+
+	var query = P2PHandler.connection.query(mapper.get_off_line_messages, restriction, function(err, results){
+		if(err){
+			console.log(query.sql);
+			throw err;
+		}else{
+			console.log(query.sql);
+			callback(results);
+		}
+	});
+};
+

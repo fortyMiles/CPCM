@@ -28,6 +28,16 @@ function test_set_to_read(){
 	handler.set_message_to_read(unique_code);
 }
 
+function test_get_offline_message(){
+	var handler = new Handler();
+	var username = 'right';
+	handler.get_offline_message(username, function(results){
+		for(var i in results){
+			console.log(results[i]);
+		}
+	});
+}
+
 if(require.main == module){
-	test_set_to_read();
+	test_get_offline_message();
 }

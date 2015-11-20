@@ -39,6 +39,17 @@ function test_save_message(){
 	service.save_a_new_message(msg, 'Minhua', 'events');
 }
 
+function test_get_offline(){
+	var service = new Service();
+	var username = 'left';
+
+	service.get_offline_person_to_person_message(username, function(messages){
+		for(var i in messages){
+			console.log(messages[i]);
+		}
+	});
+}
+
 if(require.main == module){
-	test_save_message();
+	test_get_offline();
 }

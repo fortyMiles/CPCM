@@ -88,3 +88,46 @@ P2PService.prototype.save_a_new_message = function(msg, receiver, event){
 P2PService.prototype.set_message_to_read = function(unique_code){
 	this.db_handler.set_message_to_read(unique_code); 
 };
+
+/*
+ * Gets offline messages of a person.
+ *
+ * @param {string} receiver name
+ * @callback function to deal with getted messages
+ * @api public
+ *
+ */
+
+P2PService.prototype.get_offline_person_to_person_message = function(receiver, callback){
+	this.db_handler.get_offline_message(receiver, function(results){
+		var messages = P2PService.parse_message(results);
+		callback(messages);
+	});
+};
+
+/*
+ * Parse Query Set Messages.
+ *
+ * @param {QuerySet} results
+ * @api private
+ *
+ */
+
+P2PService.parse_message = function(results){
+	var messages = [];
+
+	for(var i in results){
+		var m = {};
+		m.data = JSON.parse(results[i].message);
+		m.from = results[i].sender;
+		m.to = results[i].receiver;
+		m.date = results[i].create_date;
+		m.unique_code = results[i].unique_code;
+		m.event = results[i].event;
+		messages.push(m);
+	}
+
+	return messages;
+};
+
+
