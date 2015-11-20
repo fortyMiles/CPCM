@@ -74,13 +74,15 @@ P2G.prototype.forward_message = function(msg, group, event){
  * @param  {String} username
  * @return {array} array of joined groups.
  * @param  {string} lgmc last group message code
+ * @param  {socket} client socket that will receive the message.
  * @api publice
  *
  */
 
-P2G.prototype.initiate_group = function(username, lgmc){
+P2G.prototype.initiate_group = function(username, lgmc, socket){
 	var group_service = new GroupService();
 	var self = this;
+	this.lgmc = lgmc;
 	group_service.get_all_joined_groups(username, this.recovery_group.bind(self));
 };
 
@@ -95,7 +97,7 @@ P2G.prototype.initiate_group = function(username, lgmc){
 P2G.prototype.recovery_group = function(groups){
 	for(var i in groups){
 		this.join_to_group(groups[i]);
-		//		P2G.send_group_offline_message(groups[i], lgmc, socket);
+		P2G.send_group_offline_message(groups[i], this.lgmc, this.CLIENT_SOCKET);
 	}
 };
 
@@ -109,10 +111,10 @@ P2G.prototype.recovery_group = function(groups){
  */
 
 P2G.send_group_offline_message = function(groupname, lgmc, socket){
-	var service = new Server();
-	service.get_group_offline_messages(groupname, lgmc, function(messages){
+	var service = new MessageService();
+	service.get_group_offline_message(groupname, lgmc, function(messages){
 		for(var i in messages){
-			socket.emit(messages[i].event, messages[i]);
+			socket.emit('p2g', messages[i]);
 		}
 	});
 };

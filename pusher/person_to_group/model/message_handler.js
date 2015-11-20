@@ -23,7 +23,6 @@ var Conf = require('./conf/message_conf.js'),
 
 function GroupMessagerHandler(){
 	//void 
-	GroupMessagerHandler.connection.connect();
 }
 
 /*
@@ -63,3 +62,25 @@ GroupMessagerHandler.prototype.save_group_message = function(sender, group, mess
 		if(err) throw err;
 	});
 };
+
+/*
+ * Gets one user's unread group messages from a group by his last read group message code.
+ *
+ * @param {string} groupname
+ * @param {string} last group message code
+ * @callback {callback} produce of result messages
+ * @api public
+ */
+
+GroupMessagerHandler.prototype.get_group_offline_message = function(group, lgmc, callback){
+	var query = GroupMessagerHandler.connection.query({
+		sql: mapper.get_group_offlines,
+		values:[group, lgmc]
+	}, function(error, results){
+		console.log(query.sql);
+		if(error) throw error;
+		callback(results);
+	});
+};
+
+

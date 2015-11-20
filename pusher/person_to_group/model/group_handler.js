@@ -24,7 +24,6 @@ function GroupHandler(){
         password: c.PASSWORD,
         database: c.DATABASE
     });
-	connection.connect();
 
 	/*
 	 * Selects one peson's all joined groups.

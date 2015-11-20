@@ -42,8 +42,6 @@ P2PHandler.connection = mysql.createConnection({
 	database: C.DATABASE
 });
 
-P2PHandler.connection.connect();
-
 /*
  * Inserts a message into db.
  *

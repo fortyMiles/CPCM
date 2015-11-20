@@ -61,8 +61,6 @@ Router.prototype.check = function(msg){
 Router.prototype.login = function(username, socket_id){
 	new Account(username, socket_id).login();
 	new PersonToPerson().add_online_socket(username, socket_id);
-	// send offline p2p messages.
-	// send offline p2g messages
 };
 
 /*
@@ -105,7 +103,7 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 		case EVENT.LOGIN: 
 			this.login(msg.from, SOCKET.id);
 			new PersonToPerson(IO_SERVER).send_offline_message(msg.from, EVENT.P2P);
-			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from, SOCKET, msg.lgmc);
+			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from, msg.lgmc, SOCKET);
 			break;
 
 		case EVENT.P2P: 
@@ -113,7 +111,7 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			break;
 
 		case EVENT.P2G:
-			new PersonToGroup(IO_SERVER).forward_message(msg, msg.to, EVENT.P2G);
+			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G);
 			
 			break;
 

@@ -10,4 +10,6 @@ module.exports = Mapper;
 
 function Mapper(){
     this.save_group_message = "INSERT INTO group_messages SET ?";
+
+	this.get_group_offlines = "SELECT * FROM group_message.group_messages where `group` = ? and `unique_code` > ? ORDER BY `unique_code` ";
 }
