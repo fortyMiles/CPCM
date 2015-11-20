@@ -14,10 +14,10 @@
 
 module.exports = P2GMessageService;
 
-var Handler = require('./model/message_handler.js');
+var Handler = require('../model/message_handler.js');
 
 function P2GMessageService(){
-	var handler = new Handler();
+	this.handler = new Handler();
 }
 
 /*
@@ -65,12 +65,12 @@ P2GMessageService.get_unique_code = function(msg){
  * @api public
  */
 
-P2GMessageService.prototype.save_a_new_message = function(msg, receiver, event){
+P2GMessageService.prototype.save_a_new_message = function(msg, group){
 	var message = JSON.stringify(msg.data);
 	var sender = msg.from.trim();
 	var unique_code = msg.unique_code;
 
-	this.db_handler.save_a_new_message(sender, receiver, message, event, unique_code);
+	this.handler.save_group_message(sender, group, message, unique_code);
 };
 
 /*

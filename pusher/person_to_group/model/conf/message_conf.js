@@ -7,8 +7,8 @@ module.exports = Configuration;
 
 function Configuration(){
 
-    this.IP = '';
-    this.USER = '';
-    this.PASSWORD = '';
-    this.DATABASE = '';
+    this.IP = '121.40.158.110';
+    this.USER = 'root';
+    this.PASSWORD = 'D0nt@D1nn3r';
+    this.DATABASE = 'message';
 }

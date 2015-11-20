@@ -15,6 +15,7 @@
 module.exports = P2G;
 
 var GroupService = require('./service/group_service.js');
+var MessageService = require('./service/message_service.js');
 
 /*
  * p2g controller constructor
@@ -60,10 +61,10 @@ P2G.IO_SERVER = null;
  */
 
 P2G.prototype.forward_message = function(msg, group, event){
-	//var service = new Service();
+	var service = new MessageService();
 
-	//msg = service.decorate_message(msg);
-	//service.save_a_new_message(msg, group, event);
+	msg = service.decorate_message(msg);
+	service.save_a_new_message(msg, group, event);
 
 	P2G.IO_SERVER.to(group).emit(event, msg);
 };
