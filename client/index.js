@@ -17,6 +17,6 @@ io.on('connection', function(socket){
   console.log('a user connected');
 });
 
-http.listen(8000, function(){
-  console.log('website serverlistening on *:8000');
+http.listen(8666, function(){
+  console.log('website serverlistening on *:8666');
 });

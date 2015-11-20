@@ -15,7 +15,7 @@ var ERR = new Errors();
 
 var Account = new require('../account/main.js');
 var PersonToPerson = new require('../person_to_person/main.js');
-var P2G = new require('../p2g/main.js');
+var PersonToGroup = new require('../person_to_group/main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
 
@@ -100,24 +100,26 @@ Router.prototype.clean_up = function(){
  */
 
 
-Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
+Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 	switch(event){
 		case EVENT.LOGIN: 
-			this.login(msg.from, socket_id);
-			new PersonToPerson(io_server).send_offline_message(msg.from, EVENT.P2P);
+			this.login(msg.from, SOCKET.id);
+			new PersonToPerson(IO_SERVER).send_offline_message(msg.from, EVENT.P2P);
+			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from, SOCKET, msg.lgmc);
 			break;
 
 		case EVENT.P2P: 
-			new PersonToPerson(io_server).forward_message(msg, msg.to, EVENT.P2P);
+			new PersonToPerson(IO_SERVER).forward_message(msg, msg.to, EVENT.P2P);
 			break;
 
 		case EVENT.P2G:
-			var p2g = new P2G();
-			p2g.send_message(msg, socket_id, io_server);
+			new PersonToGroup(IO_SERVER).forward_message(msg, msg.to, EVENT.P2G);
+			
 			break;
 
 		case EVENT.DISCONNECT:
-			this.disconnect(socket_id);break;
+			this.disconnect(SOCKET.id);
+			break;
 
 		default:
 			throw new EvalError(ERR.NSET);
@@ -139,7 +141,7 @@ Router.prototype.mandate = function(event, msg, socket_id, io_server, callback){
 Router.prototype.route = function(msg, SOCKET, event, io_server){
 	try{
 		this.check(msg);
-		this.mandate(event, msg, SOCKET.id, io_server, function(){
+		this.mandate(event, msg, SOCKET, io_server, function(){
 			SOCKET.emit(EVENT.RECEPTION);
 		});
 	}catch(err){

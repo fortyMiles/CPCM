@@ -39,7 +39,7 @@ P2PService.prototype.decorate_message = function(msg, callback){
 	}
 
 	if(!msg.unique_code){
-		msg.unique_code = this._get_unque_code(msg);
+		msg.unique_code = P2PService._get_unique_code(msg);
 	}
 
 	return msg;
@@ -54,7 +54,7 @@ P2PService.prototype.decorate_message = function(msg, callback){
  *
  */
 
-P2PService.prototype._get_unque_code = function(msg){
+P2PService._get_unique_code = function(msg){
 	var time = new Date().getTime();
 	var random = Math.floor((Math.random() * 100) + 1); // create a random number
 	var length = msg.toString().length;

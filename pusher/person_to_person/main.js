@@ -72,7 +72,7 @@ P2P.prototype.delete_online_socket = function(username){
 };
 
 /*
- * When receiver a new message. First save it inot the db, 
+ * When receiver a new message. First save it into the db, 
  * and send it to its receiver if is is online.
  *
  * @param {Obeject} message to be sent

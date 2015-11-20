@@ -42,7 +42,7 @@ socket.on('add user', function(msg){
     $('#users').append($('<li>').text('exised user : ' + msg));
 });
 
-socket.on('group', function(msg){
+socket.on('p2g', function(msg){
     var message = JSON.stringify(msg);
     $('#group').append($('<li>').text(message));
 	console.log('last code:' + msg.unique_code);

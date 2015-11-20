@@ -34,8 +34,19 @@ function test_off_line(){
 	router.disconnect('0.51808936085086316');
 }
 
+function test_join_group(){
+	var msg = {
+		data  : {message : '你在的吗'},
+		from  : '13777414593',
+		to    : 'left',
+		lgmc  : 'chat message',
+		event : 'login'
+	};
+	router.route(msg, socket, 'login', null);
+}
+
 if(require.main == module){
 	console.log('test... begin');
-	test_off_line();
+	test_join_group();
 	console.log('test... end');
 }
