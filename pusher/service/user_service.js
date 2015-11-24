@@ -7,6 +7,7 @@
 
 
 module.exports = UserService;
+
 function UserService(){
     var request = require('request');
 
@@ -38,7 +39,7 @@ function UserService(){
 
     this.send_invitation_phone_text = function(user_name){
         // send to one a invitation text.
-    };
+	};
 
 
     this.logout = function(username){
@@ -62,7 +63,7 @@ function UserService(){
     this.break_down = function(){
         db_handler.set_all_users_break_line();
     };
-}
+};
 
 
 function main(){

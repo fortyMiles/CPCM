@@ -42,8 +42,9 @@ function test_save_message(){
 function test_get_offline(){
 	var service = new Service();
 	var username = 'left';
+	var event = 'p2p';
 
-	service.get_offline_person_to_person_message(username, function(messages){
+	service.get_offline_person_to_person_message(username, event, function(messages){
 		for(var i in messages){
 			console.log(messages[i]);
 		}

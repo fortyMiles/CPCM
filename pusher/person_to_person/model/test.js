@@ -31,7 +31,8 @@ function test_set_to_read(){
 function test_get_offline_message(){
 	var handler = new Handler();
 	var username = 'right';
-	handler.get_offline_message(username, function(results){
+	var event = 'p2p';
+	handler.get_offline_message(username, event, function(results){
 		for(var i in results){
 			console.log(results[i]);
 		}

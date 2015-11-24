@@ -132,7 +132,7 @@ P2P.set_p2p_message_read = function(unique_code){
 
 P2P.prototype.send_offline_message = function(receiver,event){
 	var service = new Service();
-	service.get_offline_person_to_person_message(receiver, function(messages){
+	service.get_offline_person_to_person_message(receiver, event, function(messages){
 		for(var i in messages){
 			P2P._send_reamtime_message(messages[i], receiver, event);
 		}

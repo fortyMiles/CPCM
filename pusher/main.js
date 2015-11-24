@@ -64,7 +64,6 @@ io_server.on(e.CONNECTION, function(socket) {
     });
 
     socket.on(e.NEW_MESSAGE, function(msg){
-        debugger;
         wait_message.add(msg);
         wait_message.get_new(message_service.send_an_unread_message);
         console.log('have new message');

@@ -14,6 +14,8 @@ function Events(){
 	this.P2G   = 'p2g';
 	this.P2P_ECHO  = 'p2p echo';
 	this.FEED  = 'feed';
+	this.INVITATION = 'invitation';
+	this.AGREE = 'agree';
 	this.ERROR = 'err';
 	this.CONNECTION = 'connection';
 	this.DISCONNECT = 'disconnect';

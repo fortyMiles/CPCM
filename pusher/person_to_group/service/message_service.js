@@ -88,7 +88,11 @@ P2GMessageService.parse_messages = function(results){
 
 	for(var i in results){
 		var m = {};
-		m.data = JSON.parse(results[i].message);
+		try{
+			m.data = JSON.parse(results[i].message);
+		}catch(err){
+			 console.log(err);
+		}
 		m.from = results[i].sender;
 		m.to = results[i].group;
 		m.unique_code = results[i].unique_code;

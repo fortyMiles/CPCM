@@ -31,4 +31,3 @@ Echo.prototype.person_to_person_echo = function(msg){
 	PersonToPerson.set_p2p_message_read(unique_code);
 };
 
-

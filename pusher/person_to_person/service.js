@@ -98,8 +98,8 @@ P2PService.prototype.set_message_to_read = function(unique_code){
  *
  */
 
-P2PService.prototype.get_offline_person_to_person_message = function(receiver, callback){
-	this.db_handler.get_offline_message(receiver, function(results){
+P2PService.prototype.get_offline_person_to_person_message = function(receiver, event, callback){
+	this.db_handler.get_offline_message(receiver, event, function(results){
 		var messages = P2PService.parse_message(results);
 		callback(messages);
 	});

@@ -14,6 +14,7 @@ var Event = require('./event.js'),
 var Cleanup = require('./cleanup.js');
 
 var Echo = require('./echo/main.js');
+var Accpetion = require('./acception/main.js');
 
 var io = require('socket.io');
 var cleanup_up = new Cleanup(new Router().clean_up);
@@ -54,6 +55,15 @@ SocketServer.prototype.run = function(){
 		SOCKET.on(EVENT.P2G, function(msg){
 			var router = new Router();
 			router.route(msg, SOCKET, EVENT.P2G, IO_SERVER);
+		});
+
+		SOCKET.on(EVENT.INVITATION, function(msg){
+			new Router().route(msg, SOCKET, EVENT.INVITATION, IO_SERVER);
+		});
+
+		SOCKET.on(EVENT.AGREE, function(msg){
+			debugger;
+			new Accpetion().accept(msg);
 		});
 
 		SOCKET.on(EVENT.P2P_ECHO, function(msg){

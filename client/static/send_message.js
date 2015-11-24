@@ -14,6 +14,7 @@ try{
             console.error(e);
         }
 
+		console.log('event==' + json_data.event);
         socket.emit(json_data.event, json_data, function(data){
 			console.log(data);
 		});
@@ -55,4 +56,8 @@ socket.on('reception', function(){
 
 socket.on('err', function(msg){
     $('#error').append($('<li>').text(JSON.stringify(msg)));
+});
+
+socket.on('invitation', function(msg){
+	$('#invitation').append($('<li>').text('You Got a new invitation: ' + JSON.stringify(msg)));
 });

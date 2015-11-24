@@ -119,12 +119,15 @@ P2PHandler.prototype.set_message_to_read = function(unique_code, query_time){
  *
  */
 
-P2PHandler.prototype.get_offline_message = function(username, callback){
-	var restriction = {
-		receiver: username
-	};
+P2PHandler.prototype.get_offline_message = function(username, event, callback){
 
-	var query = P2PHandler.connection.query(mapper.get_off_line_messages, restriction, function(err, results){
+	var query = P2PHandler.connection.query(
+		mapper.get_off_line_messages, 
+		[
+			{receiver: username},
+			{event: event}
+		],
+		function(err, results){
 		if(err){
 			console.log(query.sql);
 			throw err;

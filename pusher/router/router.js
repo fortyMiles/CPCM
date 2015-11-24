@@ -18,6 +18,7 @@ var PersonToPerson = new require('../person_to_person/main.js');
 var PersonToGroup = new require('../person_to_group/main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
+var Invitation = new require('../invitation/main.js');
 
 /*
  * Module exports
@@ -103,6 +104,7 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 		case EVENT.LOGIN: 
 			this.login(msg.from, SOCKET.id);
 			new PersonToPerson(IO_SERVER).send_offline_message(msg.from, EVENT.P2P);
+			new PersonToPerson(IO_SERVER).send_offline_message(msg.from, EVENT.INVITATION);
 			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from, msg.lgmc, SOCKET);
 			break;
 
@@ -112,9 +114,11 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 
 		case EVENT.P2G:
 			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G);
-			
 			break;
 
+		case EVENT.INVITATION:
+		    new Invitation(IO_SERVER).send_invitation(msg, msg.to, EVENT.INVITATION);
+			break;
 		case EVENT.DISCONNECT:
 			this.disconnect(SOCKET.id);
 			break;
