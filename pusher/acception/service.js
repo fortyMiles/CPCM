@@ -29,10 +29,11 @@ Service.prototype.update_relation = function(msg){
 	var post = {
 		user1: person_from,
 		user2: person_to,
-		relation: relation
+		relation: relation,
+		nickname: nickname
 	};
 
-	var url = 'http://127.0.0.1:8000/account/relation/';
+	var url = 'http://127.0.0.1:8000/relation/';
 
 	request.post(url, {form: post}, function(err, httpRes, body){
 		var results = JSON.parse(body).status;
@@ -40,6 +41,6 @@ Service.prototype.update_relation = function(msg){
 };
 
 Service.prototype.set_message_to_accept = function(msg){
-	var unique_code = msg.data.unique_code
+	var unique_code = msg.data.unique_code;
 	PersonToPerson.set_p2p_message_read(unique_code);
 };
