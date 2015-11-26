@@ -144,7 +144,7 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
 	try{
 		this.check(msg);
 		this.mandate(event, msg, SOCKET, io_server, function(){
-			SOCKET.emit(EVENT.RECEPTION);
+			SOCKET.emit(EVENT.RECEPTION, {event: event});
 		});
 	}catch(err){
 		if(err.message == ERR.TYPE){

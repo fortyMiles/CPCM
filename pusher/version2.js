@@ -62,7 +62,6 @@ SocketServer.prototype.run = function(){
 		});
 
 		SOCKET.on(EVENT.AGREE, function(msg){
-			debugger;
 			new Accpetion().accept(msg);
 		});
 

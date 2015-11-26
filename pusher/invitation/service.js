@@ -28,7 +28,7 @@ InvitationService.prototype.check_user_exist = function(username, callback){
 	});
 };
 
-InvitationService.prototype.send_invitation = function(msg, usename){
+InvitationService.prototype.send_invitation = function(msg, username){
 			console.log('**************************************');
 			console.log('send invitation message to ' + username);
 			console.log('**************************************');
