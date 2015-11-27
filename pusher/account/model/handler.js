@@ -18,7 +18,7 @@ var Mapper = require('./mapper.js'),
 var configuration = require('./conf.js'),
 	C = new configuration();
 
-var Status = require('./Status.js'),
+var Status = require('./status.js'),
 	STATUS = new Status();
 
 /*
