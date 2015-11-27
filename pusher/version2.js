@@ -49,6 +49,7 @@ SocketServer.prototype.run = function(){
 		});
 
 		SOCKET.on(EVENT.P2P, function(msg){
+			debugger;
 			new Router().route(msg, SOCKET, EVENT.P2P, IO_SERVER);
 		});
 

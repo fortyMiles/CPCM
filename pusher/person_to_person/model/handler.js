@@ -82,8 +82,8 @@ P2PHandler.prototype.save_a_new_message = function(sender, receiver, message, ev
 P2PHandler.prototype.set_message_to_read = function(unique_code, query_time){
 	query_time = query_time || 1;
 
-	var MAX_TRY_TIME = 50;
-	if(MAX_TRY_TIME > 50){
+	var MAX_TRY_TIME = 100;
+	if(query_time > MAX_TRY_TIME){
 		throw Error('no this message!');
 	}
 
