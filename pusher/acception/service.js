@@ -40,7 +40,8 @@ Service.prototype.update_relation = function(msg){
 	});
 };
 
-Service.prototype.set_message_to_accept = function(msg){
-	var unique_code = msg.data.unique_code;
+Service.prototype.set_message_to_accept = function(unique_code){
 	PersonToPerson.set_p2p_message_read(unique_code);
 };
+
+

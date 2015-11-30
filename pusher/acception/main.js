@@ -14,14 +14,20 @@
 module.exports = Acception;
 
 var Service = require('./service');
+var PersonToPerson = require('../person_to_person/main.js');
 
 function Acception(){
 	//void
 }
 
 Acception.prototype.accept = function(msg){
-	debugger;
     var service = new Service();
-	service.update_relation(msg);
-	service.set_message_to_accept(msg);
+	//service.update_relation(msg);
+	
+	new PersonToPerson().forward_message(msg, msg.to, EVENT.AGREE);
+
+
+	var unique_code = msg.unique_code;
+
+	service.set_message_to_accept(unique_code);
 };
