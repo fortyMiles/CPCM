@@ -1,6 +1,6 @@
 /*
  * CRUD for p2p message.
- * 
+ *
  * Author: Minchiuan Gao <minchiuan.gao@gmail.com>
  * Date: 2015-Nov-19 Thu
  *
@@ -23,7 +23,7 @@ var Status = require('./status.js'),
 	STATUS = new Status();
 
 /*
- * P2P handler 
+ * P2P handler
  *
  */
 function P2PHandler(){
@@ -111,7 +111,7 @@ P2PHandler.prototype.set_message_to_read = function(unique_code, query_time){
 
 /*
  * Gets one user's offline messages from db
- * 
+ *
  * In the beginning, we get all the message once a time, but if a person has too many messages, we could catch a patch and a patch. to reduce boardwidth and decrease waiting time.
  *
  * @param {string} username
@@ -122,7 +122,7 @@ P2PHandler.prototype.set_message_to_read = function(unique_code, query_time){
 P2PHandler.prototype.get_offline_message = function(username, event, callback){
 
 	var query = P2PHandler.connection.query(
-		mapper.get_off_line_messages, 
+		mapper.get_off_line_messages,
 		[
 			{receiver: username},
 			{event: event}
@@ -137,4 +137,3 @@ P2PHandler.prototype.get_offline_message = function(username, event, callback){
 		}
 	});
 };
-

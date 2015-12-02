@@ -28,7 +28,7 @@ function P2P(io_server){
 }
 
 /*
- * IO Server. The Socket IO Server, shared by every P2P server which followed 
+ * IO Server. The Socket IO Server, shared by every P2P server which followed
  * by this IO Server.
  *
  * @api private
@@ -72,7 +72,7 @@ P2P.prototype.delete_online_socket = function(username){
 };
 
 /*
- * When receiver a new message. First save it into the db, 
+ * When receiver a new message. First save it into the db,
  * and send it to its receiver if is is online.
  *
  * @param {Obeject} message to be sent
@@ -104,7 +104,7 @@ P2P._send_reamtime_message = function(msg, receiver, event){
 	if(!( msg && receiver && event)){
 		throw Error('missed paramter(s)');
 	}
-
+  
 	var target_socket_id = P2P.online_client_socket[receiver];
 	P2P.IO_SERVER.to(target_socket_id).emit(event, msg);
 };
