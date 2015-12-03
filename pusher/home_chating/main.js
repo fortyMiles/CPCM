@@ -12,7 +12,7 @@
  *
  */
 
-module.exports = P2G;
+module.exports = HomeChat;
 
 var GroupService = require('./service/group_service.js');
 var MessageService = require('./service/message_service.js');
@@ -22,9 +22,9 @@ var MessageService = require('./service/message_service.js');
  *
  */
 
-function P2G(IO_SERVER, CLIENT_SOCKET){
+function HomeChat(IO_SERVER, CLIENT_SOCKET){
 	if(IO_SERVER){
-		P2G.IO_SERVER = IO_SERVER;
+		HomeChat.IO_SERVER = IO_SERVER;
 	}
 
 	if(CLIENT_SOCKET){
@@ -39,17 +39,17 @@ function P2G(IO_SERVER, CLIENT_SOCKET){
  *
  */
 
-P2G.prototype.CLIENT_SOCKET = null;
+HomeChat.prototype.CLIENT_SOCKET = null;
 
 /*
- * IO Server. The Socket IO Server, shared by every P2G server which followed 
+ * IO Server. The Socket IO Server, shared by every HomeChat server which followed 
  * by this IO Server.
  *
  * @api private
  *
  */
 
-P2G.IO_SERVER = null;
+HomeChat.IO_SERVER = null;
 
 /*
  * When receiver a new message. First saves it into the db, 
@@ -60,14 +60,13 @@ P2G.IO_SERVER = null;
  * @api public
  */
 
-P2G.prototype.forward_message = function(msg, group, event){
-	debugger;
+HomeChat.prototype.forward_message = function(msg, group, event){
 	var service = new MessageService();
 
-	msg = service.decorate_message(msg);
-	service.save_a_new_message(msg, group, event);
+	//msg = service.decorate_message(msg);
+	//service.save_a_new_message(msg, group, event);
 
-	P2G.IO_SERVER.to(group).emit(event, msg);
+	HomeChat.IO_SERVER.to(group).emit(event, msg);
 };
 
 /*
@@ -79,11 +78,11 @@ P2G.prototype.forward_message = function(msg, group, event){
  *
  */
 
-P2G.prototype.initiate_group = function(username, lgmc, socket){
+HomeChat.prototype.initiate_scope = function(username, lgmc, socket){
 	var group_service = new GroupService();
 	var self = this;
 	this.lgmc = lgmc;
-	group_service.get_all_joined_groups(username, this.recovery_group.bind(self));
+	group_service.get_all_joined_scopes(username, this.recovery_group.bind(self));
 };
 
 /*
@@ -94,10 +93,10 @@ P2G.prototype.initiate_group = function(username, lgmc, socket){
  *
  */
 
-P2G.prototype.recovery_group = function(groups){
+HomeChat.prototype.recovery_group = function(groups){
 	for(var i in groups){
 		this.join_to_group(groups[i]);
-		P2G.send_group_offline_message(groups[i], this.lgmc, this.CLIENT_SOCKET);
+	//	HomeChat.send_group_offline_message(groups[i], this.lgmc, this.CLIENT_SOCKET);
 	}
 };
 
@@ -110,7 +109,7 @@ P2G.prototype.recovery_group = function(groups){
  * @api private
  */
 
-P2G.send_group_offline_message = function(groupname, lgmc, socket){
+HomeChat.send_group_offline_message = function(groupname, lgmc, socket){
 	var service = new MessageService();
 	service.get_group_offline_message(groupname, lgmc, function(messages){
 		for(var i in messages){
@@ -127,7 +126,9 @@ P2G.send_group_offline_message = function(groupname, lgmc, socket){
  *
  */
 
-P2G.prototype.join_to_group = function(group){
+HomeChat.prototype.join_to_group = function(group){
+	debugger;
 	this.CLIENT_SOCKET.join(group);
+	console.log('join into ....');
 	this.CLIENT_SOCKET.emit('p2g', {join: ' into' + group});
 };

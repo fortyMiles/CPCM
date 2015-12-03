@@ -13,6 +13,6 @@ function Mapper(){
 	/*
 	 * Selects a person's all joined groups.
 	 */
-	this.select_all_joined_groups = "select `group` from `maili-test`.user_groups where ?";
+	this.select_all_joined_groups = "select `group` from `maili`.user_groups where ?";
 
 }

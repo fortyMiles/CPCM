@@ -53,6 +53,7 @@ SocketServer.prototype.run = function(){
 		});
 
 		SOCKET.on(EVENT.P2G, function(msg){
+			debugger;
 			var router = new Router();
 			router.route(msg, SOCKET, EVENT.P2G, IO_SERVER);
 		});
@@ -66,6 +67,7 @@ SocketServer.prototype.run = function(){
 		});
 
 		SOCKET.on(EVENT.P2P_ECHO, function(msg){
+			debugger;
 			new Echo().person_to_person_echo(msg);
 		});
 

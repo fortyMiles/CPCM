@@ -16,6 +16,7 @@ var ERR = new Errors();
 var Account = new require('../account/main.js');
 var PersonToPerson = new require('../person_to_person/main.js');
 var PersonToGroup = new require('../person_to_group/main.js');
+var HomeChat = new require('../home_chating//main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
 var Invitation = new require('../invitation/main.js');
@@ -103,9 +104,10 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 	switch(event){
 		case EVENT.LOGIN: 
 			this.login(msg.from, SOCKET.id);
-			new PersonToPerson(IO_SERVER).send_offline_message(msg.from, EVENT.P2P);
-			new PersonToPerson(IO_SERVER).send_offline_message(msg.from, EVENT.INVITATION);
-			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from, msg.lgmc, SOCKET);
+			new PersonToPerson(IO_SERVER).send_offline_message(msg.from.trim(), EVENT.P2P);
+			new PersonToPerson(IO_SERVER).send_offline_message(msg.from.trim(), EVENT.INVITATION);
+			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from.trim(), msg.lgmc, SOCKET);
+			new HomeChat(IO_SERVER, SOCKET).initiate_scope(msg.from.trim(), msg.lgmc, SOCKET);
 			break;
 
 		case EVENT.P2P: 
