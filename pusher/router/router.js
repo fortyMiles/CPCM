@@ -50,6 +50,10 @@ Router.prototype.check = function(msg){
 	if(okay && checker.have_key_missed(msg)){
 		throw new SyntaxError(ERR.LKEY);
 	}
+
+	if(!checker.check_token(msg.from, msg.token)){
+		throw new SyntaxError(ERR.TOKEN);
+	}
 };
 
 /*
@@ -155,6 +159,8 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
 			SOCKET.emit(EVENT.ERROR, ERR.MSG.NSET);
 		}else if(err.message == ERR.LKEY){
 			SOCKET.emit(EVENT.ERROR, ERR.MSG.LKEY);
+		}else if(err.message == ERR.TOKEN){
+			SOCKET.emit(EVENT.ERROR, ERR.MSG.TOKEN);
 		}else{
 			throw err;
 		}
@@ -220,3 +226,21 @@ MessageChecker.prototype.have_key_missed= function(msg){
 };
 
 
+MessageChecker.prototype.check_token = function(account, token){
+	if(token_length !== null){
+		var token_length = token.length;
+		var rand_length = parseInt(token[token_length - 1]);
+		var random_number = parseInt(token.slice(token_length - ( 1 + rand_length), token_length - 1));
+		var code_phone = parseInt(token.slice(0, token_length - (1 + rand_length)));
+		var phone = code_phone / random_number;
+
+		return parseInt(account) == phone;
+	}else{
+		return true;
+	}
+};
+
+if(require.main == module){
+	var Checker = new MessageChecker();
+	console.log(Checker.check_token('18858108013', '122011958844116473'));
+}

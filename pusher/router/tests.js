@@ -1,0 +1,1 @@
+var MessageChecker = require('./message');
