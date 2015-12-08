@@ -227,7 +227,7 @@ MessageChecker.prototype.have_key_missed= function(msg){
 
 
 MessageChecker.prototype.check_token = function(account, token){
-	if(token !== null){
+	if(token){
 		var token_length = token.length;
 		var rand_length = parseInt(token[token_length - 1]);
 		var random_number = parseInt(token.slice(token_length - ( 1 + rand_length), token_length - 1));
