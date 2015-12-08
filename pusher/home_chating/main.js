@@ -127,8 +127,6 @@ HomeChat.send_group_offline_message = function(groupname, lgmc, socket){
  */
 
 HomeChat.prototype.join_to_group = function(group){
-	debugger;
 	this.CLIENT_SOCKET.join(group);
 	console.log('join into ....');
-	this.CLIENT_SOCKET.emit('p2g', {join: ' into' + group});
 };
