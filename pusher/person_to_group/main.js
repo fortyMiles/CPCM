@@ -61,7 +61,6 @@ P2G.IO_SERVER = null;
  */
 
 P2G.prototype.forward_message = function(msg, group, event){
-	debugger;
 	var service = new MessageService();
 
 	msg = service.decorate_message(msg);
@@ -129,5 +128,5 @@ P2G.send_group_offline_message = function(groupname, lgmc, socket){
 
 P2G.prototype.join_to_group = function(group){
 	this.CLIENT_SOCKET.join(group);
-	this.CLIENT_SOCKET.emit('p2g', {join: ' into' + group});
+	//this.CLIENT_SOCKET.emit('p2g', {join: ' into' + group});
 };
