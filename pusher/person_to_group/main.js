@@ -63,7 +63,6 @@ P2G.IO_SERVER = null;
 P2G.prototype.forward_message = function(msg, group, event){
 	var service = new MessageService();
 
-	msg = service.decorate_message(msg);
 	service.save_a_new_message(msg, group, event);
 
 	P2G.IO_SERVER.to(group).emit(event, msg);

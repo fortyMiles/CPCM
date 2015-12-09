@@ -49,9 +49,11 @@ socket.on('p2g', function(msg){
 	console.log('last code:' + msg.unique_code);
 });
 
-socket.on('reception', function(){
+socket.on('reception', function(msg){
 	console.log('reception...');
     $('#reception').append($('<li>').text('message reception'));
+    var message = JSON.stringify(msg);
+    $('#reception').append($('<li>').text(message));
 });
 
 socket.on('err', function(msg){

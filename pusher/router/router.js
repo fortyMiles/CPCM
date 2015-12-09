@@ -41,7 +41,7 @@ function Router(){
  */
 
 Router.prototype.check = function(msg){
-	var checker = new MessageChecker(msg);
+	var checker = new MessageChecker();
 	var okay = true;
 	if(!checker.is_json(msg)){
 		throw new TypeError(ERR.TYPE);
@@ -147,10 +147,17 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
  */
 
 Router.prototype.route = function(msg, SOCKET, event, io_server){
+	var checker = new MessageChecker();
 	try{
 		this.check(msg);
+		msg = checker.decorate_message(msg);
 		this.mandate(event, msg, SOCKET, io_server, function(){
-			SOCKET.emit(EVENT.RECEPTION, {event: event});
+			var return_msg = {
+				event: event,
+				unique_code: msg.unique_code,
+				client_message_code: msg.client_message_code
+			};
+			SOCKET.emit(EVENT.RECEPTION, return_msg);
 		});
 	}catch(err){
 		if(err.message == ERR.TYPE){
@@ -225,6 +232,10 @@ MessageChecker.prototype.have_key_missed= function(msg){
 	return missed_key;
 };
 
+/*
+ * Check if this token is valid.
+ *
+ */
 
 MessageChecker.prototype.check_token = function(account, token){
 	if(token){
@@ -239,6 +250,45 @@ MessageChecker.prototype.check_token = function(account, token){
 		return true;
 	}
 };
+
+
+/*
+ * Decorate the raw message. Add server time and unique_code.
+ * 
+ * @param msg JSON
+ *
+ */
+
+MessageChecker.prototype.decorate_message = function(msg, callback){
+	if(!msg.date){
+		msg.date = new Date();
+	}
+
+	if(!msg.unique_code){
+		msg.unique_code = P2PService._get_unique_code(msg);
+	}
+
+	return msg;
+};
+
+/*
+ * Create a unque code for a message.
+ *
+ * @param {json} message
+ * @return {String} unique code for this message.
+ * @api priavet
+ *
+ */
+
+MessageChecker._get_unique_code = function(msg){
+	var time = new Date().getTime();
+	var random = Math.floor((Math.random() * 100) + 1); // create a random number
+	var length = msg.toString().length;
+	var result = time.toString() + length.toString() + random.toString();
+	return Number(result);
+};
+
+
 
 if(require.main == module){
 	var Checker = new MessageChecker();
