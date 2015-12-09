@@ -51,8 +51,10 @@ socket.on('p2g', function(msg){
 
 socket.on('reception', function(msg){
 	console.log('reception...');
-    $('#reception').append($('<li>').text('message reception'));
+	console.log('return msg == ...');
     var message = JSON.stringify(msg);
+	console.log(message);
+    $('#reception').append($('<li>').text('message reception'));
     $('#reception').append($('<li>').text(message));
 });
 

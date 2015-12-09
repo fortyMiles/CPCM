@@ -157,6 +157,7 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
 				unique_code: msg.unique_code,
 				client_message_code: msg.client_message_code
 			};
+			debugger;
 			SOCKET.emit(EVENT.RECEPTION, return_msg);
 		});
 	}catch(err){
@@ -265,7 +266,7 @@ MessageChecker.prototype.decorate_message = function(msg, callback){
 	}
 
 	if(!msg.unique_code){
-		msg.unique_code = P2PService._get_unique_code(msg);
+		msg.unique_code = MessageChecker._get_unique_code(msg);
 	}
 
 	return msg;
