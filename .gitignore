@@ -1,3 +1,5 @@
+pusher/node_modules/*
 *.swp
 */node_modules/*
 */.idea/*
+pusher/node_modules/mongodb/*
