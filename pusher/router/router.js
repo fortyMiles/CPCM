@@ -117,6 +117,10 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 		case EVENT.P2P: 
 			new PersonToPerson(IO_SERVER).forward_message(msg, msg.to, EVENT.P2P);
 			break;
+		
+		case EVENT.FEED:
+			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED);
+			break;
 
 		case EVENT.P2G:
 			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G);
@@ -125,6 +129,7 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 		case EVENT.INVITATION:
 		    new Invitation(IO_SERVER).send_invitation(msg, msg.to, EVENT.INVITATION);
 			break;
+
 		case EVENT.DISCONNECT:
 			this.disconnect(SOCKET.id);
 			break;
@@ -157,7 +162,6 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
 				unique_code: msg.unique_code,
 				client_message_code: msg.client_message_code
 			};
-			debugger;
 			SOCKET.emit(EVENT.RECEPTION, return_msg);
 		});
 	}catch(err){

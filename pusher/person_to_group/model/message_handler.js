@@ -48,7 +48,7 @@ GroupMessagerHandler.connection = mysql.createConnection({
  *
  */
 
-GroupMessagerHandler.prototype.save_group_message = function(sender, group, message, unique_code){
+GroupMessagerHandler.prototype.save_group_message = function(sender, group, message, unique_code, event){
 	console.log(Number(unique_code));
 	var post = {
 		sender: sender,
@@ -56,6 +56,7 @@ GroupMessagerHandler.prototype.save_group_message = function(sender, group, mess
 		unique_code: unique_code,
 		group: group,
 		create_date: new Date(),
+		event: event
 	};
 
 	var query = GroupMessagerHandler.connection.query(mapper.save_group_message, post, function(err, result){

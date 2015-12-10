@@ -69,8 +69,9 @@ P2GMessageService.prototype.save_a_new_message = function(msg, group){
 	var message = JSON.stringify(msg.data);
 	var sender = msg.from.trim();
 	var unique_code = msg.unique_code;
+	var event = msg.event;
 
-	this.handler.save_group_message(sender, group, message, unique_code);
+	this.handler.save_group_message(sender, group, message, unique_code, event);
 };
 
 
