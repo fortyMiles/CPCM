@@ -8,16 +8,32 @@
 
 var GroupHandler = require('../group_handler.js');
 
-function test_get_group(){
+function test_get_home(){
 	var group_handler = new GroupHandler();
-	username = '13777414593';
-	group_handler.get_groups(username, function(results){
-		for(var i in results){
-			console.log(results[i]);
-		}
+	username = '17862710056';
+	GroupHandler.get_homes(username, function(results){
+		console.log(results);
+	});
+}
+
+
+function test_get_relation_id(){
+	var group_handler = new GroupHandler();
+	var username = '17862710056';
+	GroupHandler.get_relation_id(username, function(group){
+		console.log(group);
+	});
+}
+
+function test_get_friend_id(){
+	var username = '17862710056';
+	GroupHandler.get_friend_id(username, function(group){
+		console.log(group);
 	});
 }
 
 if(require.main == module){
-	test_get_group();
+	test_get_home();
+	test_get_relation_id();
+	test_get_friend_id();
 }

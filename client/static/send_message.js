@@ -65,3 +65,7 @@ socket.on('err', function(msg){
 socket.on('invitation', function(msg){
 	$('#invitation').append($('<li>').text('You Got a new invitation: ' + JSON.stringify(msg)));
 });
+
+socket.on('feed', function(msg){
+	$('#group').append($('<li>').text('You Got a new invitation: ' + JSON.stringify(msg)));
+});

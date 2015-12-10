@@ -11,11 +11,10 @@ var Service = require('../group_service.js');
 function test_get_all_group(){
 	var service = new Service();
 
-	var username = '13777414593';
+	var username = '17862710056';
 	service.get_all_joined_groups(username, function(groups){
-		for(var i in groups){
-			console.log(groups[i]);
-		}
+		console.log('groups..');
+		console.log(groups);
 	});
 }
 
