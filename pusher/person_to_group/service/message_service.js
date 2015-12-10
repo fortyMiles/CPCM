@@ -98,6 +98,7 @@ P2GMessageService.parse_messages = function(results){
 		m.to = results[i].group;
 		m.unique_code = results[i].unique_code;
 		m.date= results[i].create_date;
+		m.event = results[i].event;
 
 		messages.push(m);
 	}
@@ -119,5 +120,5 @@ P2GMessageService.prototype.get_group_offline_message = function(groupname, lgmc
 	this.handler.get_group_offline_message(groupname, lgmc, function(results){
 		var messages = P2GMessageService.parse_messages(results);
 		callback(messages);
-	})	;
+	});
 };

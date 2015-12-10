@@ -112,7 +112,7 @@ P2G.send_group_offline_message = function(groupname, lgmc, socket){
 	var service = new MessageService();
 	service.get_group_offline_message(groupname, lgmc, function(messages){
 		for(var i in messages){
-			socket.emit('p2g', messages[i]);
+			socket.emit(messages[i].event, messages[i]);
 		}
 	});
 };

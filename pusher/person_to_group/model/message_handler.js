@@ -60,7 +60,10 @@ GroupMessagerHandler.prototype.save_group_message = function(sender, group, mess
 	};
 
 	var query = GroupMessagerHandler.connection.query(mapper.save_group_message, post, function(err, result){
-		if(err) throw err;
+		if(err){
+			console.log(query.sql);
+			throw err;
+		}
 	});
 };
 

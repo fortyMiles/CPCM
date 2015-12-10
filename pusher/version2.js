@@ -58,6 +58,13 @@ SocketServer.prototype.run = function(){
 			router.route(msg, SOCKET, EVENT.P2G, IO_SERVER);
 		});
 
+		SOCKET.on(EVENT.FEED, function(msg){
+			debugger;
+			var router = new Router();
+			router.route(msg, SOCKET, EVENT.FEED, IO_SERVER);
+		});
+
+
 		SOCKET.on(EVENT.INVITATION, function(msg){
 			new Router().route(msg, SOCKET, EVENT.INVITATION, IO_SERVER);
 		});
