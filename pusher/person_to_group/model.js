@@ -19,17 +19,17 @@ var P2GSchema = mongoose.Schema({
 	date: { type:Date, default: Date.now},
 });
 
-F2GSchema.methods.speak = function () {
+P2GSchema.methods.speak = function () {
   var greeting = "My sender is " + this.sender;
   console.log(greeting);
 };
 
-F2GSchema.methods.add_comment = function(){
+P2GSchema.methods.add_comment = function(){
 	this.comment += 1;
 	this.data.comment += 1;
 };
 
-var P2GMessage = mongoose.model('Feed', P2GSchema);
+var P2GMessage = mongoose.model('P2GMessage', P2GSchema);
 
 module.exports = {
 	P2GMessage: P2GMessage

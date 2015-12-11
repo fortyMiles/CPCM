@@ -8,7 +8,7 @@
 
 module.exports = GroupService;
 
-var GroupHanlder = require('../model/group_handler.js'),
+var GroupHanlder = require('./group_handler.js'),
 	group_handler = new GroupHanlder();
 
 

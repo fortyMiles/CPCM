@@ -111,7 +111,6 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			new PersonToPerson(IO_SERVER).send_offline_message(msg.from.trim(), EVENT.P2P);
 			new PersonToPerson(IO_SERVER).send_offline_message(msg.from.trim(), EVENT.INVITATION);
 			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from.trim(), msg.lgmc, SOCKET);
-			new HomeChat(IO_SERVER, SOCKET).initiate_scope(msg.from.trim(), msg.lgmc, SOCKET);
 			break;
 
 		case EVENT.P2P: 
@@ -119,6 +118,7 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			break;
 		
 		case EVENT.FEED:
+			debugger;
 			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED);
 			break;
 

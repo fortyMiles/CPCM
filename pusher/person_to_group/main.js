@@ -14,8 +14,8 @@
 
 module.exports = P2G;
 
-var GroupService = require('./service/group_service.js');
-var MessageService = require('./service/message_service.js');
+var GroupService = require('./group_service.js');
+var MessageService = require('./message_service.js');
 
 /*
  * p2g controller constructor

@@ -18,4 +18,3 @@ function Feed(){
 Feed.prototype = new P2G();
 
 
-var feed = new Feed();

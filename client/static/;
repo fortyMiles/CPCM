@@ -3,17 +3,17 @@ console.log('import send_message.js success');
 try{
     var socket = io('http://localhost:2333');
 
-//	$('#m').keydown(function( event ){
+	$('#m').keydown(function( event ){
 
-//		console.log(event.keyCode);
+		console.log(event.keyCode);
 		
 		//if(event.ctrlKey){
 			//console.log('press ctrl');
 		//}
 
 		//console.log(event);
-//		socket.emit('press');
-//	});
+		socket.emit('press');
+	});
     $('form').submit(function(){
         var message = $('#m').val();
 

@@ -6,7 +6,7 @@
  *
  */
 
-module.exports = FeedHandler;
+module.exports = P2GMessageHandler;
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/feed_test');
@@ -17,10 +17,10 @@ db.once('open', function (callback) {
   // yay!
 });
 
-var Feed = require('./model.js').Feed;
+var Feed = require('./model.js').P2GMessage;
 
 
-function FeedHandler(){
+function P2GMessageHandler(){
 	
 }
 
@@ -32,7 +32,7 @@ function FeedHandler(){
  *
  */
 
-FeedHandler.prototype.insert = function(data){
+P2GMessageHandler.prototype.insert = function(data){
 	var new_feed = new Feed(data);
 	new_feed.save(function(err, feed){
 		if(err) return console.error(err);
@@ -50,7 +50,7 @@ FeedHandler.prototype.insert = function(data){
  *
  */
 
-FeedHandler.prototype.get_offline_feed = function(group, lgmc, callback){
+P2GMessageHandler.prototype.get_offline_message = function(group, lgmc, callback){
 	var restriction = {
 		to:group,
 		unique_code: {$gt: lgmc}
@@ -72,7 +72,7 @@ FeedHandler.prototype.get_offline_feed = function(group, lgmc, callback){
  *
  */
 
-FeedHandler.prototype.comment = function(unique_code){
+P2GMessageHandler.prototype.comment = function(unique_code){
 	var restriction = {unique_code: unique_code};
 
 	Feed.find(restriction, function(err, feeds){

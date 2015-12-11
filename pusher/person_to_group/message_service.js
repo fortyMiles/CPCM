@@ -1,9 +1,9 @@
 /*
- * Message Service of Person to Group
+ * Message Service of Person of Group.
  *
  * @author Minchiuan Gao <minchiuan.gao@gmail.com>
  *
- * Build Date: 2015-Nov-20 Fri
+ * Build Date: 2015-Dec-11
  *
  */
 
@@ -14,10 +14,10 @@
 
 module.exports = P2GMessageService;
 
-var Handler = require('../model/message_handler.js');
+var Handler = require('./message_handler.js');
+var handler = new Handler();
 
 function P2GMessageService(){
-	this.handler = new Handler();
 }
 
 /*
@@ -59,51 +59,14 @@ P2GMessageService.get_unique_code = function(msg){
 };
 
 /*
- * Saves this data to group message database;
- * 
- * @param {json} msg
+ * Insert a message into db.
+ *
+ * @param {json} message.
  * @api public
- */
-
-P2GMessageService.prototype.save_a_new_message = function(msg, group){
-	var message = JSON.stringify(msg.data);
-	var sender = msg.from.trim();
-	var unique_code = msg.unique_code;
-	var event = msg.event;
-
-	this.handler.save_group_message(sender, group, message, unique_code, event);
-};
-
-
-/*
- * Parses goup offlline message from QuestSet
- *
- * @param {QuerySet} results
- * @return {Array} messages array
- * @api private
  *
  */
-
-P2GMessageService.parse_messages = function(results){
-	var messages = [];
-
-	for(var i in results){
-		var m = {};
-		try{
-			m.data = JSON.parse(results[i].message);
-		}catch(err){
-			 console.log(err);
-		}
-		m.from = results[i].sender;
-		m.to = results[i].group;
-		m.unique_code = results[i].unique_code;
-		m.date= results[i].create_date;
-		m.event = results[i].event;
-
-		messages.push(m);
-	}
-
-	return messages;
+P2GMessageService.prototype.save_a_new_message = function(msg){
+	handler.insert(msg);
 };
 
 /*
@@ -117,8 +80,14 @@ P2GMessageService.parse_messages = function(results){
  */
 
 P2GMessageService.prototype.get_group_offline_message = function(groupname, lgmc, callback){
-	this.handler.get_group_offline_message(groupname, lgmc, function(results){
-		var messages = P2GMessageService.parse_messages(results);
-		callback(messages);
-	});
+	handler.get_offline_message(groupname, lgmc, callback);
+};
+
+/*
+ * Comment a message.
+ *
+ * @param {string} message code
+ */
+P2GMessageService.prototype.add_a_comment = function(unique_code){
+   handler.comment(unique_code);
 };
