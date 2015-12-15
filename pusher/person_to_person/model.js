@@ -24,6 +24,7 @@ P2PMessageSchema.methods.change_to_read = function(){
 	var READ= 'R';
 	this.status = READ;
 	this.read_date = new Date();
+	this.save();
 };
 
 var P2PMessage = mongoose.model('P2PMessage', P2PMessageSchema);

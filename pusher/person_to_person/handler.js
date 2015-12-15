@@ -42,11 +42,9 @@ var set_message_model_to_read = function(message_model, unique_code){
 
 	message_model.find(restiction, function(err, message){
 		if(err) console.error(err);
-		for(var i in message){
-			message[i].change_to_read();
-			message[i].save();
-		}
-		return true;
+		message.map(function(msg){ 
+			msg.change_to_read();
+		});
 	});
 
 };

@@ -15,11 +15,9 @@ var MessageModel = require('../model.js').P2PMessage;
 
 var data = {
 	"data": {"relation": "爷爷", "unique_code": "14483452925131524"},  
-	"from": "13777414593", "to":  "12345678910", "event": "agree", "lgmc":"14480164570271572"
+	"from": "13777414593", "to":  "12345678910", "event": "agree", "lgmc":"14480164570271572", "unique_code": "testcode"
 };
 
 H.save_data_to_model(MessageModel, data);
 
-handler.get_offline_message('12345678910', 'agree', function(messages){
-	console.log(messages);
-});
+handler.set_message_to_read('testcode');
