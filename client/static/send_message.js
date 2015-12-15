@@ -45,7 +45,7 @@ socket.on(P2P, function(msg){
 	if(msg.unique_code){
 		console.log(msg.unique_code);
 		console.log('emit p2p echo');
-		socket.emit('p2p echo', {unique_code: msg.unique_code});
+		socket.emit('p2p_echo', {unique_code: msg.unique_code});
 	}
     var message = JSON.stringify(msg);
     $('#messages').append($('<li>').text(message));

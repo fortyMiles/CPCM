@@ -82,5 +82,3 @@ GroupHandler.get_relation_id = function(username, callback){
 GroupHandler.get_friend_id = function(username, callback){
 	this.get_group(username, 'friend_id', callback);
 };
-
-

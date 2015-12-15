@@ -11,7 +11,7 @@
  *
  */
 
-var Handler = require('./model/handler.js');
+var Handler = require('./handler.js').P2PHandler;
 
 module.exports = P2PService;
 
@@ -69,12 +69,8 @@ P2PService._get_unique_code = function(msg){
  * @api public
  */
 
-P2PService.prototype.save_a_new_message = function(msg, receiver, event){
-	var message = JSON.stringify(msg.data);
-	var sender = msg.from.trim();
-	var unique_code = msg.unique_code;
-
-	this.db_handler.save_a_new_message(sender, receiver, message, event, unique_code);
+P2PService.prototype.save_a_new_message = function(msg){
+	this.db_handler.save_a_new_message(msg);
 };
 
 /*
@@ -100,34 +96,6 @@ P2PService.prototype.set_message_to_read = function(unique_code){
 
 P2PService.prototype.get_offline_person_to_person_message = function(receiver, event, callback){
 	this.db_handler.get_offline_message(receiver, event, function(results){
-		var messages = P2PService.parse_message(results);
-		callback(messages);
+		callback(results);
 	});
 };
-
-/*
- * Parse Query Set Messages.
- *
- * @param {QuerySet} results
- * @api private
- *
- */
-
-P2PService.parse_message = function(results){
-	var messages = [];
-
-	for(var i in results){
-		var m = {};
-		m.data = JSON.parse(results[i].message);
-		m.from = results[i].sender;
-		m.to = results[i].receiver;
-		m.date = results[i].create_date;
-		m.unique_code = results[i].unique_code;
-		m.event = results[i].event;
-		messages.push(m);
-	}
-
-	return messages;
-};
-
-
