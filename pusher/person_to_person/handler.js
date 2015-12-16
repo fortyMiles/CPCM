@@ -29,6 +29,7 @@ var save_data_to_model = function(DataModle, msg){
 	new_model.save(function(err, feed){
 		if(err) console.log(err);
 		console.log('insert succeed');
+		return true;
 	});
 };
 

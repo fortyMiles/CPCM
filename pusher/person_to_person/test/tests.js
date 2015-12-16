@@ -7,7 +7,12 @@
  */
 
 var assert = require('assert');
+var chai = require('chai');
+var chaiAsPromised = require("chai-as-promised");
+var Q = require('q');
+chai.use(chaiAsPromised);
 
+chai.should();
 
 describe('P2P Data Handler', function(){
 	var H = require('../handler.js');
@@ -21,7 +26,7 @@ describe('P2P Data Handler', function(){
 				"from": "13777414593", "to":  "12345678910", "event": "agree", "lgmc":"14480164570271572"
 			};
 
-			H.save_data_to_model(MessageModel, data);
+			Q.fcall(H.save_data_to_model(MessageModel, data)).should.eventually.equal(true);
 
 		});
 	});
