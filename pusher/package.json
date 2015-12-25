@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "descirption": "test of sending or reveiving messages from server",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "cookies": "^0.5.1",
-    "express": "^4.10.2",
+    "express": "^4.13.3",
     "mongoose": "^4.3.1",
     "mysql": "^2.9.0",
     "promise": "^7.0.4",

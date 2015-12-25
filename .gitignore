@@ -3,3 +3,6 @@ pusher/node_modules/*
 */node_modules/*
 */.idea/*
 pusher/node_modules/mongodb/*
+new_backend/*
+new_backend/*/*
+new_backend/*/*

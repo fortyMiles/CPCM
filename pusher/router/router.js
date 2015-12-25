@@ -118,7 +118,6 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			break;
 		
 		case EVENT.FEED:
-			debugger;
 			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED);
 			break;
 
