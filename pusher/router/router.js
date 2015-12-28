@@ -113,6 +113,10 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			new PersonToGroup(IO_SERVER, SOCKET).initiate_group(msg.from.trim(), msg.lgmc, SOCKET);
 			break;
 
+		case EVENT.AGREE:
+			new PersonToPerson(IO_SERVER).forward_message(msg, msg.to, EVENT.AGREE);
+			break;
+
 		case EVENT.P2P: 
 			new PersonToPerson(IO_SERVER).forward_message(msg, msg.to, EVENT.P2P);
 			break;
@@ -132,6 +136,7 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 		case EVENT.DISCONNECT:
 			this.disconnect(SOCKET.id);
 			break;
+
 
 		default:
 			throw new EvalError(ERR.NSET);

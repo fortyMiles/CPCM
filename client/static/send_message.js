@@ -81,3 +81,7 @@ socket.on('invitation', function(msg){
 socket.on('feed', function(msg){
 	$('#group').append($('<li>').text('You Got a new invitation: ' + JSON.stringify(msg)));
 });
+
+socket.on('agree', function(msg){
+	$('#messages').append($('<li>').text('new Agree notification: ' + JSON.stringify(msg)));
+});

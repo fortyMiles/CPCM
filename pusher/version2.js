@@ -68,6 +68,7 @@ SocketServer.prototype.run = function(){
 		});
 
 		SOCKET.on(EVENT.AGREE, function(msg){
+		//	new Router().route(msg, SOCKET, EVENT.AGREE, IO_SERVER);
 			new Accpetion().accept(msg);
 		});
 
