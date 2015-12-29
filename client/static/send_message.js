@@ -22,7 +22,7 @@ try{
 
         try{
             json_data = JSON.parse(message);
-        }catch(e){
+       }catch(e){
             console.error(e);
         }
 

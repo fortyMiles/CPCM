@@ -23,7 +23,7 @@ function Acception(){
 
 Acception.prototype.accept = function(msg){
     var service = new Service();
-	//service.update_relation(msg);
+	service.update_relation(msg);
 	
 	new PersonToPerson().forward_message(msg, msg.to, EVENT.AGREE);
 

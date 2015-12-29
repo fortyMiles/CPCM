@@ -20,4 +20,5 @@ function Events(){
 	this.CONNECTION = 'connection';
 	this.DISCONNECT = 'disconnect';
 	this.RECEPTION = 'reception';
+	this.NEW_RELATION = 'new_relation';
 }
