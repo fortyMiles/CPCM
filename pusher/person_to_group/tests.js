@@ -10,7 +10,6 @@ var assert = require('assert');
 
 var FeedHandler = require('./handler.js');
 
-
 function FeedHandlerTest(){
 	var test_data = {
 		data: {

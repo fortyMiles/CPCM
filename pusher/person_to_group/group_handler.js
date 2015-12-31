@@ -6,79 +6,48 @@
  *
  */
 
-
-module.exports = GroupHandler;
-
 var request = require('request');
 
-function GroupHandler(){
-	/*
-	 * Selects one peson's all joined groups.
-	 *
-	 * @param {string} username
-	 * @callback {Function} operation of return results.
-	 * @api public
-	 *
-	 */
+var get_all_group = function(username, callback){
+	var group_list = [];
+	var url = 'http://121.40.158.110:3000/account/info/';
 
-}
+	url += username;
 
-GroupHandler.get_joined_home = function(username, callback){
+	console.log(url);
 
-	var joined_list = [];
-	GroupHandler.get_homes(username, function(home_list){
-		for(var i in home_list){
-			var home_id = home_list[i].trim();
-			callback(home_id);
+	request.get(url, function(err, response){
+		console.log(response.body);
+
+		var group_list = [];
+		var res_data = response.body;
+		if(response.statusCode == 200 && _is_json_string(res_data)){
+
+			var result = JSON.parse(res_data);
+			result.data.home.map(function(h){
+				group_list.push(h.home_id);
+			});
+
+			result.data.feed_group.map(function(f){
+				group_list.push(f.group_id);
+			});
+			callback(group_list);
+
+		}else{
+			callback(null);
 		}
 	});
-
-	GroupHandler.get_relation_id(username, function(result){
-		callback(result);
-	});
-
-	GroupHandler.get_friend_id(username, function(result){
-		callback(result);
-	});
-
-
 };
 
-GroupHandler.get_homes = function(username, callback){
-	var group_list = [];
-	var url = 'http://121.40.158.110:8000/relation/home_id/';
-
-	url += username;
-
-	console.log(url);
-
-	request.get(url, function(err, response){
-		console.log(response.body);
-		var result = JSON.parse(response.body);
-		callback(result.id);
-	});
-
+var _is_json_string = function(str){
+	try{
+		JSON.parse(str);
+	}catch(e){
+		return false;
+	}
+	return true;
 };
 
-GroupHandler.get_group = function(username, scope, callback){
-	var url = 'http://121.40.158.110:8000/relation/' + scope + '/';
-
-	console.log(url);
-	url += username;
-
-	request.get(url, function(err, response){
-		var group_list = [];
-		console.log(response.body);
-		var result = JSON.parse(response.body);
-		group_list.push(result.id);
-		callback(group_list);
-	});
-};
-
-GroupHandler.get_relation_id = function(username, callback){
-	this.get_group(username, 'relation_id', callback);
-};
-
-GroupHandler.get_friend_id = function(username, callback){
-	this.get_group(username, 'friend_id', callback);
+module.exports = {
+	get_all_group: get_all_group,
 };

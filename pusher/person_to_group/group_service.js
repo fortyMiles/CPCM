@@ -8,9 +8,7 @@
 
 module.exports = GroupService;
 
-var GroupHanlder = require('./group_handler.js'),
-	group_handler = new GroupHanlder();
-
+var GroupHanlder = require('./group_handler.js');
 
 /*
  * Initiate Group service
@@ -56,25 +54,5 @@ GroupService.show_group = function(group_list){
  */
 
 GroupService.prototype.get_all_joined_groups = function(username, callback){
-	GroupService.prototype.get_all_joined_home(username, callback);
-	GroupService.prototype.get_all_joined_friend(username, callback);
-	GroupService.prototype.get_all_joined_relation(username, callback);
-};
-
-GroupService.prototype.get_all_joined_home = function(username, callback){
-	GroupHanlder.get_homes(username, function(group_list){
-		callback(group_list);
-	});
-};
-
-GroupService.prototype.get_all_joined_friend = function(username, callback){
-	GroupHanlder.get_friend_id(username, function(group_list){
-		callback(group_list);
-	});
-};
-
-GroupService.prototype.get_all_joined_relation = function(username, callback){
-	GroupHanlder.get_relation_id(username, function(group_list){
-		callback(group_list);
-	});
+	GroupHanlder.get_all_group(username, callback);
 };
