@@ -19,7 +19,7 @@ function InvitationService(){
 }
 
 InvitationService.prototype.check_user_exist = function(username, callback){
-    url = 'http://121.40.158.110:8000/account/exist/' + username;
+    url = 'http://121.40.158.110:3000/account/exist/' + username;
 	request(url, function(err, response, body){
 		if(!err && response.statusCode == 200){
 			var result = JSON.parse(body);
