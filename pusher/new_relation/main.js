@@ -11,11 +11,6 @@ var notify = function(msg){
 	var friend = msg.friend;
 	var relation = msg.relation;
 
-	var msg = {
-		data:{},
-		sender: 'server',
-		from: receiver,
-	}
 	console.log(receiver + 'add a new friend: ' + friend + ' ' + relation);
 };
 

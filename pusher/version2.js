@@ -14,7 +14,7 @@ var Event = require('./event.js'),
 var Cleanup = require('./cleanup.js');
 
 var Echo = require('./echo/main.js');
-var Accpetion = require('./creat_new_relation/main.js');
+var CreateNewRelation = require('./creat_new_relation/main.js');
 var new_relation = require('./new_relation/main.js');
 
 var io = require('socket.io');
@@ -70,7 +70,7 @@ SocketServer.prototype.run = function(){
 
 		SOCKET.on(EVENT.AGREE, function(msg){
 			new Router().route(msg, SOCKET, EVENT.AGREE, IO_SERVER);
-			new Accpetion().accept(msg);
+			new CreateNewRelation().accept(msg);
 		});
 
 		SOCKET.on(EVENT.P2P_ECHO, function(msg){

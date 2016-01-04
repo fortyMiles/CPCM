@@ -24,6 +24,14 @@ Service.prototype.update_relation = function(msg){
 
 	var url = 'http://127.0.0.1:300/relation/create';
 
+	var post = {
+		inviter: msg.data.inviter,
+		invitee: msg.data.invitee,
+		scope: msg.data.scope,
+		home_id: msg.home_id,
+		invitee_position: msg.invitee_position,
+	};
+
 	request.post(url, {form: post}, function(err, httpRes, body){
 		var results = JSON.parse(body).status;
 	});
