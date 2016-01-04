@@ -25,9 +25,6 @@ Acception.prototype.accept = function(msg){
     var service = new Service();
 	service.update_relation(msg);
 	
-	new PersonToPerson().forward_message(msg, msg.to, EVENT.AGREE);
-
 	var unique_code = msg.unique_code;
-
 	service.set_message_to_accept(unique_code);
 };
