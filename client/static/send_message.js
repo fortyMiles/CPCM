@@ -83,5 +83,5 @@ socket.on('feed', function(msg){
 });
 
 socket.on('agree', function(msg){
-	$('#messages').append($('<li>').text('new Agree notification: ' + JSON.stringify(msg)));
+	$('#agree').append($('<li>').text('NEW AGREE notification: ' + JSON.stringify(msg)));
 });
