@@ -301,5 +301,5 @@ MessageChecker._get_unique_code = function(msg){
 
 if(require.main == module){
 	var Checker = new MessageChecker();
-	console.log(Checker.check_token('18858108013', '122011958844116473'));
+	console.log(Checker.check_token('1399330008293092583', '19590620116103295000142'));
 }

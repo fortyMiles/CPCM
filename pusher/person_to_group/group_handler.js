@@ -8,11 +8,11 @@
 
 var request = require('request');
 
-var get_all_group = function(username, callback){
+var get_all_group = function(user_id, callback){
 	var group_list = [];
 	var url = 'http://121.40.158.110:3000/account/info/';
 
-	url += username;
+	url += user_id;
 
 	console.log(url);
 
