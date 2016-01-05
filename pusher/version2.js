@@ -42,7 +42,7 @@ SocketServer.prototype.run = function(){
 	console.log('server begining.. listening on ' + this.port);
 
 	IO_SERVER.on(EVENT.CONNECTION, function(SOCKET){
-		console.info('New client connecte (id=' + SOCKET.id + ').');
+		console.info('New client connects (id=' + SOCKET.id + ').');
 
 		SOCKET.on(EVENT.LOGIN, function(msg){
 			new Router().route(msg, SOCKET, EVENT.LOGIN, IO_SERVER);

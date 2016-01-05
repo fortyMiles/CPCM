@@ -24,7 +24,6 @@ Service.prototype.update_relation = function(msg, callback){
 
 	var url = 'http://localhost:3000/relation/create';
 
-	debugger;
 	var post = {
 		inviter: msg.data.inviter,
 		invitee: msg.data.invitee,
@@ -39,22 +38,22 @@ Service.prototype.update_relation = function(msg, callback){
 		url:url, 
 		form: post
 	}, function(err, httpRes, body){
-		debugger;
-
 		if(err) throw err;
 
 		if(httpRes.statusCode == 200){
-			var relation_data = body;
+			var relation_data = JSON.parse(body);
 
 			var NEW_CONTACT = 'new_contact';
 
 			var new_create_relation = relation_data.relation;
 
-			debugger;
 			for(var i = 0; i < new_create_relation.length; i++){
 				// generate the create info to exist_person
-				debugger;
-				var p2p_message_to_exist_person = {};
+				var p2p_message_to_exist_person = {
+					data: {},
+					to: null,
+					event:null,
+				};
 				p2p_message_to_exist_person.data.home_id = relation_data.home_id;
 				p2p_message_to_exist_person.data.new_contact = new_create_relation[i].friend;
 				p2p_message_to_exist_person.data.relation = new_create_relation[i].relation;
@@ -64,15 +63,22 @@ Service.prototype.update_relation = function(msg, callback){
 				relation_info.push(p2p_message_to_exist_person);
 				// generate to create infor to invitee;
 
-				var p2p_message_to_invitee = {};
-				p2p_message_to_invitee.to = new_create_relation[i].friend.user_id;
+				var p2p_message_to_invitee = {
+					data: {},
+					to: null,
+					event:null,
+				};
+				p2p_message_to_invitee.home_id = relation_data.home_id;
 				p2p_message_to_invitee.data.new_contact = new_create_relation[i].receiver;
 				p2p_message_to_invitee.data.relation = new_create_relation[i].converse_relation;
-				p2p_message_to_invitee.to = new_create_relation[i].receiver.user_id;
+				p2p_message_to_invitee.to = new_create_relation[i].friend.user_id;
 				p2p_message_to_invitee.event = NEW_CONTACT;
 				relation_info.push(p2p_message_to_invitee);
+
+				if(i == new_create_relation.length - 1){
+					callback(relation_info);
+				}
 			}
-			callback(relation_info);
 		}
 	});
 };
