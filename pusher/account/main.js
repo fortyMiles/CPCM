@@ -12,8 +12,7 @@
  * Module exports.
  */
 
-var AccountService = require('./service.js'),
-	account_service = new AccountService();
+var account_handler = require('./handler.js');
 
 module.exports = Account;
 
@@ -41,51 +40,13 @@ function Account(username, socket_id, io_server){
  */
 
 Account.prototype.login = function(){
-	account_service.check_exist(
-		this.client_name,
-		this.save_into_db.bind(this)
-	);
-};
-
-/*
- * Login a user. if it's not exited before, registet it, or set it online.
- * @param {Boolean} existed If user existed in table before.
- * @api private
- *
- */
-
-Account.prototype.save_into_db = function(exist){
-	if(exist){
-		this.change_to_online();
-	}else{
-		this.register();
-	}
-};
-
-/*
- * Register a new cllient.
- *
- * @param {string} username
- * @param {socket_id} socket_id
- * @api private
- *
- */
-
-Account.prototype.register = function(){
-	account_service.register_user(this.client_name, this.socket_id);
-};
-
-
-/*
- * Sets User online.
- * @param {string} username
- * @param {string} socket_id
- * @api private
- *
- */
-
-Account.prototype.change_to_online = function(){
-	account_service.set_user_online(this.client_name, this.socket_id);
+	account_handler.check_user_exist(this.client_name, function(exist){
+		if(exist){
+            account_handler.set_user_online(this.client_name, this.socket_id);
+		}else{
+			account_handler.register_client(this.client_name, this.socket_id);
+		}
+	});
 };
 
 /*
@@ -96,7 +57,7 @@ Account.prototype.change_to_online = function(){
  */
 
 Account.prototype.change_to_offline = function(){
-	account_service.set_user_offline(this.socket_id);
+	account_handler.set_user_offline(this.socket_id);
 };
 
 /*
@@ -106,5 +67,5 @@ Account.prototype.change_to_offline = function(){
  */
 
 Account.prototype.exist_unexcepted = function(){
-	account_service.set_all_online_offline();
+	account_handler.set_all_online_offline();
 };

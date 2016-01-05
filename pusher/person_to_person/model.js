@@ -15,7 +15,7 @@ var P2PMessageSchema = mongoose.Schema({
 	event: String,
 	status: { type: String, default: 'U'}, // message status.
 	unique_code: String,
-	date: { type: String, default: Date.now},
+	date: { type: Date, default: Date.now},
 	read_date: { type: String}
 });
 

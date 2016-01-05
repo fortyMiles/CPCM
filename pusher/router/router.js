@@ -16,7 +16,6 @@ var ERR = new Errors();
 var Account = new require('../account/main.js');
 var PersonToPerson = new require('../person_to_person/main.js');
 var PersonToGroup = new require('../person_to_group/main.js');
-var HomeChat = new require('../home_chating//main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
 var Invitation = new require('../invitation/main.js');

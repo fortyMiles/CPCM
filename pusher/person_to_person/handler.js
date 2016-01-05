@@ -8,7 +8,7 @@
 
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://121.40.158.110/p2p_message');
+mongoose.connect('mongodb://localhost/p2p_message');
 
 var _ = require('ramda');
 

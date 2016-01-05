@@ -1,8 +1,0 @@
-{
-  "name": "data handler",
-  "version": "0.1",
-  "description": "CRUD operation for database",
-  "dependencies": {
-    "mysql": "^2.9.0"
-  }
-}

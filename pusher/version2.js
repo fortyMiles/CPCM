@@ -15,7 +15,6 @@ var Cleanup = require('./cleanup.js');
 
 var Echo = require('./echo/main.js');
 var CreateNewRelation = require('./creat_new_relation/main.js');
-var new_relation = require('./new_relation/main.js');
 
 var io = require('socket.io');
 var cleanup_up = new Cleanup(new Router().clean_up);
@@ -79,10 +78,6 @@ SocketServer.prototype.run = function(){
 
 		SOCKET.on(EVENT.DISCONNECT, function(){
 			new Router().disconnect(SOCKET.id);
-		});
-
-		SOCKET.on(EVENT.NEW_RELATION, function(msg){
-			new_relation.notify(msg);
 		});
 	});
 };

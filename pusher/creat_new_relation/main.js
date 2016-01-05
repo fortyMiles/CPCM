@@ -23,7 +23,11 @@ function Acception(){
 
 Acception.prototype.accept = function(msg){
     var service = new Service();
-	service.update_relation(msg);
+	service.update_relation(msg, function(relation_info){
+		relation_info.map(function(relation){
+			new PersonToPerson().forward_message(relation, relation.to, relation.event);
+		});
+	});
 	
 	var unique_code = msg.unique_code;
 	service.set_message_to_accept(unique_code);

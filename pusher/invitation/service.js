@@ -19,18 +19,19 @@ function InvitationService(){
 }
 
 InvitationService.prototype.check_user_exist = function(username, callback){
-    url = 'http://121.40.158.110:3000/account/exist/' + username;
+	var length = 11;
+    var url = 'http://localhost:3000/account/exist/' + username.slice(0, length);
 	request(url, function(err, response, body){
 		if(!err && response.statusCode == 200){
 			var result = JSON.parse(body);
-			callback(result.exist);
+			callback(result);
 		}
 	});
 };
 
 InvitationService.prototype.send_invitation = function(msg, username){
-			console.log('**************************************');
-			console.log('send invitation message to ' + username);
-			console.log('**************************************');
+	console.log('**************************************');
+	console.log('send invitation message to ' + username);
+	console.log('**************************************');
 };
 
