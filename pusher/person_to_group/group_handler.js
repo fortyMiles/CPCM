@@ -25,7 +25,7 @@ var get_all_group = function(user_id, callback){
 
 			var result = JSON.parse(res_data);
 			result.data.home.map(function(h){
-				group_list.push(h.home_id);
+				group_list.push(h.home);
 			});
 
 			result.data.feed_group.map(function(f){

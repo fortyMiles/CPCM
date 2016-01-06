@@ -40,9 +40,12 @@ Service.prototype.update_relation = function(msg, callback){
 	}, function(err, httpRes, body){
 		if(err) throw err;
 
+		console.log(httpRes.statusCode);
+
 		if(httpRes.statusCode == 200){
 			var relation_data = JSON.parse(body);
 
+			debugger;
 			var NEW_CONTACT = 'new_contact';
 
 			var new_create_relation = relation_data.relation;
