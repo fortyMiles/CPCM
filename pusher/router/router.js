@@ -175,7 +175,11 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
 		}else if(err.message == ERR.LKEY){
 			SOCKET.emit(EVENT.ERROR, ERR.MSG.LKEY);
 		}else if(err.message == ERR.TOKEN){
-			SOCKET.emit(EVENT.ERROR, ERR.MSG.TOKEN);
+			SOCKET.emit(EVENT.ERROR, {
+				error: ERR.MSG.TOKEN, 
+				event: event,
+				client_message_code: msg.client_message_code
+			});
 		}else{
 			throw err;
 		}
