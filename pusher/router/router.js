@@ -19,6 +19,7 @@ var PersonToGroup = new require('../person_to_group/main.js');
 var Echo = new require('../echo/main.js');
 var Feed = new require('../feed/main.js');
 var Invitation = new require('../invitation/main.js');
+var jwt = new require('jsonwebtoken');
 
 /*
  * Module exports
@@ -50,9 +51,11 @@ Router.prototype.check = function(msg){
 		throw new SyntaxError(ERR.LKEY);
 	}
 
-	if(!checker.check_token(msg.from, msg.token)){
-		throw new SyntaxError(ERR.TOKEN);
-	}
+	checker.check_token(msg.from, msg.token, function(token_valid){
+		if(!token_valid){
+			throw new SyntaxError(ERR.TOKEN);
+		}
+	});
 };
 
 /*
@@ -249,17 +252,20 @@ MessageChecker.prototype.have_key_missed= function(msg){
  *
  */
 
-MessageChecker.prototype.check_token = function(account, token){
-	if(token){
-		var token_length = token.length;
-		var rand_length = parseInt(token[token_length - 1]);
-		var random_number = parseInt(token.slice(token_length - ( 1 + rand_length), token_length - 1));
-		var code_phone = parseInt(token.slice(0, token_length - (1 + rand_length)));
-		var phone = code_phone / random_number;
+MessageChecker.prototype.check_token = function(account, token, callback){
+	var token_valid = false;
 
-		return parseInt(account) == phone;
+	if(token){
+		var secret = 'foremly';
+		jwt.verify(token, secret, function(err, decode){
+			debugger;
+			if(!err && decode.user == account){
+				token_valid = true;
+			}
+			callback(token_valid);
+		});
 	}else{
-		return true;
+		callback(true);
 	}
 };
 
@@ -304,5 +310,8 @@ MessageChecker._get_unique_code = function(msg){
 
 if(require.main == module){
 	var Checker = new MessageChecker();
-	console.log(Checker.check_token('1399330008293092583', '19590620116103295000142'));
+	var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiMTM5OTMzMDAwMDMzMjI0ODU0ODMiLCJpYXQiOjE0NTI1OTA2NDYsImV4cCI6MTQ1MjU5MDgyNn0.--Y2mz1nkEsHLwCRNREDt1gImBAFqnV0kSAzToryxEo';
+	Checker.check_token('13993300003322485483', token, function(is_valid){
+		console.log('valid: ' + is_valid);
+	});
 }
