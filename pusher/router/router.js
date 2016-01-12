@@ -51,11 +51,6 @@ Router.prototype.check = function(msg){
 		throw new SyntaxError(ERR.LKEY);
 	}
 
-	checker.check_token(msg.from, msg.token, function(token_valid){
-		if(!token_valid){
-			throw new SyntaxError(ERR.TOKEN);
-		}
-	});
 };
 
 /*
@@ -159,6 +154,21 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 
 Router.prototype.route = function(msg, SOCKET, event, io_server){
 	var checker = new MessageChecker();
+	checker.check_token(msg.from, msg.token, function(token_valid){
+		if(!token_valid){
+		SOCKET.emit(EVENT.ERROR, {
+			error: ERR.MSG.TOKEN, 
+			event: event,
+			client_message_code: msg.client_message_code
+		});
+		}else{
+			new Router()._route(msg, SOCKET, event, io_server);
+		}
+	});
+};
+
+Router.prototype._route = function(msg, SOCKET, event, io_server){
+	var checker = new MessageChecker();
 	try{
 		this.check(msg);
 		msg = checker.decorate_message(msg);
@@ -178,11 +188,6 @@ Router.prototype.route = function(msg, SOCKET, event, io_server){
 		}else if(err.message == ERR.LKEY){
 			SOCKET.emit(EVENT.ERROR, ERR.MSG.LKEY);
 		}else if(err.message == ERR.TOKEN){
-			SOCKET.emit(EVENT.ERROR, {
-				error: ERR.MSG.TOKEN, 
-				event: event,
-				client_message_code: msg.client_message_code
-			});
 		}else{
 			throw err;
 		}
@@ -259,7 +264,7 @@ MessageChecker.prototype.check_token = function(account, token, callback){
 		var secret = 'foremly';
 		jwt.verify(token, secret, function(err, decode){
 			debugger;
-			if(!err && decode.user == account){
+			if(!err){
 				token_valid = true;
 			}
 			callback(token_valid);
