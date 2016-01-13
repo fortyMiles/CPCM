@@ -20,7 +20,7 @@ function InvitationService(){
 
 InvitationService.prototype.check_user_exist = function(username, callback){
 	var length = 11;
-    var url = 'http://localhost:3000/account/exist/' + username.slice(0, length);
+    var url = 'http://localhost:3000/account/exist/' + username;
 	request(url, function(err, response, body){
 		if(!err && response.statusCode == 200){
 			var result = JSON.parse(body);

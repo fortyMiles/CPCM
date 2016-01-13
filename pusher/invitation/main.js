@@ -41,6 +41,7 @@ Invitation.prototype.send_invitation = function(msg, receiver, event){
 	var service = new Service();
 	service.check_user_exist(receiver, function(result){
 		if(result.exist){
+			msg.to = result.user_id;
 			new P2P(Invitation.IO_SERVER).forward_message(msg, result.user_id, event);
 		}else{
 			// send a invitation messages.
