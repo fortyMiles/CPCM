@@ -9,7 +9,7 @@
 module.exports = P2GMessageHandler;
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/feed_test');
+mongoose.connect('mongodb://localhost/socket');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

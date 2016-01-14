@@ -8,7 +8,7 @@
 
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/p2p_message');
+mongoose.connect('mongodb://localhost/socket');
 
 var _ = require('ramda');
 
@@ -80,6 +80,16 @@ var get_message_by_code = function(unique_code, callback){
 		callback(message);
 	});
 };
+
+/*
+ * Get offline message by receiver, sender, last_unique_code, and step.
+ *
+ * @param {String} receiver_id
+ * @param {String} sender_id
+ * @param {String} last_unique_code
+ * @param {String} step
+ */
+var get_offline_message = function(){};
 
 module.exports = {
 	P2PHandler: P2PHandler,
