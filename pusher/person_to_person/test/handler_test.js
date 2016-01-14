@@ -10,14 +10,14 @@ var assert = require('assert');
 
 
 var H = require('../handler.js');
-var handler = new H.P2PHandler();
-var MessageModel = require('../model.js').P2PMessage;
 
-var data = {
-	"data": {"relation": "爷爷", "unique_code": "14483452925131524"},  
-	"from": "13777414593", "to":  "12345678910", "event": "agree", "lgmc":"14480164570271572", "unique_code": "testcode"
-};
+var last_unique_code = "14527538934681568";
+var receiver_id = "13993300008893802883";
+var sender_id = "13993300003322485483";
+var step = 5;
 
-H.save_data_to_model(MessageModel, data);
-
-handler.set_message_to_read('testcode');
+H.get_histroy_message(last_unique_code, receiver_id, sender_id, step, function(message_set){
+	message_set.map(function(m){
+		console.log(m);
+	});
+});

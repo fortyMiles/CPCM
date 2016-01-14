@@ -81,6 +81,24 @@ var get_message_by_code = function(unique_code, callback){
 	});
 };
 
+var get_histroy_message = function(last_unique_code, receiver_id, sender_id, step, callback){
+	var restriction = {
+		unique_code: {$lt: last_unique_code},
+		$or: [
+			{$and: [{to: receiver_id},{from: sender_id}]},
+			{$and: [{to: sender_id},{from: receiver_id}]}
+		],
+	};
+
+	MessageModel.find(restriction)
+	.limit(Number(step))
+	.sort({unique_code: -1})
+	.exec(function(err, message){
+		if(err) throw err;
+		callback(message);
+	});
+};
+
 /*
  * Get offline message by receiver, sender, last_unique_code, and step.
  *
@@ -97,4 +115,5 @@ module.exports = {
 	set_message_model_to_read: set_message_model_to_read,
 	get_offline_message_from_model: get_offline_message_from_model,
 	get_message_by_code: get_message_by_code,
+	get_histroy_message: get_histroy_message,
 };

@@ -21,6 +21,19 @@ app.get('/message/:unique_code', function(req, res){
 	});
 });
 
+app.get('/message/p2p/history/:last_unique_code/:receiver_id/:sender_id/:step', function(req, res){
+	message_handler.get_histroy_message(
+		req.params.last_unique_code,
+		req.params.receiver_id,
+		req.params.sender_id,
+		req.params.step,
+		function(message_set){
+			res.status(200);
+			res.json(message_set);
+		}
+	);
+});
+
 var server = app.listen(3001, function(){
 	var host = server.address().address;
 	var port = server.address().port;
