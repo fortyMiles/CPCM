@@ -14,7 +14,7 @@
 
 module.exports = P2GMessageService;
 
-var Handler = require('./message_handler.js');
+var Handler = require('./message_handler.js').P2GMessageHandler;
 var handler = new Handler();
 
 function P2GMessageService(){

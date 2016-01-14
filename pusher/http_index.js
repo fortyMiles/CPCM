@@ -9,6 +9,7 @@
 var express = require('express');
 var body_parse = require('body-parser');
 var message_handler = require('./person_to_person/handler.js');
+var p2g_message_handler = require('./person_to_group/message_handler.js');
 var app = express();
 
 app.use(body_parse.urlencoded({ extended: false }));
@@ -26,6 +27,19 @@ app.get('/message/p2p/history/:last_unique_code/:receiver_id/:sender_id/:step', 
 		req.params.last_unique_code,
 		req.params.receiver_id,
 		req.params.sender_id,
+		req.params.step,
+		function(message_set){
+			res.status(200);
+			res.json(message_set);
+		}
+	);
+});
+
+
+app.get('/message/p2g/history/:last_unique_code/:group_id/:step', function(req, res){
+	p2g_message_handler.get_history_message(
+		req.params.last_unique_code,
+		req.params.group_id,
 		req.params.step,
 		function(message_set){
 			res.status(200);

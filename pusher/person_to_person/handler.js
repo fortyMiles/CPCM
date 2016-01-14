@@ -90,7 +90,7 @@ var get_histroy_message = function(last_unique_code, receiver_id, sender_id, ste
 		],
 	};
 
-	MessageModel.find(restriction)
+	MessageModel.find(restriction, '-_id -__v')
 	.limit(Number(step))
 	.sort({unique_code: -1})
 	.exec(function(err, message){

@@ -6,8 +6,6 @@
  *
  */
 
-module.exports = P2GMessageHandler;
-
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/socket');
 
@@ -17,7 +15,7 @@ db.once('open', function (callback) {
   // yay!
 });
 
-var Feed = require('./model.js').P2GMessage;
+var P2GMessageModel = require('./model.js').P2GMessage;
 
 
 function P2GMessageHandler(){
@@ -33,7 +31,7 @@ function P2GMessageHandler(){
  */
 
 P2GMessageHandler.prototype.insert = function(data){
-	var new_feed = new Feed(data);
+	var new_feed = new P2GMessageModel(data);
 	new_feed.save(function(err, feed){
 		if(err) return console.error(err);
 		console.log('insert succeed');
@@ -56,7 +54,7 @@ P2GMessageHandler.prototype.get_offline_message = function(group, lgmc, callback
 		unique_code: {$gt: lgmc}
 	};
 
-	Feed.find(restriction, '-_id -__v', function(err, feeds){
+	P2GMessageModel.find(restriction, '-_id -__v', function(err, feeds){
 		if(err) return console.error(err);
 		callback(feeds);
 	});
@@ -75,13 +73,32 @@ P2GMessageHandler.prototype.get_offline_message = function(group, lgmc, callback
 P2GMessageHandler.prototype.comment = function(unique_code){
 	var restriction = {unique_code: unique_code};
 
-	Feed.find(restriction, function(err, feeds){
+	P2GMessageModel.find(restriction, function(err, feeds){
 		if(err) return console.error(err);
 
 		for(var i in feeds){
 			feeds[i].add_comment();
 			feeds[i].save();
 		}
-
 	});
+};
+
+var get_history_message = function(last_unique_code, group_id, step, callback){
+	var restriction = {
+		unique_code: {$lt: last_unique_code},
+		to: group_id,
+	};
+
+	P2GMessageModel.find(restriction, '-_id -__v')
+	.limit(Number(step))
+	.sort({unique_code: -1})
+	.exec(function(err, message_set){
+		if(err) throw err;
+		callback(message_set);
+	});
+};
+
+module.exports = {
+	P2GMessageHandler: P2GMessageHandler,
+	get_history_message: get_history_message,
 };
