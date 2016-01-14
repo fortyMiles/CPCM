@@ -98,6 +98,13 @@ var get_history_message = function(last_unique_code, group_id, step, callback){
 	});
 };
 
+var get_unread_message = function(last_unique_code, group_id, step, callback){
+	var restriction = {
+		unique_code: {$gt: last_unique_code},
+		to: group_id,
+	};
+};
+
 module.exports = {
 	P2GMessageHandler: P2GMessageHandler,
 	get_history_message: get_history_message,
