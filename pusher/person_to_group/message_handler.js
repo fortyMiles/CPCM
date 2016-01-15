@@ -51,7 +51,8 @@ P2GMessageHandler.prototype.insert = function(data){
 P2GMessageHandler.prototype.get_offline_message = function(group, lgmc, callback){
 	var restriction = {
 		to:group,
-		unique_code: {$gt: lgmc}
+		unique_code: {$gt: lgmc},
+		event: 'p2g',
 	};
 
 	P2GMessageModel.find(restriction, '-_id -__v', function(err, feeds){

@@ -60,12 +60,14 @@ P2G.IO_SERVER = null;
  * @api public
  */
 
-P2G.prototype.forward_message = function(msg, group, event){
-	var service = new MessageService();
+P2G.prototype.forward_message = function(msg, group, event, real_time_send){
 
+	var service = new MessageService();
 	service.save_a_new_message(msg, group, event);
 
-	P2G.IO_SERVER.to(group).emit(event, msg);
+	if(real_time_send){
+		P2G.IO_SERVER.to(group).emit(event, msg);
+	}
 };
 
 /*
