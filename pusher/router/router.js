@@ -102,6 +102,8 @@ Router.prototype.clean_up = function(){
 
 
 Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
+	var real_time_send = true;
+
 	switch(event){
 		case EVENT.LOGIN: 
 			this.login(msg.from, SOCKET.id);
@@ -119,11 +121,13 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			break;
 		
 		case EVENT.FEED:
-			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED);
+			real_time_send = false;
+			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED, real_time_send);
 			break;
 
 		case EVENT.P2G:
-			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G);
+			real_time_send = true;
+			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G, real_time_send);
 			break;
 
 		case EVENT.INVITATION:
@@ -263,11 +267,12 @@ MessageChecker.prototype.check_token = function(account, token, callback){
 	if(token){
 		var secret = 'foremly';
 		jwt.verify(token, secret, function(err, decode){
-			debugger;
 			if(!err){
 				token_valid = true;
+				callback(true);
+			}else{
+				callback(false);
 			}
-			callback(token_valid);
 		});
 	}else{
 		callback(true);
@@ -315,7 +320,7 @@ MessageChecker._get_unique_code = function(msg){
 
 if(require.main == module){
 	var Checker = new MessageChecker();
-	var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiMTM5OTMzMDAwMDMzMjI0ODU0ODMiLCJpYXQiOjE0NTI1OTA2NDYsImV4cCI6MTQ1MjU5MDgyNn0.--Y2mz1nkEsHLwCRNREDt1gImBAFqnV0kSAzToryxEo';
+	var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiMTM5OTMzMDAwMDMzIiwiaWF0IjoxNDUyNTg5MjI4LCJleHAiOjE0NTI1ODkyMjl9.Ndg3fanpCDfkMON1F6iMTg837iY97pfGKt6qSpw8B-8';
 	Checker.check_token('13993300003322485483', token, function(is_valid){
 		console.log('valid: ' + is_valid);
 	});
