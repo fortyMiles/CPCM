@@ -102,6 +102,8 @@ Router.prototype.clean_up = function(){
 
 
 Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
+	var real_time_send = true;
+
 	switch(event){
 		case EVENT.LOGIN: 
 			this.login(msg.from, SOCKET.id);
@@ -119,11 +121,13 @@ Router.prototype.mandate = function(event, msg, SOCKET, IO_SERVER, callback){
 			break;
 		
 		case EVENT.FEED:
-			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED);
+			real_time_send = false;
+			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.FEED, real_time_send);
 			break;
 
 		case EVENT.P2G:
-			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G);
+			real_time_send = true;
+			new PersonToGroup(IO_SERVER, SOCKET).forward_message(msg, msg.to, EVENT.P2G, real_time_send);
 			break;
 
 		case EVENT.INVITATION:
@@ -263,7 +267,6 @@ MessageChecker.prototype.check_token = function(account, token, callback){
 	if(token){
 		var secret = 'foremly';
 		jwt.verify(token, secret, function(err, decode){
-			debugger;
 			if(!err){
 				token_valid = true;
 			}
