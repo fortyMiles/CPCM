@@ -88,6 +88,7 @@ var get_histroy_message = function(last_unique_code, receiver_id, sender_id, ste
 			{$and: [{to: receiver_id},{from: sender_id}]},
 			{$and: [{to: sender_id},{from: receiver_id}]}
 		],
+		status: 'R',
 	};
 
 	MessageModel.find(restriction, '-_id -__v')
