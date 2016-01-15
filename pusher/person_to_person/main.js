@@ -84,7 +84,6 @@ P2P.prototype.forward_message = function(msg, receiver, event){
 	var service = new Service();
 
 	service.save_a_new_message(msg, receiver, event);
-	debugger;
 
 	if(receiver in P2P.online_client_socket){
 		P2P._send_reamtime_message(msg, receiver, event);
