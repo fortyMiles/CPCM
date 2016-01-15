@@ -7,8 +7,9 @@
  */
 
 var request = require('request');
+var _ = require('ramda');
 
-var get_all_group = function(user_id, callback){
+var get_group = function(feed_only, home_only, user_id, callback){
 	var group_list = [];
 	var url = 'http://localhost:3000/account/info/';
 
@@ -24,13 +25,18 @@ var get_all_group = function(user_id, callback){
 		if(response.statusCode == 200 && _is_json_string(res_data)){
 
 			var result = JSON.parse(res_data);
-			result.data.home.map(function(h){
-				group_list.push(h.home);
-			});
+			
+			if(!feed_only){ // if feed_only is true, !feed_only is false, not push home info.
+				result.data.home.map(function(h){
+					group_list.push(h.home);
+				});
+			}
 
-			result.data.feed_group.map(function(f){
-				group_list.push(f.group_id);
-			});
+			if(!home_only){ // if home_only is true,  !home_only is false, not push feed info.
+				result.data.feed_group.map(function(f){
+					group_list.push(f.group_id);
+				});
+			}
 			callback(group_list);
 
 		}else{
@@ -38,6 +44,11 @@ var get_all_group = function(user_id, callback){
 		}
 	});
 };
+
+var get_all_group = _.curry(get_group)(false, false); // get all feed group, feed_only and home_only are false neither;
+
+var get_all_feed_group = _.curry(get_group)(true, false); // feed only is true
+var get_all_home_group = _.curry(get_group)(false, true); // home only is true
 
 var _is_json_string = function(str){
 	try{
@@ -50,4 +61,6 @@ var _is_json_string = function(str){
 
 module.exports = {
 	get_all_group: get_all_group,
+	get_all_feed_group: get_all_feed_group,
+	get_all_home_group: get_all_home_group,
 };

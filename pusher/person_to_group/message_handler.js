@@ -16,6 +16,8 @@ db.once('open', function (callback) {
 });
 
 var P2GMessageModel = require('./model.js').P2GMessage;
+var group_handler = require('./group_handler.js');
+var _ = require('ramda');
 
 
 function P2GMessageHandler(){
@@ -99,14 +101,38 @@ var get_history_message = function(last_unique_code, group_id, step, callback){
 	});
 };
 
-var get_unread_message = function(last_unique_code, group_id, step, callback){
-	var restriction = {
-		unique_code: {$gt: last_unique_code},
-		to: group_id,
-	};
+var get_receive_feed = function(newer, user_id, last_unique_code, step, callback){
+
+	group_handler.get_all_feed_group(user_id, function(group_list){
+
+		var unique_code_restrition = null;
+		if(newer){
+			unique_code_restrition = {$gt: last_unique_code};
+		}else{
+			unique_code_restrition = {$lt: last_unique_code};
+		}
+
+		var restriction = {
+			unique_code: unique_code_restrition,
+			to: { $in: group_list},
+		};
+
+		P2GMessageModel.find(restriction, '-_id -__v')
+		.limit(Number(step))
+		.sort({unique_code: -1})
+		.exec(function(err, message_set){
+			if(err) throw err;
+			callback(message_set);
+		});
+	});
 };
+
+var get_history_receive_feed = _.curry(get_receive_feed)(false);
+var get_unread_receive_feed = _.curry(get_receive_feed)(true);
 
 module.exports = {
 	P2GMessageHandler: P2GMessageHandler,
 	get_history_message: get_history_message,
+	get_history_receive_feed: get_history_receive_feed,
+	get_unread_receive_feed: get_unread_receive_feed,
 };

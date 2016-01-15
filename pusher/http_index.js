@@ -15,6 +15,40 @@ var app = express();
 app.use(body_parse.urlencoded({ extended: false }));
 app.use(body_parse.json());
 
+app.get('/feed/history/:user_id?', function(req, res){
+	var MAX_STRING = Array(20).join("9");
+
+	var last_unique_code= req.query.last_unique_code || MAX_STRING;
+	var step = req.query.step || 10;
+
+	p2g_message_handler.get_history_receive_feed(
+		req.params.user_id,
+		last_unique_code,
+		step,
+		function(feed_set){
+			res.status(200);
+			res.json(feed_set);
+		}
+	);
+});
+
+app.get('/feed/unread/:user_id?', function(req, res){
+	var MIN_STRING = Array(1).join("0");
+
+	var last_unique_code= req.query.last_unique_code || MIN_STRING;
+	var step = req.query.step || 10;
+
+	p2g_message_handler.get_unread_receive_feed(
+		req.params.user_id,
+		last_unique_code,
+		step,
+		function(feed_set){
+			res.status(200);
+			res.json(feed_set);
+		}
+	);
+});
+
 app.get('/message/unique_code/:unique_code', function(req, res){
 	message_handler.get_message_by_code(req.params.unique_code, function(message){
 		res.status(200);
