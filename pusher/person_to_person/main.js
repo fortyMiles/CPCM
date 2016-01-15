@@ -83,6 +83,8 @@ P2P.prototype.delete_online_socket = function(username){
 P2P.prototype.forward_message = function(msg, receiver, event){
 	var service = new Service();
 
+	msg.date = new Date();
+
 	service.save_a_new_message(msg, receiver, event);
 
 	if(receiver in P2P.online_client_socket){
