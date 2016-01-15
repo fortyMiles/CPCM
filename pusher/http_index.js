@@ -15,6 +15,11 @@ var app = express();
 app.use(body_parse.urlencoded({ extended: false }));
 app.use(body_parse.json());
 
+app.get('/feed/');
+// /feed/user-id?older-than={unique-code}&step={step}
+// /feed/user-id?newer-than={unique-code}&step={step}
+// if no step, step <- 10
+// if new older-than or new-than, give newer-than
 app.get('/message/unique_code/:unique_code', function(req, res){
 	message_handler.get_message_by_code(req.params.unique_code, function(message){
 		res.status(200);
