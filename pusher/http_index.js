@@ -15,7 +15,7 @@ var app = express();
 app.use(body_parse.urlencoded({ extended: false }));
 app.use(body_parse.json());
 
-pp.get('/feed/history/:user_id?', function(req, res){
+app.get('/feed/history/:user_id?', function(req, res){
 	var MAX_STRING = Array(20).join("9");
 
 	var last_unique_code= req.query.last_unique_code || MAX_STRING;
