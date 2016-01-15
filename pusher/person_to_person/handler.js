@@ -89,6 +89,7 @@ var get_histroy_message = function(last_unique_code, receiver_id, sender_id, ste
 			{$and: [{to: sender_id},{from: receiver_id}]}
 		],
 		status: 'R',
+		event: 'p2p',
 	};
 
 	MessageModel.find(restriction, '-_id -__v')
