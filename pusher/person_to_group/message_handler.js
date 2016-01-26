@@ -103,7 +103,7 @@ var get_history_message = function(last_unique_code, group_id, step, callback){
 
 var get_receive_feed = function(newer, user_id, last_unique_code, step, callback){
 
-	group_handler.get_all_feed_group(user_id, function(group_list){
+	group_handler.get_all_group(user_id, function(group_list){
 
 		var unique_code_restrition = null;
 		if(newer){
