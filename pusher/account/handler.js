@@ -11,7 +11,7 @@
  */
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/socket');
+mongoose.createConnection('mongodb://localhost/socket');
 
 var _ = require('ramda');
 

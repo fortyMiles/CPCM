@@ -9,7 +9,7 @@
 module.exports = FeedHandler;
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/socket');
+mongoose.createConnection('mongodb://localhost/socket');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
